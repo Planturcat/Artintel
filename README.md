@@ -6,7 +6,7 @@ Artintel is a comprehensive AI platform that provides tools for creating, deploy
 
 - **website/** - Main marketing website and documentation
 - **mash-agent/** - AI assistant/agent component
-- **dashboard/** - Admin dashboard for managing the platform
+- **dashboard/** - User dashboard for managing projects and settings
 - **Backend/** - Backend services and API endpoints
 
 ## Getting Started
