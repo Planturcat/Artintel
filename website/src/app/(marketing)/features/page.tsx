@@ -27,6 +27,16 @@ import {
   Layers,
   Shield,
   Workflow,
+  BrainCircuit,
+  FileCheck,
+  BarChart4,
+  RefreshCw,
+  UserCheck,
+  Code,
+  Bot,
+  Layout,
+  Lightbulb,
+  CheckCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -201,6 +211,110 @@ const FeaturesPage = () => {
           </Card>
         </AnimationContainer>
 
+        {/* Language Model Types */}
+        <AnimationContainer className="mt-12 w-full">
+          <Card className="border-none shadow-md bg-card/30">
+            <CardHeader>
+              <CardTitle className="text-2xl font-bold">
+                Comprehensive Model Support
+              </CardTitle>
+              <CardDescription>
+                Support for both Large and Small Language Models to fit any requirement
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="text-left space-y-4">
+              <p>
+                Artintel provides robust support for different types of language models, giving you flexibility to choose based on your specific requirements:
+              </p>
+              <div className="grid md:grid-cols-2 gap-6 mb-6">
+                <Card className="bg-primary/5 border border-primary/20">
+                  <CardHeader>
+                    <div className="flex items-center gap-2">
+                      <div className="p-2 rounded-lg bg-primary/10">
+                        <Rocket className="h-5 w-5 text-primary" />
+                      </div>
+                      <CardTitle className="text-xl">Large Language Models (LLMs)</CardTitle>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="mb-4 text-muted-foreground">
+                      Powerful models with billions of parameters for advanced use cases requiring deep understanding and complex reasoning.
+                    </p>
+                    <ul className="space-y-2 text-sm text-muted-foreground">
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                        <span>Advanced reasoning capabilities with multi-step problem solving</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                        <span>Rich knowledge base from extensive pre-training</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                        <span>Support for long contexts (8K-100K tokens)</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                        <span>Ideal for content generation, complex support, research</span>
+                      </li>
+                    </ul>
+                    <div className="mt-4">
+                      <Button asChild variant="outline" size="sm" className="rounded-full">
+                        <Link href="/models/llm">Explore LLMs</Link>
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <Card className="bg-primary/5 border border-primary/20">
+                  <CardHeader>
+                    <div className="flex items-center gap-2">
+                      <div className="p-2 rounded-lg bg-primary/10">
+                        <Zap className="h-5 w-5 text-primary" />
+                      </div>
+                      <CardTitle className="text-xl">Small Language Models (SLMs)</CardTitle>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="mb-4 text-muted-foreground">
+                      Efficient, lightweight models optimized for speed, low resource usage, and deployment in constrained environments.
+                    </p>
+                    <ul className="space-y-2 text-sm text-muted-foreground">
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                        <span>Fast inference with sub-100ms latency</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                        <span>Low resource requirements for edge deployment</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                        <span>Cost-effective for high-volume processing</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                        <span>Ideal for mobile, IoT, and embedded systems</span>
+                      </li>
+                    </ul>
+                    <div className="mt-4">
+                      <Button asChild variant="outline" size="sm" className="rounded-full">
+                        <Link href="/models/slm">Explore SLMs</Link>
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+              
+              <div className="mt-4 text-center">
+                <Button asChild className="rounded-full">
+                  <Link href="/models/comparison">Compare LLMs vs SLMs</Link>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </AnimationContainer>
+
         {/* Data Integration & Preprocessing */}
         <AnimationContainer className="mt-12 w-full">
           <Card className="border-none shadow-md bg-card/30">
@@ -240,23 +354,23 @@ const FeaturesPage = () => {
                 Fine-Tuning Workflows
               </CardTitle>
               <CardDescription>
-                Customize models for your specific domain
+                Custom-tailor models to your specific data and use case
               </CardDescription>
             </CardHeader>
             <CardContent className="text-left space-y-4">
               <p>
-                Tailor language models to your specific domain with our intuitive fine-tuning tools:
+                Adapt pre-trained models to your specific domain and tasks with our intuitive fine-tuning workflows:
               </p>
               <div className="grid md:grid-cols-2 gap-6">
                 <FeatureCard
                   title="No-Code Fine-Tuning Studio"
-                  description="A step-by-step wizard guides you through selecting a base model, choosing a dataset, configuring hyperparameters, and launching the training job."
+                  description="Our step-by-step wizard guides you through selecting a base model, choosing a dataset, configuring hyperparameters, and launching the training job."
                   icon={Settings}
                 />
                 <FeatureCard
-                  title="Training Infrastructure"
-                  description="Automatically spin up GPU instances on AWS, Azure, or GCP, or use your own on-premises hardware for training."
-                  icon={Cpu}
+                  title="Advanced Training Options"
+                  description="For SLMs, leverage techniques like quantization and distillation. For LLMs, use parameter-efficient methods like LoRA to reduce GPU memory usage."
+                  icon={BrainCircuit}
                 />
               </div>
             </CardContent>
@@ -271,22 +385,22 @@ const FeaturesPage = () => {
                 Deployment & Serving
               </CardTitle>
               <CardDescription>
-                Get your models into production quickly and reliably
+                Get your models into production with ease
               </CardDescription>
             </CardHeader>
             <CardContent className="text-left space-y-4">
               <p>
-                Deploy your fine-tuned models to production with just a few clicks:
+                Artintel offers versatile deployment options for models of all sizes:
               </p>
               <div className="grid md:grid-cols-2 gap-6">
                 <FeatureCard
                   title="One-Click Deploy"
-                  description="Containerize your fine-tuned model, set up dependencies, and push it to your chosen environment (cloud, on-prem, or hybrid) with a single click."
+                  description="Containerize your fine-tuned model, set up required dependencies, and deploy it to your selected environment with a single click."
                   icon={Rocket}
                 />
                 <FeatureCard
-                  title="Inference Endpoints"
-                  description="Create flexible REST or gRPC endpoints with built-in authentication, rate limiting, and version management for safe iteration."
+                  title="Versatile Deployment Options"
+                  description="Deploy LLMs to high-performance cloud environments, or SLMs to edge devices, mobile applications, or embedded systems."
                   icon={Globe}
                 />
               </div>
@@ -302,23 +416,54 @@ const FeaturesPage = () => {
                 Monitoring & Alerts
               </CardTitle>
               <CardDescription>
-                Keep track of performance and costs
+                Keep track of your models' performance in real-time
               </CardDescription>
             </CardHeader>
             <CardContent className="text-left space-y-4">
               <p>
-                Monitor your models' performance and costs in real-time:
+                Monitor the performance of your deployed models and receive alerts when issues arise:
               </p>
               <div className="grid md:grid-cols-2 gap-6">
                 <FeatureCard
                   title="Real-Time Metrics"
-                  description="Track latency, throughput, hardware utilization, and other key metrics to identify bottlenecks and scaling needs."
-                  icon={BarChart}
+                  description="Track latency, throughput, and hardware utilization in real-time dashboards to identify bottlenecks or scale needs."
+                  icon={BarChart3}
                 />
                 <FeatureCard
                   title="Custom Alerts"
-                  description="Set up threshold-based alerts for latency, error rates, costs, and performance regressions to stay informed about your models."
-                  icon={BarChart3}
+                  description="Set thresholds for latency, error rates, or costs, and receive notifications via email or Slack when these are breached."
+                  icon={LineChart}
+                />
+              </div>
+            </CardContent>
+          </Card>
+        </AnimationContainer>
+
+        {/* Cost Management */}
+        <AnimationContainer className="mt-12 w-full">
+          <Card className="border-none shadow-md bg-card/30">
+            <CardHeader>
+              <CardTitle className="text-2xl font-bold">
+                Cost Management
+              </CardTitle>
+              <CardDescription>
+                Optimize your AI spending with transparent billing and cost controls
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="text-left space-y-4">
+              <p>
+                Keep your AI costs under control with our comprehensive cost management features:
+              </p>
+              <div className="grid md:grid-cols-2 gap-6">
+                <FeatureCard
+                  title="Transparent Billing"
+                  description="See detailed breakdowns of GPU hours, storage usage, and data transfer, with unified cost reporting across multiple clouds."
+                  icon={Building2}
+                />
+                <FeatureCard
+                  title="Auto-Scaling & Optimization"
+                  description="Automatically scale resources up or down based on demand, and leverage quantization and distillation for cost-effective inference."
+                  icon={RefreshCw}
                 />
               </div>
             </CardContent>
@@ -333,48 +478,121 @@ const FeaturesPage = () => {
                 Security & Compliance
               </CardTitle>
               <CardDescription>
-                Enterprise-grade security for sensitive data
+                Protect your data and meet regulatory requirements
               </CardDescription>
             </CardHeader>
             <CardContent className="text-left space-y-4">
               <p>
-                Protect your data and models with our comprehensive security features:
+                Artintel takes security and compliance seriously, with features designed to protect your data and meet regulatory requirements:
               </p>
               <div className="grid md:grid-cols-2 gap-6">
                 <FeatureCard
                   title="End-to-End Encryption"
-                  description="All data pipelines use HTTPS/TLS for transit, while sensitive data is stored encrypted at rest with robust cloud or on-prem solutions."
+                  description="All data pipelines use HTTPS/TLS to ensure security in transit, while sensitive data is encrypted at rest."
                   icon={Lock}
                 />
                 <FeatureCard
                   title="Access Controls & Auditing"
-                  description="Fine-grained role-based access controls and comprehensive logging ensure only authorized users can access sensitive resources."
-                  icon={Shield}
+                  description="Fine-grained access controls ensure that only authorized team members can access sensitive data or perform actions."
+                  icon={UserCheck}
                 />
               </div>
             </CardContent>
           </Card>
         </AnimationContainer>
 
-        {/* CTA Section */}
-        <AnimationContainer className="mt-20 w-full text-center">
-          <h2 className="text-3xl font-bold mb-4">Ready to Get Started?</h2>
-          <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Experience the power of Artintel's comprehensive platform for yourself. Choose the plan that's right for your organization and start building AI-powered applications today.
-          </p>
-          <div className="flex flex-wrap gap-4 justify-center">
-            <Button asChild size="lg" className="rounded-full">
-              <Link href="/pricing">View Pricing Plans</Link>
-            </Button>
-            <Button
-              asChild
-              variant="outline"
-              size="lg"
-              className="rounded-full"
-            >
-              <Link href="/contact">Contact Sales</Link>
-            </Button>
-          </div>
+        {/* Data Correction & Quality Enhancement */}
+        <AnimationContainer className="mt-12 w-full">
+          <Card className="border-none shadow-md bg-card/30">
+            <CardHeader>
+              <CardTitle className="text-2xl font-bold">
+                Data Correction & Quality Enhancement
+              </CardTitle>
+              <CardDescription>
+                Improve your training data for better model performance
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="text-left space-y-4">
+              <p>
+                Ensure your training data is high-quality to get the best results from your models:
+              </p>
+              <div className="grid md:grid-cols-2 gap-6">
+                <FeatureCard
+                  title="Interactive Data Quality Dashboard"
+                  description="Identify outliers, mislabeled examples, and inconsistent patterns in your training data with our interactive visualization tools."
+                  icon={FileCheck}
+                />
+                <FeatureCard
+                  title="Automated Data Enhancement"
+                  description="Apply proven techniques like data augmentation, cleansing, and transformation to improve model performance."
+                  icon={Sparkles}
+                />
+              </div>
+            </CardContent>
+          </Card>
+        </AnimationContainer>
+
+        {/* Mash AI Agent */}
+        <AnimationContainer className="mt-12 w-full">
+          <Card className="border-none shadow-md bg-card/30">
+            <CardHeader>
+              <CardTitle className="text-2xl font-bold">
+                Mash AI Agent
+              </CardTitle>
+              <CardDescription>
+                An intelligent assistant to guide you through the model selection and fine-tuning process
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="text-left space-y-4">
+              <p>
+                Get expert guidance at every step with our intelligent AI assistant:
+              </p>
+              <div className="grid md:grid-cols-2 gap-6">
+                <FeatureCard
+                  title="AI-Powered Recommendations"
+                  description="Receive personalized recommendations for model selection, data preparation, and training parameters based on your specific use case."
+                  icon={Bot}
+                />
+                <FeatureCard
+                  title="Interactive UI Creation"
+                  description="Let Mash help you design effective UIs and dashboards for your AI applications with intelligent suggestions."
+                  icon={Layout}
+                />
+              </div>
+              <div className="mt-6 text-center">
+                <Button asChild className="rounded-full">
+                  <Link href="/mash-chatbot">Try Mash Agent</Link>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </AnimationContainer>
+
+        {/* Call-to-Action */}
+        <AnimationContainer className="mt-16 w-full">
+          <Card className="bg-primary/5 border border-primary/20">
+            <CardContent className="flex flex-col md:flex-row items-center justify-between gap-6 p-8">
+              <div>
+                <h2 className="text-2xl font-bold mb-2">Ready to transform your AI capabilities?</h2>
+                <p className="text-muted-foreground">
+                  Start building with Artintel today and harness the power of both LLMs and SLMs for your applications.
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-4">
+                <Button asChild size="lg" className="rounded-full">
+                  <Link href="/pricing">View Pricing</Link>
+                </Button>
+                <Button
+                  asChild
+                  variant="outline"
+                  size="lg"
+                  className="rounded-full"
+                >
+                  <Link href="/contact">Request Demo</Link>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
         </AnimationContainer>
       </Wrapper>
     </>

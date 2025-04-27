@@ -53,13 +53,35 @@
 4. **Reset Password** (`/reset-password` - src/app/(auth)/reset-password/page.tsx)
 5. **Verify Email** (`/verify-email` - src/app/(auth)/verify-email/page.tsx)
 
+### Model Pages
+1. **Models Overview** (`/models` - src/app/(marketing)/models/page.tsx)
+   - General models page with SLM vs LLM comparison
+   - Contains links to dedicated SLM and LLM pages
+   
+2. **LLM Models** (`/models/llm` - src/app/(marketing)/models/llm/page.tsx)
+   - Focuses specifically on Large Language Models
+   - Includes model benefits, use cases, and hardware requirements
+   - Contains recommended LLM models and their specifications
+   
+3. **SLM Models** (`/models/slm` - src/app/(marketing)/models/slm/page.tsx)
+   - Focuses specifically on Small Language Models
+   - Includes model benefits, use cases, and resource efficiency
+   - Contains recommended SLM models and their specifications
+
+4. **Models Comparison** (`/models/comparison` - src/app/(marketing)/models/comparison/page.tsx)
+   - Detailed side-by-side comparison of LLMs and SLMs
+   - Interactive comparison tool for specific use cases
+   - Performance benchmarks and tradeoff analysis
+
+5. **Model Catalog** (`/models/catalog` - src/app/(marketing)/models/catalog/page.tsx)
+   - Searchable catalog of all available models
+   - Filterable by type, size, domain and capabilities
+
 ### Documentation & Resources
 1. **Documentation** (`/docs` - src/app/(marketing)/docs/page.tsx)
-2. **Models Overview** (`/models` - src/app/(marketing)/models/page.tsx)
-3. **SLM Models** (`/slm-models` - src/app/(marketing)/slm-models/page.tsx)
-4. **LLM Models** (`/llm-models` - src/app/(marketing)/llm-models/page.tsx)
-5. **Models Comparison** (`/models/comparison` - src/app/(marketing)/models/comparison/page.tsx)
-6. **Catalog** (`/catalog` - src/app/(marketing)/catalog/page.tsx)
+2. **Features** (`/features` - src/app/(marketing)/features/page.tsx)
+   - Comprehensive breakdown of platform capabilities
+   - Sections on model selection, fine-tuning, and deployment
 
 ### Demo Pages
 1. **Demo Home** (`/demo` - src/app/demo/page.tsx)
