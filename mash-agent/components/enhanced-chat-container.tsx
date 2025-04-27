@@ -277,7 +277,7 @@ export const EnhancedChatContainer: React.FC<EnhancedChatContainerProps> = ({ mo
     
     try {
       // For chat mode, we'll use the AI service directly or fall back to pre-defined responses
-      if (mode === 'unified' && agentMode === 'chat') {
+    if (mode === 'unified' && agentMode === 'chat') {
         console.log("Processing in chat mode");
         
         // Try to use the AI service if available, but don't wait too long
@@ -288,20 +288,20 @@ export const EnhancedChatContainer: React.FC<EnhancedChatContainerProps> = ({ mo
           );
           
           // Try to connect to AI service with timeout
-          if (!aiServiceConnected) {
+      if (!aiServiceConnected) {
             try {
               const connectionPromise = checkAIServiceConnection(1, true);
               await Promise.race([connectionPromise, timeoutPromise]);
             } catch (error) {
               console.warn("AI service connection failed or timed out, using fallback response");
-              return generateSimpleChatResponse(userMessage);
-            }
-          }
+          return generateSimpleChatResponse(userMessage);
+        }
+      }
 
           // If we reach here, connection was successful or already established
           // Use the AI service with a timeout as well
-          const modelName = currentModel || "llama2:7b";
-          aiService.setCurrentModel(modelName);
+      const modelName = currentModel || "llama2:7b";
+      aiService.setCurrentModel(modelName);
 
           // Create a prompt with context about Artintel
           const prompt = `You are Mash, an AI assistant for Artintel, a platform for discovering, fine-tuning, and deploying language models.
@@ -320,10 +320,10 @@ Your response:`;
               setTimeout(() => reject(new Error("AI generation timeout")), 6000)
             )
           ]);
-          
-          // Check if we got a valid response
+
+      // Check if we got a valid response
           if (responseWithTimeout && responseWithTimeout.response) {
-            console.log("Got valid response from AI service");
+        console.log("Got valid response from AI service");
             return responseWithTimeout.response;
           }
         } catch (error) {
@@ -333,118 +333,118 @@ Your response:`;
         
         // Always fall back to a simple response if anything goes wrong
         console.log("Using fallback response");
-        return generateSimpleChatResponse(userMessage);
-      }
-      
+      return generateSimpleChatResponse(userMessage);
+    }
+
       // For agent mode, use the existing reasoning engine
       if (mode === 'unified' && agentMode === 'agent') {
         console.log("Processing in agent mode");
         // ... existing code ...
       }
 
-      // Determine if this is a UI generation request
-      const isUIRequest = userMessage.toLowerCase().includes('create ui') ||
-                         userMessage.toLowerCase().includes('build ui') ||
-                         userMessage.toLowerCase().includes('design ui') ||
-                         userMessage.toLowerCase().includes('generate ui') ||
-                         userMessage.toLowerCase().includes('create a form') ||
-                         userMessage.toLowerCase().includes('create a component') ||
-                         userMessage.toLowerCase().includes('build a dashboard') ||
-                         userMessage.toLowerCase().includes('design a card');
+    // Determine if this is a UI generation request
+    const isUIRequest = userMessage.toLowerCase().includes('create ui') ||
+                       userMessage.toLowerCase().includes('build ui') ||
+                       userMessage.toLowerCase().includes('design ui') ||
+                       userMessage.toLowerCase().includes('generate ui') ||
+                       userMessage.toLowerCase().includes('create a form') ||
+                       userMessage.toLowerCase().includes('create a component') ||
+                       userMessage.toLowerCase().includes('build a dashboard') ||
+                       userMessage.toLowerCase().includes('design a card');
 
-      // Determine if this is a code generation request
-      const isCodeRequest = userMessage.toLowerCase().includes('generate code') ||
-                           userMessage.toLowerCase().includes('write code') ||
-                           userMessage.toLowerCase().includes('debug code') ||
-                           userMessage.toLowerCase().includes('optimize code') ||
-                           userMessage.toLowerCase().includes('refactor code') ||
-                           userMessage.toLowerCase().includes('convert code');
+    // Determine if this is a code generation request
+    const isCodeRequest = userMessage.toLowerCase().includes('generate code') ||
+                         userMessage.toLowerCase().includes('write code') ||
+                         userMessage.toLowerCase().includes('debug code') ||
+                         userMessage.toLowerCase().includes('optimize code') ||
+                         userMessage.toLowerCase().includes('refactor code') ||
+                         userMessage.toLowerCase().includes('convert code');
 
-      // Update steps for visualization
-      setSteps([
-        { name: "Understanding request", status: "pending" },
-        { name: "Determining task type", status: "pending" },
-        { name: isUIRequest ? "Generating UI" : isCodeRequest ? "Generating code" : "Processing task", status: "pending" },
-        { name: "Formulating response", status: "pending" }
-      ]);
+    // Update steps for visualization
+    setSteps([
+      { name: "Understanding request", status: "pending" },
+      { name: "Determining task type", status: "pending" },
+      { name: isUIRequest ? "Generating UI" : isCodeRequest ? "Generating code" : "Processing task", status: "pending" },
+      { name: "Formulating response", status: "pending" }
+    ]);
+    setCurrentStep("Understanding request");
+    setThinkingSteps([]);
+    setExpandedSteps({});
+
+    // Connect to AI service if needed
+    if (!aiServiceConnected) {
+      const connected = await checkAIServiceConnection(1, true);
+      if (!connected) {
+        setSteps((prev) =>
+          prev.map((step) =>
+            step.name === "Understanding request" ? { ...step, status: "error", message: "Couldn't connect to AI service" } : step
+          )
+        );
+        return "I couldn't connect to the AI model. Please check your connection and try again.";
+      }
+    }
+
+    try {
+      // Set the model for reasoning engine based on user selection
+      const modelName = currentModel || "llama2:7b";
+      reasoningEngine.setModel(modelName);
+
+      // Add the user message to task manager conversation history
+      taskManager.addToConversationHistory({ role: 'user', content: userMessage });
+
+      // Process the message through the task manager
       setCurrentStep("Understanding request");
-      setThinkingSteps([]);
-      setExpandedSteps({});
+      updateStepStatus("Understanding request", "complete");
+      setCurrentStep("Determining task type");
 
-      // Connect to AI service if needed
-      if (!aiServiceConnected) {
-        const connected = await checkAIServiceConnection(1, true);
-        if (!connected) {
-          setSteps((prev) =>
-            prev.map((step) =>
-              step.name === "Understanding request" ? { ...step, status: "error", message: "Couldn't connect to AI service" } : step
-            )
-          );
-          return "I couldn't connect to the AI model. Please check your connection and try again.";
+      // Process the user message through task manager - this will call the reasoning engine and APIs
+      const task = await taskManager.processUserMessage(userMessage);
+      updateStepStatus("Determining task type", "complete");
+
+      // Capture thinking steps for display
+      if (task.thinkingProcess?.steps) {
+        setThinkingSteps(
+          task.thinkingProcess.steps.map(step => ({
+            stage: step.stage,
+            reasoning: step.reasoning
+          }))
+        );
+      }
+
+      // Update the processing task step
+      setCurrentStep("Processing task");
+      updateStepStatus("Processing task", "complete");
+
+      // Update the formulating response step
+      setCurrentStep("Formulating response");
+      updateStepStatus("Formulating response", "complete");
+
+      // Add system message to conversation history
+      const responseText = getResponseFromTask(task);
+      taskManager.addToConversationHistory({ role: 'assistant', content: responseText });
+
+      // Complete all steps
+      setSteps(prev => prev.map(step => ({ ...step, status: "complete" })));
+
+      // Return the formulated response
+      return responseText;
+    } catch (error: any) {
+      console.error("Error processing with reasoning engine:", error);
+
+      // Update steps to show error
+      setSteps(prev => prev.map(step =>
+        step.name === currentStep ? { ...step, status: "error", message: "Processing Error" } : step
+      ));
+
+      // Extract error message
+      let errorMessage = "I encountered an error while processing your request.";
+      if (error.message) {
+        if (error.message.includes("Failed to fetch") || error.message.includes("Could not connect")) {
+          errorMessage = "❌ Connection Error: Could not connect to the AI service.\n\nPlease ensure that:\n• Your internet connection is working\n• The AI service is available\n• No firewall is blocking the connection\n\nTry refreshing the page or restarting your computer if the issue persists.";
         }
       }
 
-      try {
-        // Set the model for reasoning engine based on user selection
-        const modelName = currentModel || "llama2:7b";
-        reasoningEngine.setModel(modelName);
-
-        // Add the user message to task manager conversation history
-        taskManager.addToConversationHistory({ role: 'user', content: userMessage });
-
-        // Process the message through the task manager
-        setCurrentStep("Understanding request");
-        updateStepStatus("Understanding request", "complete");
-        setCurrentStep("Determining task type");
-
-        // Process the user message through task manager - this will call the reasoning engine and APIs
-        const task = await taskManager.processUserMessage(userMessage);
-        updateStepStatus("Determining task type", "complete");
-
-        // Capture thinking steps for display
-        if (task.thinkingProcess?.steps) {
-          setThinkingSteps(
-            task.thinkingProcess.steps.map(step => ({
-              stage: step.stage,
-              reasoning: step.reasoning
-            }))
-          );
-        }
-
-        // Update the processing task step
-        setCurrentStep("Processing task");
-        updateStepStatus("Processing task", "complete");
-
-        // Update the formulating response step
-        setCurrentStep("Formulating response");
-        updateStepStatus("Formulating response", "complete");
-
-        // Add system message to conversation history
-        const responseText = getResponseFromTask(task);
-        taskManager.addToConversationHistory({ role: 'assistant', content: responseText });
-
-        // Complete all steps
-        setSteps(prev => prev.map(step => ({ ...step, status: "complete" })));
-
-        // Return the formulated response
-        return responseText;
-      } catch (error: any) {
-        console.error("Error processing with reasoning engine:", error);
-
-        // Update steps to show error
-        setSteps(prev => prev.map(step =>
-          step.name === currentStep ? { ...step, status: "error", message: "Processing Error" } : step
-        ));
-
-        // Extract error message
-        let errorMessage = "I encountered an error while processing your request.";
-        if (error.message) {
-          if (error.message.includes("Failed to fetch") || error.message.includes("Could not connect")) {
-            errorMessage = "❌ Connection Error: Could not connect to the AI service.\n\nPlease ensure that:\n• Your internet connection is working\n• The AI service is available\n• No firewall is blocking the connection\n\nTry refreshing the page or restarting your computer if the issue persists.";
-          }
-        }
-
-        return errorMessage;
+      return errorMessage;
       }
     } catch (error: any) {
       console.error("Error processing message:", error);
@@ -676,17 +676,17 @@ You can:
     if (/switch|change|agent mode|chat mode/i.test(normalizedMessage)) {
       return "You can switch between chat and agent mode using the toggle at the top of the chat. Chat mode is simpler and faster for basic questions, while agent mode gives you access to my full capabilities including detailed model selection guidance, fine-tuning workflows, deployment strategies, and monitoring setup.";
     }
-    
+
     // Check if asking about models
     if (/models|model types|which model|available models|best model/i.test(normalizedMessage)) {
       return "Artintel supports various language models, including:\n\n• Llama 2 (7B, 13B, 70B parameter variants)\n• Mistral (7B)\n• GPT models\n\nThe best choice depends on your specific use case, performance requirements, and deployment constraints. Would you like more specific recommendations?";
     }
-    
+
     // Check if asking about fine-tuning
     if (/fine-tune|finetune|training|train a model/i.test(normalizedMessage)) {
       return "Fine-tuning allows you to adapt pre-trained language models to your specific domain or task. Artintel provides guided workflows for fine-tuning that handle data preprocessing, training configuration, and model evaluation. This significantly improves performance on domain-specific tasks compared to using general-purpose models.";
     }
-    
+
     // Check if asking about deployment
     if (/deploy|deployment|hosting|serve|production/i.test(normalizedMessage)) {
       return "Artintel offers seamless deployment options for your fine-tuned models, including:\n\n• One-click cloud deployment with auto-scaling\n• API endpoint generation\n• Monitoring and logging infrastructure\n• Cost optimization\n\nThis makes it easy to put your models into production quickly and reliably.";
