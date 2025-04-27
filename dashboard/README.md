@@ -1,12 +1,13 @@
 # Dashboard
 
-This directory contains the admin dashboard for the Artintel project.
+This directory contains the user dashboard for the Artintel project.
 
 ## Features
-- User management
-- Content management
-- Analytics and reporting
-- System configuration
+- User account management
+- Content personalization
+- Project management
+- Usage analytics
+- Model settings and configurations
 
 ## Getting Started
 More details will be added as development progresses. 
