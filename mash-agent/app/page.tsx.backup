@@ -1,0 +1,1443 @@
+"use client"
+
+import { useState, useRef, useEffect, useCallback } from "react"
+import { Bot, RefreshCw, Paperclip, Import, Loader2, ArrowUp } from "lucide-react"
+import { cn } from "@/lib/utils"
+
+// Import components
+import { Background } from "@/components/background"
+import { MessageList } from "@/components/message-list"
+import { StepIndicator } from "@/components/step-indicator"
+import { Button } from "@/components/ui/button"
+import { Textarea } from "@/components/ui/textarea"
+
+// Import API services
+import {
+  listDatasets,
+  uploadDataset,
+  listFineTuningJobs,
+  createFineTuningJob,
+  listModelDeployments,
+  deployModel,
+  getAvailableDeployments,
+  createCompletion,
+  createAgenticRag,
+  checkBackendConnection,
+} from "@/lib/api-service"
+
+import { 
+  listOllamaModels, 
+  generateWithOllama, 
+  getOllamaModelInfo, 
+  pullOllamaModel,
+  checkOllamaHealth,
+} from "@/lib/ollama-service"
+
+// Define types
+interface Step {
+  name: string;
+  status: 'pending' | 'complete' | 'error';
+  message?: string;
+}
+
+interface BaseModel {
+  id: string;
+  name: string;
+  description: string;
+}
+
+interface Dataset {
+  id: string;
+  name: string;
+  [key: string]: any;
+}
+
+interface Deployment {
+  id: string;
+  name: string;
+  status: string;
+  [key: string]: any;
+}
+
+interface FineTuningJob {
+  id: string;
+  model_name: string;
+  status: string;
+  [key: string]: any;
+}
+
+interface OllamaModel {
+  name: string;
+  [key: string]: any;
+}
+
+interface Message {
+  role: 'user' | 'assistant';
+  content: string;
+}
+
+interface WorkflowState {
+  stage: 'purpose' | 'dataset' | 'model' | 'training' | 'parameters' | 'deployment' | 'inference' | 'prompt' | 'model_download' | null;
+  purpose: string | null;
+  selectedDataset: Dataset | null;
+  selectedBaseModel: BaseModel | null;
+  trainingParameters: Record<string, any>;
+  jobId: string | null;
+  deployedModelId: string | null;
+  completedJobs?: FineTuningJob[];
+  availableForInference?: any[];
+  selectedInferenceModel?: any;
+  pendingModelDownload?: string | null;
+}
+
+interface OllamaConnectionState {
+  status: 'connected' | 'disconnected' | 'connecting' | 'error';
+  error?: string;
+  lastChecked: Date | null;
+}
+
+// Available base models for fine-tuning
+const BASE_MODELS: BaseModel[] = [
+  { id: "llama2", name: "Llama 2 (7B)", description: "Meta's Llama 2 7B parameter model" },
+  { id: "llama2:13b", name: "Llama 2 (13B)", description: "Meta's Llama 2 13B parameter model" },
+  { id: "llama2:70b", name: "Llama 2 (70B)", description: "Meta's Llama 2 70B parameter model" },
+  { id: "mistral:7b", name: "Mistral (7B)", description: "Mistral AI's 7B parameter model" },
+  { id: "gpt-3.5-turbo", name: "GPT-3.5 Turbo", description: "OpenAI's GPT-3.5 Turbo model" },
+  { id: "gpt-4o", name: "GPT-4o", description: "OpenAI's GPT-4o model" },
+]
+
+export default function Home() {
+  // State for chat
+  const [messages, setMessages] = useState<Message[]>([
+    { role: "assistant", content: "Hi! I'm Mash, your ML assistant powered by Llama2 7B. I'm connected to your local Ollama server and ready to help with machine learning tasks or general conversation. What can I help you with today?" },
+  ])
+  const [input, setInput] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
+  const messagesEndRef = useRef<HTMLDivElement>(null)
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  // State for workflow
+  const [currentWorkflow, setCurrentWorkflow] = useState<WorkflowState>({
+    stage: null,
+    purpose: null,
+    selectedDataset: null,
+    selectedBaseModel: null,
+    trainingParameters: {},
+    jobId: null,
+    deployedModelId: null,
+  })
+
+  // State for UI operation steps
+  const [steps, setSteps] = useState<Step[]>([])
+  const [currentStep, setCurrentStep] = useState<string | null>(null)
+
+  // State for available data
+  const [availableDatasets, setAvailableDatasets] = useState<Dataset[]>([])
+  const [availableDeployments, setAvailableDeployments] = useState<Deployment[]>([])
+  const [fineTuningJobs, setFineTuningJobs] = useState<FineTuningJob[]>([])
+  const [ollamaModels, setOllamaModels] = useState<OllamaModel[]>([])
+  const [currentModel, setCurrentModel] = useState(BASE_MODELS[0].id)
+
+  // State for Ollama connection
+  const [ollamaConnected, setOllamaConnected] = useState(false)
+  const [isCheckingConnection, setIsCheckingConnection] = useState(false)
+  const [connectionError, setConnectionError] = useState<string>()
+  const [modelPulling, setModelPulling] = useState<{ model: string; status: string } | null>(null)
+  
+  // UI state
+  const [showSettings, setShowSettings] = useState(false)
+  const [activeNavItem, setActiveNavItem] = useState<'datasets' | 'models' | 'fine-tuning' | 'jobs'>()
+
+  // State for backend API connection
+  const [backendConnected, setBackendConnected] = useState<boolean | null>(null)
+
+  // Ollama connection check
+  const checkOllamaConnection = useCallback(
+    async (retries = 3, silent = false): Promise<boolean> => {
+      if (!silent) {
+        setIsCheckingConnection(true)
+        setConnectionError(undefined)
+      }
+
+      try {
+        // Use the dedicated health check function
+        const isHealthy = await checkOllamaHealth();
+        
+        if (isHealthy) {
+          setOllamaConnected(true);
+          return true;
+        }
+        
+        // If health check failed, try to list models as a fallback
+        try {
+          const models = await listOllamaModels();
+          if (models && (models.models || models.tags)) {
+            setOllamaModels(models.models || models.tags || []);
+            setOllamaConnected(true);
+            return true;
+          }
+        } catch (modelError) {
+          console.error("Fallback model check failed:", modelError);
+        }
+
+        if (retries > 0) {
+          // Retry with exponential backoff
+          await new Promise((resolve) => setTimeout(resolve, (4 - retries) * 1000));
+          return checkOllamaConnection(retries - 1, silent);
+        }
+
+        if (!silent) {
+          setOllamaConnected(false);
+          setConnectionError("Could not connect to Ollama server");
+        }
+        return false;
+      } catch (error) {
+        console.error("Error connecting to Ollama:", error);
+
+        if (retries > 0) {
+          // Retry with exponential backoff
+          await new Promise((resolve) => setTimeout(resolve, (4 - retries) * 1000));
+          return checkOllamaConnection(retries - 1, silent);
+        }
+
+        if (!silent) {
+          setOllamaConnected(false);
+          setConnectionError("Could not connect to Ollama server");
+        }
+        return false;
+      } finally {
+        if (!silent) {
+          setIsCheckingConnection(false);
+        }
+      }
+    },
+    [],
+  )
+
+  // Handle Ollama model pulling
+  const handlePullOllamaModel = async (modelName: string) => {
+    try {
+      setModelPulling({ model: modelName, status: "Starting download..." })
+      
+      // Ensure Ollama is connected before attempting to pull
+      if (!ollamaConnected) {
+        const connected = await checkOllamaConnection(1, false)
+        if (!connected) {
+          setModelPulling(null)
+          setMessages(prev => [
+            ...prev,
+            { 
+              role: 'assistant', 
+              content: "I couldn't connect to Ollama. Please make sure Ollama is running and try again." 
+            }
+          ])
+          return
+        }
+      }
+      
+      // Pull the model
+      const onProgress = (status: string) => {
+        setModelPulling({ model: modelName, status })
+      }
+      
+      await pullOllamaModel(modelName)
+      
+      // Refresh model list
+      const models = await listOllamaModels()
+      setOllamaModels(models || [])
+      
+      setModelPulling(null)
+      
+      // Notify user
+      setMessages(prev => [
+        ...prev,
+        { 
+          role: 'assistant', 
+          content: `I've successfully downloaded the ${modelName} model. It's now ready to use.` 
+        }
+      ])
+    } catch (error) {
+      console.error("Error pulling Ollama model:", error)
+      setModelPulling(null)
+      
+      // Notify user
+      setMessages(prev => [
+        ...prev,
+        { 
+          role: 'assistant', 
+          content: `I ran into a problem downloading the ${modelName} model. Please try again or select a different model.` 
+        }
+      ])
+    }
+  }
+
+  // Process user messages and detect intents
+  const processUserMessage = async (userMessage: string): Promise<string> => {
+    // A simple intent detection function
+    const detectIntent = () => {
+      const msg = userMessage.toLowerCase();
+      
+      // Default to conversation mode if backend is unavailable
+      if (!backendConnected) {
+        if (msg.includes("backend") || msg.includes("status") || msg.includes("connection")) {
+          return "status_check";
+        }
+        return "conversation";
+      }
+      
+      if (msg.includes("train") || msg.includes("fine-tune") || msg.includes("finetune")) {
+        return "fine-tune";
+      }
+      if (msg.includes("dataset") || msg.includes("data")) {
+        return "dataset";
+      }
+      if (msg.includes("deploy")) {
+        return "deploy";
+      }
+      if (msg.includes("generat") || msg.includes("run") || msg.includes("infer")) {
+        return "generate";
+      }
+      
+      // Check for list queries
+      if (msg.includes("list") || msg.includes("show") || msg.includes("what")) {
+        if (msg.includes("dataset")) return "list_datasets";
+        if (msg.includes("model")) return "list_models";
+        if (msg.includes("job")) return "list_jobs";
+      }
+      
+      // Check for status queries
+      if (msg.includes("status") || msg.includes("connection") || msg.includes("available")) {
+        return "status_check";
+      }
+      
+      // If we're in a workflow, continue it
+      if (currentWorkflow.stage !== null) {
+        return "continue_workflow";
+      }
+      
+      // Default - use direct conversation with Ollama model
+      return "conversation";
+    };
+    
+    // Detect the intent from the user message
+    const intent = detectIntent();
+
+    // Handle status check intent
+    if (intent === "status_check") {
+      let statusMessage = "Here's the current system status:\n\n";
+      
+      // Ollama status
+      statusMessage += `- Ollama Connection: ${ollamaConnected ? "✓ Connected" : "✗ Disconnected"}\n`;
+      
+      // Backend API status
+      statusMessage += `- Backend API: ${backendConnected ? "✓ Available" : "✗ Unavailable"}\n\n`;
+      
+      if (!backendConnected) {
+        statusMessage += "I'm currently operating in local-only mode. You can chat with me and use local Ollama models, but features like training models and managing datasets are unavailable.\n\n";
+        statusMessage += "To enable all features, please make sure the backend API server is running.";
+      } else if (!ollamaConnected) {
+        statusMessage += "To enable local AI capabilities, please make sure Ollama is running on your system.";
+      } else {
+        statusMessage += "All systems are operational! You can use all features including local AI models, training, and dataset management.";
+      }
+      
+      return statusMessage;
+    }
+    
+    // If this is a conversation intent, use the Ollama model directly
+    if (intent === "conversation") {
+      try {
+        setSteps([{ name: "Thinking...", status: "pending" }]);
+        setCurrentStep("Thinking...");
+        
+        // Connect to Ollama
+        if (!ollamaConnected) {
+          const connected = await checkOllamaConnection(1, true);
+          if (!connected) {
+            setSteps((prev) =>
+              prev.map((step) => 
+                step.name === "Thinking..." ? { ...step, status: "error", message: "Couldn't connect to Ollama" } : step
+              )
+            );
+            return "I couldn't connect to the AI model. Please make sure your local Ollama service is running and try again.";
+          }
+        }
+        
+        try {
+          // Use the llama2 model by default for conversations
+          const modelName = "llama2";
+          
+          // Get conversation history for context
+          const conversationHistory = messages.slice(-6); // Last 6 messages for context
+          const conversationContext = conversationHistory
+            .map(msg => `${msg.role === 'user' ? 'Human' : 'Assistant'}: ${msg.content}`)
+            .join('\n');
+            
+          // Create a prompt with conversation history
+          const prompt = `${conversationContext}\nHuman: ${userMessage}\nAssistant:`;
+          
+          // Generate response using Ollama
+          const response = await generateWithOllama(modelName, prompt);
+          
+          setSteps((prev) =>
+            prev.map((step) => (step.name === "Thinking..." ? { ...step, status: "complete" } : step))
+          );
+          
+          // Safely extract response
+          if (response && typeof response === 'object' && 'response' in response) {
+            return response.response || "I'm not sure how to respond to that.";
+          } else {
+            console.error("Unexpected response format from Ollama:", response);
+            return "I received an unexpected response format. Please try again.";
+          }
+        } catch (error: any) {
+          console.error("Error generating with Ollama:", error);
+          
+          // Extract HTTP status code if available
+          let errorMessage = "I had trouble connecting to the AI model. Please try again in a moment.";
+          
+          if (error.message) {
+            if (error.message.includes("404")) {
+              errorMessage = "Error 404: The AI model endpoint was not found. Please check if Ollama is configured correctly.";
+            } else if (error.message.includes("500")) {
+              errorMessage = "Error 500: The AI model server encountered an internal error. Please try again later.";
+            } else if (error.message.includes("timeout") || error.message.includes("timed out")) {
+              errorMessage = "The request to the AI model timed out. Please check your network connection and try again.";
+            } else if (error.message.includes("Failed to fetch") || error.message.includes("Could not connect")) {
+              errorMessage = "Could not connect to the AI model. Please make sure your local Ollama service is running.";
+            }
+          }
+          
+          setSteps((prev) =>
+            prev.map((step) => 
+              step.name === "Thinking..." ? { ...step, status: "error", message: "Generation failed" } : step
+            )
+          );
+          
+          return errorMessage;
+        }
+      } catch (error: any) {
+        console.error("Error in conversation:", error);
+        return "I encountered an error while trying to respond. Please check if your local Ollama service is running.";
+      }
+    }
+    
+    // Handle list_datasets intent
+    if (intent === "list_datasets" || (intent === "dataset" && userMessage.toLowerCase().includes("dataset"))) {
+      try {
+        setSteps([{ name: "Finding your datasets", status: "pending" }]);
+        setCurrentStep("Finding your datasets");
+        
+        const response = await listDatasets();
+        setAvailableDatasets(response.datasets || []);
+        
+        setSteps((prev) =>
+          prev.map((step) => (step.name === "Finding your datasets" ? { ...step, status: "complete" } : step))
+        );
+        
+        if (response.datasets && response.datasets.length > 0) {
+          return `I found ${response.datasets.length} datasets:\n\n${response.datasets
+            .map((dataset: Dataset, index: number) => `${index + 1}. ${dataset.name}`)
+            .join("\n")}\n\nWould you like to use one for training?`;
+        } else {
+          return "You don't have any datasets yet. Would you like to upload a dataset for training?";
+        }
+      } catch (error) {
+        console.error("Error listing datasets:", error);
+        
+        setSteps((prev) =>
+          prev.map((step) => 
+            step.name === "Finding your datasets" ? { ...step, status: "error", message: "Couldn't access datasets" } : step
+          )
+        );
+        
+        return "I couldn't access your datasets right now. Would you like to try uploading a new dataset?";
+      }
+    }
+    
+    // Handle other intents
+    let response = "";
+    
+    switch (intent) {
+      case "fine-tune":
+        // Start the fine-tuning workflow
+        setCurrentWorkflow({
+          ...currentWorkflow,
+          stage: "purpose",
+        });
+        
+        return "I can help you train a new model. First, what task or purpose will this model serve? For example: customer support, content generation, code assistance, etc.";
+      case "deploy":
+        try {
+          setSteps([{ name: "Finding completed models", status: "pending" }]);
+          setCurrentStep("Finding completed models");
+          
+          const jobsResponse = await listFineTuningJobs();
+          const completedJobs = (jobsResponse.jobs || []).filter((job: FineTuningJob) => job.status === "completed");
+          
+          setSteps((prev) =>
+            prev.map((step) => (step.name === "Finding completed models" ? { ...step, status: "complete" } : step))
+          );
+          
+          if (completedJobs.length > 0) {
+            setCurrentWorkflow({
+              ...currentWorkflow,
+              stage: "deployment",
+              completedJobs,
+            });
+            
+            return `I found ${completedJobs.length} trained models ready for deployment:\n\n${completedJobs
+              .map((job: FineTuningJob, index: number) => `${index + 1}. ${job.model_name}`)
+              .join("\n")}\n\nWhich one would you like to deploy? (just enter the number)`;
+          } else {
+            return "You don't have any completed training jobs ready for deployment. Would you like to check the status of your current jobs or start a new training job?";
+          }
+        } catch (error) {
+          console.error("Error listing jobs for deployment:", error);
+          
+          setSteps((prev) =>
+            prev.map((step) => 
+              step.name === "Finding completed models" ? { ...step, status: "error", message: "Couldn't access models" } : step
+            )
+          );
+          
+          return "I couldn't check for models to deploy right now. Would you like to try something else?";
+        }
+      case "generate":
+        try {
+          setSteps([{ name: "Finding available models", status: "pending" }]);
+          setCurrentStep("Finding available models");
+          
+          // Make sure we silently check Ollama connection
+          if (!ollamaConnected) {
+            await checkOllamaConnection(1, true);
+          }
+          
+          // Get all possible models for inference
+          const deploymentsResponse = await getAvailableDeployments();
+          const availableForInference = deploymentsResponse.deployments || [];
+          
+          let inferenceModels = [...availableForInference];
+          
+          // Add Ollama models if available
+          if (ollamaConnected && ollamaModels.length > 0) {
+            inferenceModels = [
+              ...inferenceModels,
+              ...ollamaModels.map((model: OllamaModel) => ({
+                id: `ollama:${model.name}`,
+                name: `${model.name}`,
+                type: "ollama",
+              })),
+            ];
+          }
+          
+          setSteps((prev) =>
+            prev.map((step) => (step.name === "Finding available models" ? { ...step, status: "complete" } : step))
+          );
+          
+          if (inferenceModels.length > 0) {
+            setCurrentWorkflow({
+              ...currentWorkflow,
+              stage: "inference",
+              availableForInference: inferenceModels,
+            });
+            
+            return `I found ${inferenceModels.length} models for text generation:\n\n${inferenceModels
+              .map((model, index) => `${index + 1}. ${model.name || model.id}`)
+              .join("\n")}\n\nWhich model would you like to use? (just enter the number)`;
+          } else {
+            return "I don't see any models available for text generation right now. Would you like to train a new model or check if there's an issue with your Ollama connection?";
+          }
+        } catch (error) {
+          console.error("Error getting models for inference:", error);
+          
+          setSteps((prev) =>
+            prev.map((step) => 
+              step.name === "Finding available models" ? { ...step, status: "error", message: "Couldn't access models" } : step
+            )
+          );
+          
+          return "I couldn't access models for text generation right now. Would you like to try something else?";
+        }
+      case "dataset":
+        // If it seems like a request to upload data
+        if (userMessage.toLowerCase().includes("upload") || 
+            userMessage.toLowerCase().includes("new dataset") ||
+            userMessage.includes("add data")) {
+          return "To upload a dataset, simply click the paperclip icon below and select your data file (CSV, JSON, etc.). I'll process it for you automatically.";
+        }
+        
+        // Otherwise show existing datasets
+        try {
+          setSteps([{ name: "Finding your datasets", status: "pending" }]);
+          setCurrentStep("Finding your datasets");
+          
+          const response = await listDatasets();
+          setAvailableDatasets(response.datasets || []);
+          
+          setSteps((prev) =>
+            prev.map((step) => (step.name === "Finding your datasets" ? { ...step, status: "complete" } : step))
+          );
+          
+          if (response.datasets && response.datasets.length > 0) {
+            return `Here are your datasets:\n\n${response.datasets
+              .map((dataset: Dataset, index: number) => `${index + 1}. ${dataset.name}`)
+              .join("\n")}\n\nWould you like to use one of these for training a model?`;
+          } else {
+            return "You don't have any datasets yet. Would you like to upload a dataset for training?";
+          }
+        } catch (error) {
+          console.error("Error listing datasets:", error);
+          
+          setSteps((prev) =>
+            prev.map((step) => 
+              step.name === "Finding your datasets" ? { ...step, status: "error", message: "Couldn't access datasets" } : step
+            )
+          );
+          
+          return "I couldn't access your datasets right now. Would you like to try uploading a new dataset?";
+        }
+      case "continue_workflow":
+        return await continueWorkflow(userMessage);
+      default:
+        return "I can help you train models, generate text, manage datasets, and more. What would you like to do? You can say things like 'train a model', 'generate text', or 'check my datasets'.";
+    }
+    
+    return response;
+  };
+
+  // Handle file upload for datasets
+  const handleFileUpload = async (file: File): Promise<void> => {
+    if (!file) return;
+
+    try {
+      setIsLoading(true);
+
+      // Add steps for tracking
+      setSteps([{ name: "Uploading your dataset", status: "pending" }]);
+      setCurrentStep("Uploading your dataset");
+
+      // Generate a name based on file or workflow
+      const datasetName = currentWorkflow.purpose
+        ? `${currentWorkflow.purpose.replace(/\s+/g, "-").toLowerCase()}-dataset`
+        : file.name.replace(/\.\w+$/, "");
+
+      // Upload the dataset
+      const response = await uploadDataset(datasetName, file);
+
+      // Update steps
+      setSteps((prev) =>
+        prev.map((step) => (step.name === "Uploading your dataset" ? { ...step, status: "complete" } : step))
+      );
+
+      // Refresh datasets
+      const datasetsResponse = await listDatasets();
+      setAvailableDatasets(datasetsResponse.datasets || []);
+
+      // If we're in a workflow, continue it
+      if (currentWorkflow.stage === "dataset") {
+        const uploadedDataset = response.dataset;
+
+        setCurrentWorkflow({
+          ...currentWorkflow,
+          stage: "model",
+          selectedDataset: uploadedDataset,
+        });
+
+        // Add assistant message
+        setMessages((prev) => [
+          ...prev,
+          {
+            role: "assistant",
+            content: `I've uploaded your dataset "${datasetName}". Now, which model would you like to use for training?\n\n${BASE_MODELS.map(
+              (model, index) => `${index + 1}. ${model.name} - ${model.description}`,
+            ).join("\n")}\n\nJust enter the number of your choice.`,
+          },
+        ]);
+      } else {
+        // Confirm the upload and suggest next steps
+        setMessages((prev) => [
+          ...prev,
+          {
+            role: "assistant",
+            content: `I've uploaded your dataset "${datasetName}". Would you like to train a model with it? You can also upload more datasets if needed.`,
+          },
+        ]);
+      }
+    } catch (error) {
+      console.error("Error uploading dataset:", error);
+
+      // Update steps
+      setSteps((prev) =>
+        prev.map((step) =>
+          step.name === "Uploading your dataset" ? { ...step, status: "error", message: "Upload failed" } : step
+        )
+      );
+
+      // Add error message
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          content: "I had trouble uploading your dataset. Could you try again with a different file format, or check if the file is valid?",
+        },
+      ]);
+    } finally {
+      setIsLoading(false);
+      setCurrentStep(null);
+    }
+  };
+
+  // Continue the current workflow based on user input
+  const continueWorkflow = async (userMessage: string): Promise<string> => {
+    const { stage } = currentWorkflow;
+
+    switch (stage) {
+      case "purpose":
+        // Save the purpose and move to dataset selection
+        setCurrentWorkflow({
+          ...currentWorkflow,
+          stage: "dataset",
+          purpose: userMessage,
+        });
+
+        try {
+          // Set loading state
+          setSteps([{ name: "Finding suitable datasets", status: "pending" }]);
+          setCurrentStep("Finding suitable datasets");
+          
+          // Get available datasets
+          const response = await listDatasets();
+          setAvailableDatasets(response.datasets || []);
+          
+          setSteps((prev) =>
+            prev.map((step) => (step.name === "Finding suitable datasets" ? { ...step, status: "complete" } : step))
+          );
+
+          if (response.datasets && response.datasets.length > 0) {
+            return `Great! You want to train a model for: ${userMessage}\n\nI found these datasets you could use:\n\n${response.datasets
+              .map((dataset: Dataset, index: number) => `${index + 1}. ${dataset.name}`)
+              .join(
+                "\n",
+              )}\n\nWhich dataset would you like to use? (just enter the number, or type "upload" to add a new dataset)`;
+          } else {
+            return `Great! You want to train a model for: ${userMessage}\n\nYou don't have any datasets yet. Would you like to upload one now? (Say "yes" to upload)`;
+          }
+        } catch (error) {
+          console.error("Error listing datasets:", error);
+          
+          setSteps((prev) =>
+            prev.map((step) => 
+              step.name === "Finding suitable datasets" ? { ...step, status: "error", message: "Couldn't access datasets" } : step
+            )
+          );
+          
+          return "I had trouble accessing your datasets. Would you like to upload a new dataset for this project?";
+        }
+
+      case "dataset":
+        // Handle dataset selection or upload
+        if (userMessage.toLowerCase() === "upload" || userMessage.toLowerCase() === "yes") {
+          return "Please upload your dataset file by clicking the paperclip icon below. I support CSV, JSON, and other common formats.";
+        }
+
+        // Try to parse the dataset selection
+        try {
+          const datasetIndex = Number.parseInt(userMessage) - 1;
+          if (datasetIndex >= 0 && datasetIndex < availableDatasets.length) {
+            const selectedDataset = availableDatasets[datasetIndex];
+
+            setCurrentWorkflow({
+              ...currentWorkflow,
+              stage: "model",
+              selectedDataset,
+            });
+
+            // Let user choose the base model
+            return `I'll use the dataset "${selectedDataset.name}" for training.\n\nWhich model would you like to fine-tune?\n\n${BASE_MODELS.map(
+              (model, index) => `${index + 1}. ${model.name} - ${model.description}`,
+            ).join("\n")}\n\nJust enter the number of your choice.`;
+          } else {
+            return "I didn't recognize that selection. Please enter a number from the list, or type 'upload' to add a new dataset.";
+          }
+        } catch (error) {
+          return "I didn't understand your selection. Please enter a number from the list, or type 'upload' to add a new dataset.";
+        }
+
+      case "model":
+        // Handle model selection
+        try {
+          const modelIndex = Number.parseInt(userMessage) - 1;
+          if (modelIndex >= 0 && modelIndex < BASE_MODELS.length) {
+            const selectedBaseModel = BASE_MODELS[modelIndex];
+
+            setCurrentWorkflow({
+              ...currentWorkflow,
+              stage: "training",
+              selectedBaseModel,
+            });
+
+            return `I'll use ${selectedBaseModel.name} as the base model.\n\nWould you like to:\n\n1. Start training with default parameters (recommended)\n2. Customize training parameters\n\nJust enter 1 or 2.`;
+          } else {
+            return "I didn't recognize that model choice. Please enter a number from 1 to " + BASE_MODELS.length + ".";
+          }
+        } catch (error) {
+          return "I didn't understand your selection. Please enter a number between 1 and " + BASE_MODELS.length + ".";
+        }
+
+      case "training":
+        // Handle training parameter selection
+        if (userMessage === "1" || userMessage.toLowerCase().includes("default") || userMessage.toLowerCase().includes("start")) {
+          // Use default parameters
+          try {
+            // Start the training with loading state
+            setSteps([{ name: "Starting training job", status: "pending" }]);
+            setCurrentStep("Starting training job");
+            
+            // Start the fine-tuning job
+            const response = await createFineTuningJob(
+              currentWorkflow.selectedDataset?.id || "",
+              currentWorkflow.selectedBaseModel?.id || "",
+              {}, // Default parameters
+            );
+            
+            setSteps((prev) =>
+              prev.map((step) => (step.name === "Starting training job" ? { ...step, status: "complete" } : step))
+            );
+
+            setCurrentWorkflow({
+              ...currentWorkflow,
+              stage: null, // End workflow
+              jobId: response.job_id,
+            });
+
+            return `Perfect! I've started training your model with these details:\n\n- Purpose: ${currentWorkflow.purpose}\n- Dataset: ${currentWorkflow.selectedDataset?.name}\n- Base Model: ${currentWorkflow.selectedBaseModel?.name}\n\nThe training might take some time. You can ask me about "job status" anytime to check the progress. I'll let you know when it's ready to use.`;
+          } catch (error) {
+            console.error("Error creating fine-tuning job:", error);
+            
+            setSteps((prev) =>
+              prev.map((step) => 
+                step.name === "Starting training job" ? { ...step, status: "error", message: "Training failed to start" } : step
+              )
+            );
+            
+            setCurrentWorkflow({
+              ...currentWorkflow,
+              stage: null, // End workflow on error
+            });
+            
+            return "I ran into a problem starting the training job. Let's try again with a different approach. Would you like to use a different model or dataset?";
+          }
+        } else if (userMessage === "2" || userMessage.toLowerCase().includes("custom")) {
+          // Ask for custom parameters
+          setCurrentWorkflow({
+            ...currentWorkflow,
+            stage: "parameters",
+          });
+
+          return "Let's customize your training. Please tell me:\n\n- Number of epochs (default: 3)\n- Learning rate (default: 2e-5)\n- Batch size (default: 4)\n\nFor example: 'epochs: 4, learning rate: 3e-5, batch size: 8'";
+        } else {
+          return "I didn't understand your choice. Please enter 1 for default parameters or 2 to customize parameters.";
+        }
+
+      case "parameters":
+        // Parse custom parameters
+        try {
+          const params: Record<string, any> = {};
+
+          // Extract epochs
+          const epochsMatch = userMessage.match(/epochs?:?\s*(\d+)/i);
+          if (epochsMatch) params.epochs = Number.parseInt(epochsMatch[1]);
+
+          // Extract learning rate
+          const lrMatch = userMessage.match(/learning\s*rate:?\s*([\d.e-]+)/i);
+          if (lrMatch) params.learning_rate = Number.parseFloat(lrMatch[1]);
+
+          // Extract batch size
+          const batchMatch = userMessage.match(/batch\s*size:?\s*(\d+)/i);
+          if (batchMatch) params.batch_size = Number.parseInt(batchMatch[1]);
+
+          // Start the fine-tuning job with loading state
+          setSteps([{ name: "Starting training job", status: "pending" }]);
+          setCurrentStep("Starting training job");
+          
+          try {
+            const response = await createFineTuningJob(
+              currentWorkflow.selectedDataset?.id || "",
+              currentWorkflow.selectedBaseModel?.id || "",
+              params,
+            );
+            
+            setSteps((prev) =>
+              prev.map((step) => (step.name === "Starting training job" ? { ...step, status: "complete" } : step))
+            );
+
+            setCurrentWorkflow({
+              ...currentWorkflow,
+              stage: null, // End workflow
+              jobId: response.job_id,
+            });
+
+            const paramSummary = Object.entries(params)
+              .map(([k, v]) => `${k.replace('_', ' ')}: ${v}`)
+              .join(", ");
+
+            return `Perfect! I've started training your model with these details:\n\n- Purpose: ${currentWorkflow.purpose}\n- Dataset: ${currentWorkflow.selectedDataset?.name}\n- Base Model: ${currentWorkflow.selectedBaseModel?.name}\n- Custom Parameters: ${paramSummary}\n\nThe training might take some time. You can ask me about "job status" anytime to check the progress. I'll let you know when it's ready to use.`;
+          } catch (error) {
+            console.error("Error creating fine-tuning job:", error);
+            
+            setSteps((prev) =>
+              prev.map((step) => 
+                step.name === "Starting training job" ? { ...step, status: "error", message: "Training failed to start" } : step
+              )
+            );
+            
+            setCurrentWorkflow({
+              ...currentWorkflow,
+              stage: null, // End workflow on error
+            });
+            
+            return "I ran into a problem starting the training job. Let's try again with a different approach. Would you like to use different parameters or a different model?";
+          }
+        } catch (error) {
+          return "I had trouble understanding those parameters. Please use a format like: 'epochs: 4, learning rate: 3e-5, batch size: 8'";
+        }
+
+      case "deployment":
+        // Handle model deployment
+        try {
+          const jobIndex = Number.parseInt(userMessage) - 1;
+          if (jobIndex >= 0 && currentWorkflow.completedJobs && jobIndex < currentWorkflow.completedJobs.length) {
+            const selectedJob = currentWorkflow.completedJobs[jobIndex];
+            
+            setSteps([{ name: "Deploying model", status: "pending" }]);
+            setCurrentStep("Deploying model");
+
+            // Generate a model name
+            const modelName = currentWorkflow.purpose
+              ? `${selectedJob.model_name}-${currentWorkflow.purpose.replace(/\s+/g, "-").toLowerCase()}`
+              : `${selectedJob.model_name}-deployed-${new Date().toISOString().slice(0, 10)}`;
+
+            // Deploy the model
+            const response = await deployModel(selectedJob.id, modelName);
+            
+            setSteps((prev) =>
+              prev.map((step) => (step.name === "Deploying model" ? { ...step, status: "complete" } : step))
+            );
+
+            setCurrentWorkflow({
+              ...currentWorkflow,
+              stage: null, // End workflow
+              deployedModelId: response.deployment_id,
+            });
+
+            return `Success! I've deployed your model as "${modelName}". It's now ready for use. Would you like to try generating some text with it?`;
+          } else {
+            return "I didn't recognize that selection. Please enter a number from the list of completed models.";
+          }
+        } catch (error) {
+          console.error("Error deploying model:", error);
+          
+          setSteps((prev) =>
+            prev.map((step) => 
+              step.name === "Deploying model" ? { ...step, status: "error", message: "Deployment failed" } : step
+            )
+          );
+          
+          setCurrentWorkflow({
+            ...currentWorkflow,
+            stage: null, // End workflow on error
+          });
+          
+          return "I encountered a problem deploying your model. Would you like to try with a different model?";
+        }
+
+      case "inference":
+        // Handle model selection for inference
+        try {
+          const modelIndex = Number.parseInt(userMessage) - 1;
+          if (modelIndex >= 0 && currentWorkflow.availableForInference && modelIndex < currentWorkflow.availableForInference.length) {
+            const selectedModel = currentWorkflow.availableForInference[modelIndex];
+
+            setCurrentWorkflow({
+              ...currentWorkflow,
+              stage: "prompt",
+              selectedInferenceModel: selectedModel,
+            });
+
+            return `I'll use the ${selectedModel.name || selectedModel.id} model. What would you like it to generate? Please enter your prompt.`;
+          } else {
+            return "I didn't recognize that selection. Please enter a number from the list of available models.";
+          }
+        } catch (error) {
+          return "I didn't understand your selection. Please enter a number from the list of available models.";
+        }
+
+      case "prompt":
+        // Handle text generation with the selected model
+        try {
+          const model = currentWorkflow.selectedInferenceModel;
+          
+          setSteps([{ name: "Generating text", status: "pending" }]);
+          setCurrentStep("Generating text");
+          
+          let generatedText = "";
+
+          // Generate text based on model type
+          if (model && model.type === "ollama") {
+            // Extract model name from the ID
+            const modelName = model.id.replace("ollama:", "");
+            
+            // Verify the model exists and download if necessary
+            const modelAvailable = await ensureOllamaModelAvailable(modelName);
+            if (!modelAvailable) {
+              return `I need to download the ${modelName} model first. Would you like me to do that now? (yes/no)`;
+            }
+            
+            try {
+              // Use Ollama for generation
+              const response = await generateWithOllama(modelName, userMessage);
+              generatedText = response.response || "No response generated.";
+            } catch (error) {
+              console.error(`Error generating with Ollama model ${modelName}:`, error);
+              throw new Error(`Couldn't generate text with ${modelName}`);
+            }
+          } else if (model) {
+            // Use backend API for generation
+            const response = await createCompletion(model.id, userMessage);
+            generatedText = response.text || "No response generated.";
+          }
+          
+          setSteps((prev) =>
+            prev.map((step) => (step.name === "Generating text" ? { ...step, status: "complete" } : step))
+          );
+
+          setCurrentWorkflow({
+            ...currentWorkflow,
+            stage: null, // End workflow
+          });
+
+          return `Here's what the model generated:\n\n${generatedText}\n\nWould you like to try another prompt or use a different model?`;
+        } catch (error) {
+          console.error("Error generating text:", error);
+          
+          setSteps((prev) =>
+            prev.map((step) => 
+              step.name === "Generating text" ? { ...step, status: "error", message: "Generation failed" } : step
+            )
+          );
+          
+          setCurrentWorkflow({
+            ...currentWorkflow,
+            stage: null, // End workflow on error
+          });
+          
+          return "I had trouble generating text with this model. Would you like to try a different model?";
+        }
+
+      case "model_download":
+        // Handle model download response
+        const modelName = currentWorkflow.pendingModelDownload || "";
+        
+        if (userMessage.toLowerCase().includes("yes") || userMessage.toLowerCase() === "y") {
+          setCurrentWorkflow({
+            ...currentWorkflow,
+            stage: null,
+            pendingModelDownload: null
+          });
+          
+          await handlePullOllamaModel(modelName);
+          return `I'll download the ${modelName} model for you. I'll let you know when it's ready to use.`;
+        } else {
+          setCurrentWorkflow({
+            ...currentWorkflow,
+            stage: null,
+            pendingModelDownload: null
+          });
+          
+          return "No problem, I won't download the model. Is there something else you'd like to do?";
+        }
+
+      default:
+        return "Let's try something else. Would you like to train a model, generate text, or check your datasets?";
+    }
+  };
+
+  // Automatic model check and potential pull for inference
+  const ensureOllamaModelAvailable = async (modelName: string): Promise<boolean> => {
+    if (!ollamaConnected) {
+      const connected = await checkOllamaConnection(1, false)
+      if (!connected) return false
+    }
+    
+    // Check if the model exists in the available models
+    const modelExists = ollamaModels.some(model => model.name === modelName)
+    
+    if (!modelExists) {
+      // Prompt the user to download the model
+      setMessages(prev => [
+        ...prev,
+        {
+          role: 'assistant',
+          content: `The model ${modelName} is not available locally. Would you like me to download it for you? (yes/no)`
+        }
+      ])
+      
+      // Set a special workflow state to handle the response
+      setCurrentWorkflow({
+        ...currentWorkflow,
+        stage: 'model_download',
+        pendingModelDownload: modelName
+      })
+      
+      return false
+    }
+    
+    return true
+  }
+
+  // Load initial data
+  const loadInitialData = useCallback(async () => {
+    try {
+      // First check if the backend API is available
+      const backendAvailable = await checkBackendConnection()
+      setBackendConnected(backendAvailable)
+      
+      if (!backendAvailable) {
+        console.warn("Backend API is unavailable, operating in local-only mode")
+        // Show a message to the user
+        setMessages((prev) => [
+          ...prev,
+          { 
+            role: "assistant", 
+            content: "I'm currently operating in local-only mode. Some features like training models and managing datasets may be unavailable, but you can still chat with me using your local Ollama models." 
+          }
+        ])
+      }
+      
+      // Check Ollama connection
+      const connected = await checkOllamaConnection(1, true);
+      
+      if (connected) {
+        // Load Ollama models
+        const modelsResponse = await listOllamaModels();
+        // Fix potential structure issues with the Ollama API response
+        const ollamaModelList = modelsResponse?.models || modelsResponse?.tags || [];
+        setOllamaModels(ollamaModelList);
+        
+        // Check if our default model is available
+        const llama2Available = ollamaModelList.some((model: any) => 
+          (model.name === "llama2" || model.name === "llama2" || model.name?.includes("llama2"))
+        );
+        
+        if (!llama2Available) {
+          console.log("llama2 model not found, initiating download...");
+          try {
+            await pullOllamaModel("llama2");
+            console.log("Successfully pulled llama2 model");
+            
+            // Update message to let user know we've downloaded the model
+            setMessages((prev) => [
+              ...prev,
+              { 
+                role: "assistant", 
+                content: "I've just downloaded the Llama2 7B model for you. Now we can chat and work together!" 
+              }
+            ]);
+          } catch (err) {
+            console.error("Failed to download llama2 model:", err);
+            // Update message to let user know about the download issue
+            setMessages((prev) => [
+              ...prev,
+              { 
+                role: "assistant", 
+                content: "I tried to download the Llama2 7B model but ran into an issue. You can still use me for other tasks, but conversation capabilities might be limited." 
+              }
+            ]);
+          }
+        }
+      } else {
+        // If connection failed, let the user know
+        setMessages((prev) => [
+          ...prev,
+          { 
+            role: "assistant", 
+            content: "I couldn't connect to your local Ollama server. To enable all my AI capabilities, please make sure Ollama is running on your system." 
+          }
+        ]);
+      }
+
+      // Don't try to access the backend APIs if they're unavailable
+      if (backendAvailable) {
+        try {
+          // Load datasets with error handling
+          const datasetsResponse = await listDatasets()
+          setAvailableDatasets(datasetsResponse.datasets || [])
+        } catch (error) {
+          console.error("Error loading datasets:", error)
+        }
+
+        try {
+          // Load model deployments with error handling
+          const deploymentsResponse = await listModelDeployments()
+          setAvailableDeployments(deploymentsResponse.deployments || [])
+        } catch (error) {
+          console.error("Error loading deployments:", error)
+        }
+
+        try {
+          // Load fine-tuning jobs with error handling
+          const jobsResponse = await listFineTuningJobs()
+          setFineTuningJobs(jobsResponse.jobs || [])
+        } catch (error) {
+          console.error("Error loading fine-tuning jobs:", error)
+        }
+      }
+    } catch (error) {
+      console.error("Error loading initial data:", error)
+    }
+  }, [checkOllamaConnection])
+
+  // Auto connection check on mount and every 5 minutes
+  useEffect(() => {
+    loadInitialData()
+    
+    // Set up periodic connection checks
+    const ollamaIntervalId = setInterval(() => {
+      checkOllamaConnection(0, true) // silent check, no retries
+    }, 5 * 60 * 1000) // Check every 5 minutes
+    
+    // Also periodically check backend connection
+    const backendIntervalId = setInterval(() => {
+      checkBackendConnection()
+        .then(available => setBackendConnected(available))
+        .catch(() => setBackendConnected(false))
+    }, 10 * 60 * 1000) // Check every 10 minutes
+    
+    return () => {
+      clearInterval(ollamaIntervalId)
+      clearInterval(backendIntervalId)
+    }
+  }, [loadInitialData, checkOllamaConnection])
+
+  // Safe JSON parsing function for API responses
+  const safeJsonParse = (text: string) => {
+    try {
+      return JSON.parse(text);
+    } catch (error) {
+      console.error("JSON parsing error:", error, "Text:", text);
+      // Try to clean the JSON string if possible
+      try {
+        // Sometimes responses might have additional text before/after valid JSON
+        // Try to extract the JSON part between curly braces
+        const match = text.match(/\{[\s\S]*\}/);
+        if (match) {
+          return JSON.parse(match[0]);
+        }
+      } catch (e) {
+        console.error("Failed to fix malformed JSON:", e);
+      }
+      return { error: "Invalid JSON response" };
+    }
+  }
+
+  // Enhanced handleSubmit function with better error handling
+  const handleSubmit = async (e: React.FormEvent): Promise<void> => {
+    e.preventDefault();
+    if (!input.trim()) return;
+
+    // Add user message
+    const userMessage = { role: "user" as const, content: input };
+    setMessages((prev) => [...prev, userMessage]);
+    setInput("");
+    setIsLoading(true);
+
+    // Reset steps
+    setSteps([]);
+    setCurrentStep(null);
+
+    try {
+      // Add initial step
+      setSteps([{ name: "Processing request", status: "pending" }]);
+      setCurrentStep("Processing request");
+
+      // Process the message and get a response
+      const response = await processUserMessage(input);
+
+      // Update step status
+      setSteps((prev) =>
+        prev.map((step) => (step.name === "Processing request" ? { ...step, status: "complete" } : step)),
+      );
+
+      // Add assistant response
+      setMessages((prev) => [...prev, { role: "assistant", content: response }]);
+    } catch (error: any) {
+      console.error("Error:", error);
+
+      // Update step status to error
+      setSteps((prev) =>
+        prev.map((step) =>
+          step.name === currentStep ? { ...step, status: "error", message: "An error occurred" } : step
+        ),
+      );
+
+      // Provide more specific error message based on the error type
+      let errorMessage = "Sorry, I encountered an error. Please check your connection and try again.";
+      
+      if (error.message) {
+        if (error.message.includes("404")) {
+          errorMessage = "Error 404: The requested resource was not found. Please try again later.";
+        } else if (error.message.includes("500")) {
+          errorMessage = "Error 500: The server encountered an internal error. Please try again later.";
+        } else if (error.message.includes("JSON")) {
+          errorMessage = "I received an invalid response format. Please try again.";
+        }
+      }
+
+      setMessages((prev) => [
+        ...prev,
+        { role: "assistant", content: errorMessage },
+      ]);
+    } finally {
+      setIsLoading(false);
+      setCurrentStep(null);
+    }
+  }
+
+  // Auto-scroll to bottom of messages
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+  }, [messages])
+
+  // Auto-resize textarea
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto"
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`
+    }
+  }, [input])
+
+  return (
+    <main className="flex min-h-screen flex-col bg-transparent text-white overflow-hidden">
+      {/* Background */}
+      <div className="fixed inset-0 z-0 bg-[#00031b]">
+        {/* Subtle grid pattern */}
+        <div
+          className="absolute inset-0 opacity-10"
+          style={{
+            backgroundImage:
+              "linear-gradient(to right, #00cbdd 1px, transparent 1px), linear-gradient(to bottom, #00cbdd 1px, transparent 1px)",
+            backgroundSize: "40px 40px",
+          }}
+        ></div>
+        {/* Glow effects */}
+        <div className="absolute top-0 left-1/4 w-96 h-96 rounded-full bg-[#00cbdd]/5 blur-[100px]"></div>
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 rounded-full bg-[#00cbdd]/5 blur-[100px]"></div>
+      </div>
+
+      {/* Main Content */}
+      <div className="relative z-10 flex-1 flex flex-col items-center justify-center px-4 py-12 mt-16">
+        <div className="w-full max-w-4xl mx-auto mb-8 overflow-auto max-h-[60vh]">
+          <MessageList messages={messages} />
+          <div ref={messagesEndRef} />
+        </div>
+
+        {/* Input Area */}
+        <div className="w-full max-w-3xl mx-auto relative">
+          <form onSubmit={handleSubmit} className="relative">
+            <div className="relative rounded-xl overflow-hidden bg-[#00031b]/80 backdrop-blur-md border border-[#00cbdd]/20 shadow-[0_0_15px_rgba(0,203,221,0.1)]">
+              <Textarea
+                ref={textareaRef}
+                value={input}
+                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setInput(e.target.value)}
+                placeholder="Ask Mash something..."
+                className="min-h-[60px] max-h-[200px] w-full bg-transparent border-none focus:ring-0 text-white placeholder:text-white/50 py-4 px-4 pr-24 resize-none"
+                disabled={isLoading}
+                onKeyDown={(e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault()
+                    handleSubmit(e)
+                  }
+                }}
+              />
+              <div className="absolute bottom-2 right-2 flex items-center gap-2">
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  className="hidden"
+                  onChange={(e) => {
+                    if (e.target.files && e.target.files[0]) {
+                      handleFileUpload(e.target.files[0])
+                    }
+                  }}
+                />
+                <Button
+                  type="button"
+                  size="icon"
+                  variant="ghost"
+                  className="h-8 w-8 rounded-full text-white/70 hover:text-[#00cbdd] hover:bg-white/10"
+                  disabled={isLoading}
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  <Paperclip className="h-4 w-4" />
+                  <span className="sr-only">Attach</span>
+                </Button>
+                <Button
+                  type="button"
+                  size="icon"
+                  variant="ghost"
+                  className="h-8 w-8 rounded-full text-white/70 hover:text-[#00cbdd] hover:bg-white/10"
+                  disabled={isLoading}
+                >
+                  <Import className="h-4 w-4" />
+                  <span className="sr-only">Import</span>
+                </Button>
+                <Button
+                  type="submit"
+                  size="icon"
+                  disabled={isLoading || !input.trim()}
+                  className="h-8 w-8 rounded-full bg-[#00cbdd] text-[#00031b] hover:opacity-90"
+                >
+                  {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <ArrowUp className="h-4 w-4" />}
+                  <span className="sr-only">Send</span>
+                </Button>
+              </div>
+            </div>
+          </form>
+
+          {isLoading && steps.length > 0 && (
+            <div className="mt-4 p-4 rounded-xl bg-[#00031b]/80 backdrop-blur-sm border border-[#00cbdd]/20">
+              <StepIndicator steps={steps} currentStep={currentStep} />
+            </div>
+          )}
+        </div>
+
+        {/* Quick Actions */}
+        {messages.length <= 1 && (
+          <div className="w-full max-w-3xl mx-auto mt-8">
+            <div className="flex flex-wrap justify-center gap-3">
+              {[
+                { name: "List Datasets", icon: "📊" },
+                { name: "Fine-tune Model", icon: "🧠" },
+                { name: "Run Inference", icon: "💬" },
+                { name: "Deploy Model", icon: "🚀" },
+              ].map((action) => (
+                <button
+                  key={action.name}
+                  className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#00031b] hover:bg-[#00031b]/80 border border-[#00cbdd]/30 hover:border-[#00cbdd]/60 transition-colors"
+                  onClick={() => setInput(`${action.name}`)}
+                >
+                  <span>{action.icon}</span>
+                  <span className="text-sm">{action.name}</span>
+                  <ArrowUp className="h-3 w-3 ml-1" />
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </main>
+  )
+}
+

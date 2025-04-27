@@ -1,0 +1,72 @@
+<svg width="398" height="314" viewBox="0 0 398 314" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <g clip-path="url(#clip0_fine_tune)">
+    <rect x="219" width="179" height="138" rx="14" fill="#1F1F1F"/>
+    <path d="M240.998 117V98.8182H247.656C248.946 98.8182 250.014 99.0312 250.861 99.4574C251.707 99.8776 252.34 100.449 252.761 101.171C253.181 101.887 253.391 102.695 253.391 103.594C253.391 104.352 253.252 104.991 252.974 105.512C252.696 106.027 252.323 106.441 251.855 106.755C251.393 107.063 250.884 107.288 250.328 107.43V107.607C250.932 107.637 251.521 107.832 252.095 108.193C252.675 108.548 253.154 109.054 253.533 109.711C253.912 110.368 254.101 111.167 254.101 112.108C254.101 113.038 253.882 113.872 253.444 114.612C253.012 115.346 252.343 115.929 251.438 116.361C250.532 116.787 249.375 117 247.967 117H240.998ZM243.741 114.647H247.7C249.014 114.647 249.955 114.393 250.523 113.884C251.092 113.375 251.376 112.739 251.376 111.975C251.376 111.401 251.231 110.874 250.941 110.395C250.651 109.915 250.236 109.534 249.698 109.25C249.165 108.966 248.532 108.824 247.798 108.824H243.741V114.647ZM243.741 106.684H247.416C248.032 106.684 248.585 106.566 249.076 106.329C249.574 106.092 249.967 105.761 250.257 105.335C250.553 104.902 250.701 104.393 250.701 103.808C250.701 103.056 250.438 102.426 249.911 101.917C249.384 101.408 248.576 101.153 247.487 101.153H243.741V106.684Z" fill="white"/>
+    <path d="M265.78 111.345V103.364H268.443V117H265.833V114.638H265.691C265.378 115.366 264.874 115.973 264.182 116.458C263.495 116.938 262.64 117.178 261.616 117.178C260.74 117.178 259.965 116.985 259.29 116.6C258.622 116.21 258.095 115.633 257.71 114.869C257.331 114.106 257.142 113.162 257.142 112.037V103.364H259.796V111.718C259.796 112.647 260.054 113.387 260.569 113.937C261.084 114.488 261.752 114.763 262.575 114.763C263.072 114.763 263.566 114.638 264.058 114.39C264.555 114.141 264.966 113.766 265.292 113.262C265.623 112.759 265.786 112.12 265.78 111.345Z" fill="white"/>
+    <path d="M273.688 122.114C273.291 122.114 272.93 122.081 272.605 122.016C272.279 121.957 272.037 121.892 271.877 121.821L272.516 119.646C273.001 119.776 273.433 119.832 273.812 119.814C274.191 119.797 274.525 119.654 274.815 119.388C275.111 119.122 275.372 118.687 275.597 118.083L275.925 117.178L270.936 103.364H273.777L277.23 113.946H277.372L280.826 103.364H283.676L278.056 118.82C277.795 119.53 277.464 120.131 277.062 120.622C276.659 121.119 276.18 121.492 275.623 121.741C275.067 121.989 274.422 122.114 273.688 122.114Z" fill="white"/>
+    <g filter="url(#filter0_f_fine_tune)">
+      <ellipse cx="308.5" cy="38" rx="31.5" ry="38" fill="white" fill-opacity="0.45"/>
+    </g>
+    
+    <!-- Data & Model -->
+    <rect x="50" y="176" width="179" height="138" rx="14" fill="#1F1F1F"/>
+    
+    <!-- Database and file icons -->
+    <rect x="75" y="200" width="40" height="30" rx="4" fill="#333333" stroke="#00cbdd" stroke-width="1.5"/>
+    <rect x="80" y="210" width="30" height="2" rx="1" fill="#00cbdd"/>
+    <rect x="80" y="215" width="20" height="2" rx="1" fill="#00cbdd"/>
+    <rect x="80" y="220" width="25" height="2" rx="1" fill="#00cbdd"/>
+    
+    <rect x="165" y="200" width="40" height="40" rx="4" fill="#333333" stroke="#00cbdd" stroke-width="1.5"/>
+    <circle cx="185" cy="220" r="12" fill="transparent" stroke="#00cbdd" stroke-width="1.5"/>
+    <path d="M180 220L190 220" stroke="#00cbdd" stroke-width="1.5"/>
+    <path d="M185 215L185 225" stroke="#00cbdd" stroke-width="1.5"/>
+    
+    <!-- Fine-tuning process - connecting arrow -->
+    <path d="M309 169V211C309 230.882 292.882 247 273 247H228" stroke="url(#paint1_linear_fine_tune)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4 4"/>
+    
+    <!-- Fine-tuning sliders -->
+    <rect x="100" y="260" width="80" height="30" rx="4" fill="#333333"/>
+    <rect x="105" y="272" width="70" height="6" rx="3" fill="#222222"/>
+    <circle cx="140" cy="275" r="8" fill="#00cbdd"/>
+    <text x="140" y="255" text-anchor="middle" font-size="10" fill="white">Parameters</text>
+    
+    <rect x="293" y="122" width="32" height="31" rx="15.5" fill="white" fill-opacity="0.05"/>
+    <rect x="293.75" y="122.75" width="30.5" height="29.5" rx="14.75" stroke="url(#paint0_linear_fine_tune)" stroke-opacity="0.8" stroke-width="1.5"/>
+    <path d="M307.598 139.044H305.068C304.838 139.044 304.671 138.944 304.568 138.744C304.464 138.543 304.479 138.351 304.613 138.167L309.385 131.267C309.472 131.145 309.579 131.065 309.707 131.026C309.835 130.986 309.971 130.992 310.114 131.044C310.257 131.096 310.36 131.182 310.423 131.301C310.487 131.421 310.51 131.552 310.493 131.693L309.897 136.505H312.937C313.174 136.505 313.342 136.613 313.441 136.83C313.541 137.046 313.514 137.246 313.361 137.43L308.051 143.779C307.96 143.886 307.851 143.955 307.724 143.985C307.595 144.014 307.469 144.001 307.344 143.945C307.219 143.89 307.123 143.806 307.057 143.694C306.992 143.582 306.968 143.455 306.985 143.313L307.598 139.044Z" fill="white" fill-opacity="0.65"/>
+    <circle cx="309" cy="161" r="3" fill="#00cbdd"/>
+    
+    <g filter="url(#filter2_i_fine_tune)">
+      <path d="M196.137 244.076C194.92 244.567 194.803 246.244 195.939 246.901L218.914 260.165C220.332 260.984 221.97 259.513 221.309 258.015L216.765 247.741C216.63 247.435 216.568 247.1 216.586 246.766C216.604 246.431 216.701 246.106 216.869 245.816L222.026 236.883C222.83 235.49 221.418 233.866 219.925 234.468L196.137 244.076Z" fill="#00cbdd"/>
+    </g>
+  </g>
+  <defs>
+    <filter id="filter0_f_fine_tune" x="177" y="-100" width="263" height="276" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+      <feGaussianBlur stdDeviation="50" result="effect1_foregroundBlur_fine_tune"/>
+    </filter>
+    <filter id="filter2_i_fine_tune" x="189" y="222" width="49.5293" height="50.5283" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+      <feOffset dx="3" dy="4"/>
+      <feGaussianBlur stdDeviation="4"/>
+      <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.3 0"/>
+      <feBlend mode="normal" in2="shape" result="effect1_innerShadow_fine_tune"/>
+    </filter>
+    <linearGradient id="paint0_linear_fine_tune" x1="293" y1="137.5" x2="325" y2="137.5" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#00cbdd"/>
+      <stop offset="1" stop-color="#0891b2"/>
+    </linearGradient>
+    <linearGradient id="paint1_linear_fine_tune" x1="309" y1="160.884" x2="213.221" y2="225.567" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#00cbdd"/>
+      <stop offset="0.457635" stop-color="#c7feff"/>
+      <stop offset="1" stop-color="#0891b2"/>
+    </linearGradient>
+    <clipPath id="clip0_fine_tune">
+      <rect width="398" height="314" fill="white"/>
+    </clipPath>
+  </defs>
+</svg> 

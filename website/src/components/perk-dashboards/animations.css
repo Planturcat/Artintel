@@ -1,0 +1,237 @@
+/* Ripple Effect Animation */
+@keyframes ripple {
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+/* Data Packet Animation */
+@keyframes packet-move {
+  0% {
+    transform: translateX(0) translateY(0);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(var(--packet-x, 100%)) translateY(var(--packet-y, 0));
+    opacity: 0;
+  }
+}
+
+/* Pulse Animation */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+}
+
+/* Rotate Animation */
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Glow Animation */
+@keyframes glow {
+  0% {
+    filter: drop-shadow(0 0 2px rgba(0, 203, 221, 0.6));
+  }
+  50% {
+    filter: drop-shadow(0 0 8px rgba(0, 203, 221, 0.8));
+  }
+  100% {
+    filter: drop-shadow(0 0 2px rgba(0, 203, 221, 0.6));
+  }
+}
+
+/* Progress Animation */
+@keyframes progress {
+  0% {
+    width: 0%;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+/* Fade In Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Typing Animation */
+@keyframes typing {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+/* Float Animation */
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+/* Shimmer Animation */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Path Dash Animation */
+@keyframes dash {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Wave Animation */
+@keyframes wave {
+  0% {
+    transform: translateX(0) translateY(0);
+  }
+  25% {
+    transform: translateX(5px) translateY(-5px);
+  }
+  50% {
+    transform: translateX(0) translateY(0);
+  }
+  75% {
+    transform: translateX(-5px) translateY(5px);
+  }
+  100% {
+    transform: translateX(0) translateY(0);
+  }
+}
+
+/* Utility Classes */
+.animate-ripple {
+  animation: ripple 2s infinite ease-out;
+}
+
+.animate-packet {
+  animation: packet-move 3s infinite linear;
+}
+
+.animate-pulse {
+  animation: pulse 2s infinite ease-in-out;
+}
+
+.animate-rotate {
+  animation: rotate 10s infinite linear;
+}
+
+.animate-rotate-slow {
+  animation: rotate 20s infinite linear;
+}
+
+.animate-glow {
+  animation: glow 2s infinite ease-in-out;
+}
+
+.animate-progress {
+  animation: progress 3s ease-in-out;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.animate-typing {
+  animation: typing 2s steps(40, end);
+}
+
+.animate-float {
+  animation: float 6s infinite ease-in-out;
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent, rgba(0, 203, 221, 0.2), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 3s infinite linear;
+}
+
+.animate-dash {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: dash 3s linear forwards;
+}
+
+.animate-wave {
+  animation: wave 3s infinite ease-in-out;
+}
+
+/* Animation Delays */
+.delay-100 {
+  animation-delay: 0.1s;
+}
+
+.delay-200 {
+  animation-delay: 0.2s;
+}
+
+.delay-300 {
+  animation-delay: 0.3s;
+}
+
+.delay-400 {
+  animation-delay: 0.4s;
+}
+
+.delay-500 {
+  animation-delay: 0.5s;
+}
+
+.delay-1000 {
+  animation-delay: 1s;
+}
+
+.delay-1500 {
+  animation-delay: 1.5s;
+}
+
+.delay-2000 {
+  animation-delay: 2s;
+}

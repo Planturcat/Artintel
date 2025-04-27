@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1440" height="800" viewBox="0 0 1440 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background blur gradients -->
+  <g filter="url(#filter0_f_about)">
+    <ellipse cx="720" cy="400" rx="400" ry="200" fill="#00cbdd" fill-opacity="0.15"/>
+  </g>
+  <g filter="url(#filter1_f_about)">
+    <circle cx="720" cy="400" r="150" fill="#00cbdd" fill-opacity="0.2"/>
+  </g>
+  <g filter="url(#filter2_f_about)">
+    <circle cx="720" cy="400" r="80" fill="#00cbdd" fill-opacity="0.3"/>
+  </g>
+
+  <!-- Neural network nodes and connections -->
+  <!-- Central node -->
+  <circle cx="720" cy="400" r="8" fill="#00cbdd"/>
+
+  <!-- Layer 1 nodes -->
+  <circle cx="600" cy="300" r="6" fill="#00cbdd" fill-opacity="0.9"/>
+  <circle cx="600" cy="400" r="6" fill="#00cbdd" fill-opacity="0.9"/>
+  <circle cx="600" cy="500" r="6" fill="#00cbdd" fill-opacity="0.9"/>
+
+  <!-- Layer 2 nodes -->
+  <circle cx="840" cy="250" r="6" fill="#00cbdd" fill-opacity="0.9"/>
+  <circle cx="840" cy="350" r="6" fill="#00cbdd" fill-opacity="0.9"/>
+  <circle cx="840" cy="450" r="6" fill="#00cbdd" fill-opacity="0.9"/>
+  <circle cx="840" cy="550" r="6" fill="#00cbdd" fill-opacity="0.9"/>
+
+  <!-- Connections from central to layer 1 -->
+  <line x1="720" y1="400" x2="600" y2="300" stroke="#00cbdd" stroke-width="1.5" stroke-opacity="0.6"/>
+  <line x1="720" y1="400" x2="600" y2="400" stroke="#00cbdd" stroke-width="1.5" stroke-opacity="0.6"/>
+  <line x1="720" y1="400" x2="600" y2="500" stroke="#00cbdd" stroke-width="1.5" stroke-opacity="0.6"/>
+
+  <!-- Connections from central to layer 2 -->
+  <line x1="720" y1="400" x2="840" y2="250" stroke="#00cbdd" stroke-width="1.5" stroke-opacity="0.6"/>
+  <line x1="720" y1="400" x2="840" y2="350" stroke="#00cbdd" stroke-width="1.5" stroke-opacity="0.6"/>
+  <line x1="720" y1="400" x2="840" y2="450" stroke="#00cbdd" stroke-width="1.5" stroke-opacity="0.6"/>
+  <line x1="720" y1="400" x2="840" y2="550" stroke="#00cbdd" stroke-width="1.5" stroke-opacity="0.6"/>
+
+  <!-- Connections between layer 1 nodes -->
+  <line x1="600" y1="300" x2="600" y2="400" stroke="#00cbdd" stroke-width="1" stroke-opacity="0.4"/>
+  <line x1="600" y1="400" x2="600" y2="500" stroke="#00cbdd" stroke-width="1" stroke-opacity="0.4"/>
+
+  <!-- Connections between layer 2 nodes -->
+  <line x1="840" y1="250" x2="840" y2="350" stroke="#00cbdd" stroke-width="1" stroke-opacity="0.4"/>
+  <line x1="840" y1="350" x2="840" y2="450" stroke="#00cbdd" stroke-width="1" stroke-opacity="0.4"/>
+  <line x1="840" y1="450" x2="840" y2="550" stroke="#00cbdd" stroke-width="1" stroke-opacity="0.4"/>
+
+  <!-- Additional decorative elements -->
+  <path d="M720 250 L750 300 L720 350 L690 300 Z" stroke="#00cbdd" stroke-width="1" stroke-opacity="0.5" fill="none"/>
+  <path d="M720 450 L750 500 L720 550 L690 500 Z" stroke="#00cbdd" stroke-width="1" stroke-opacity="0.5" fill="none"/>
+
+  <!-- Filters for the blurs -->
+  <defs>
+    <filter id="filter0_f_about" x="120" y="0" width="1200" height="800" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+      <feGaussianBlur stdDeviation="100" result="effect1_foregroundBlur_about"/>
+    </filter>
+    <filter id="filter1_f_about" x="470" y="150" width="500" height="500" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+      <feGaussianBlur stdDeviation="50" result="effect1_foregroundBlur_about"/>
+    </filter>
+    <filter id="filter2_f_about" x="590" y="270" width="260" height="260" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+      <feGaussianBlur stdDeviation="25" result="effect1_foregroundBlur_about"/>
+    </filter>
+  </defs>
+</svg>

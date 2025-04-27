@@ -1,0 +1,192 @@
+/* LLM Catalog Hero Animations */
+
+/* Neural Network animations */
+.neuron {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: rgba(0, 203, 221, 0.8);
+  box-shadow: 0 0 10px rgba(0, 203, 221, 0.6);
+  z-index: 2;
+}
+
+.synapse {
+  position: absolute;
+  height: 3px;
+  transform-origin: left center;
+  background: linear-gradient(to right, rgba(0, 203, 221, 0.8), rgba(0, 203, 221, 0.1));
+  z-index: 1;
+}
+
+.neuralNetwork {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* 3D Boxes Animation */
+.llmBoxes {
+  position: relative;
+  transform-style: preserve-3d;
+  animation: rotateLlmBox 25s infinite linear;
+  width: 100px;
+  height: 100px;
+}
+
+.box {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  transform-style: preserve-3d;
+}
+
+.box:nth-child(1) {
+  transform: translateZ(-30px) translateX(-15px) translateY(-15px);
+  animation: moveLlmBox1 8s infinite ease-in-out alternate;
+}
+
+.box:nth-child(2) {
+  transform: translateZ(30px) translateX(15px) translateY(-15px);
+  animation: moveLlmBox2 10s infinite ease-in-out alternate;
+}
+
+.box:nth-child(3) {
+  transform: translateZ(-30px) translateX(15px) translateY(15px);
+  animation: moveLlmBox3 9s infinite ease-in-out alternate;
+}
+
+.box:nth-child(4) {
+  transform: translateZ(30px) translateX(-15px) translateY(15px);
+  animation: moveLlmBox4 7s infinite ease-in-out alternate;
+}
+
+.box div {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: 1px solid rgba(0, 203, 221, 0.4);
+  background-color: rgba(0, 203, 221, 0.15);
+  backdrop-filter: blur(4px);
+}
+
+.box div:nth-child(1) {
+  transform: translateZ(15px);
+}
+
+.box div:nth-child(2) {
+  transform: rotateY(90deg) translateZ(15px);
+}
+
+.box div:nth-child(3) {
+  transform: rotateY(180deg) translateZ(15px);
+}
+
+.box div:nth-child(4) {
+  transform: rotateY(-90deg) translateZ(15px);
+}
+
+/* Thought bubbles for AI concepts */
+.thoughtBubble {
+  position: absolute;
+  border-radius: 50%;
+  background-color: rgba(0, 203, 221, 0.1);
+  border: 1px solid rgba(0, 203, 221, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.8;
+  animation: floating 5s infinite ease-in-out alternate;
+}
+
+/* Keyframes */
+@keyframes rotateLlmBox {
+  0% {
+    transform: scale(3) rotateY(0) rotateX(10deg);
+  }
+  100% {
+    transform: scale(3) rotateY(360deg) rotateX(10deg);
+  }
+}
+
+@keyframes moveLlmBox1 {
+  0%, 100% {
+    transform: translateZ(-30px) translateX(-15px) translateY(-15px);
+  }
+  50% {
+    transform: translateZ(-45px) translateX(-20px) translateY(-20px);
+  }
+}
+
+@keyframes moveLlmBox2 {
+  0%, 100% {
+    transform: translateZ(30px) translateX(15px) translateY(-15px);
+  }
+  50% {
+    transform: translateZ(45px) translateX(20px) translateY(-20px);
+  }
+}
+
+@keyframes moveLlmBox3 {
+  0%, 100% {
+    transform: translateZ(-30px) translateX(15px) translateY(15px);
+  }
+  50% {
+    transform: translateZ(-45px) translateX(20px) translateY(20px);
+  }
+}
+
+@keyframes moveLlmBox4 {
+  0%, 100% {
+    transform: translateZ(30px) translateX(-15px) translateY(15px);
+  }
+  50% {
+    transform: translateZ(45px) translateX(-20px) translateY(20px);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(0.8);
+  }
+}
+
+@keyframes synapseGlow {
+  0%, 100% {
+    opacity: 0.5;
+    box-shadow: 0 0 5px rgba(0, 203, 221, 0.3);
+  }
+  50% {
+    opacity: 1;
+    box-shadow: 0 0 10px rgba(0, 203, 221, 0.7);
+  }
+}
+
+@keyframes floating {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-15px) scale(1.05);
+  }
+}
+
+@keyframes thinking {
+  0%, 100% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+} 

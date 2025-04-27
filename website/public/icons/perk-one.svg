@@ -1,0 +1,58 @@
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- Background container with rounded corners -->
+    <path opacity="0.4"
+        d="M22 7.81V16.18C22 19.82 19.83 21.99 16.19 21.99H7.81C4.17 22 2 19.83 2 16.19V7.81C2 4.17 4.17 2 7.81 2H16.18C19.83 2 22 4.17 22 7.81Z"
+        fill="#00cbdd" />
+
+    <!-- Mask to keep logos within the rounded container -->
+    <mask id="logoMask">
+        <rect x="2" y="2" width="20" height="20" fill="white" />
+    </mask>
+
+    <!-- Marquee with 3 visible logos, middle one enlarged -->
+    <g mask="url(#logoMask)">
+        <!-- Animation container -->
+        <g id="marqueeContainer">
+            <!-- Animation to move the logos -->
+            <animateTransform
+                attributeName="transform"
+                type="translate"
+                from="0,0"
+                to="-24,0"
+                dur="6s"
+                repeatCount="indefinite"
+                additive="sum" />
+
+            <!-- Logo 1 (Llama) -->
+            <image href="/model/Llama.png" x="4" y="8" width="8" height="8" preserveAspectRatio="xMidYMid meet" />
+
+            <!-- Logo 2 (DeepSeek) - Enlarged in middle position -->
+            <image href="/model/DeepSeek.png" x="16" y="4" width="16" height="16" preserveAspectRatio="xMidYMid meet" />
+
+            <!-- Logo 3 (Falcon) -->
+            <image href="/model/Falcon.png" x="36" y="8" width="8" height="8" preserveAspectRatio="xMidYMid meet" />
+
+            <!-- Logo 4 (GPT-J) -->
+            <image href="/model/gpt-j-6b.png" x="48" y="8" width="8" height="8" preserveAspectRatio="xMidYMid meet" />
+
+            <!-- Logo 5 (Mistral) - Will move to middle position -->
+            <image href="/model/Mistral.png" x="60" y="8" width="8" height="8" preserveAspectRatio="xMidYMid meet" />
+
+            <!-- Logo 6 (MPT) -->
+            <image href="/model/mpt-7b.png" x="72" y="8" width="8" height="8" preserveAspectRatio="xMidYMid meet" />
+
+            <!-- Logo 7 (Phi) -->
+            <image href="/model/Phi.png" x="84" y="8" width="8" height="8" preserveAspectRatio="xMidYMid meet" />
+
+            <!-- Logo 8 (Qwen) -->
+            <image href="/model/Qwen.png" x="96" y="8" width="8" height="8" preserveAspectRatio="xMidYMid meet" />
+
+            <!-- Logo 9 (SantaCoder) -->
+            <image href="/model/SantaCoder.png" x="108" y="8" width="8" height="8" preserveAspectRatio="xMidYMid meet" />
+
+            <!-- Repeat first logos to make the loop seamless -->
+            <image href="/model/Llama.png" x="120" y="8" width="8" height="8" preserveAspectRatio="xMidYMid meet" />
+            <image href="/model/DeepSeek.png" x="132" y="8" width="8" height="8" preserveAspectRatio="xMidYMid meet" />
+        </g>
+    </g>
+</svg>
