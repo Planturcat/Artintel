@@ -20,6 +20,12 @@ import {
   FileText,
   Clock,
   CheckCircle,
+  Code,
+  BookOpen,
+  Network,
+  Lightbulb,
+  Shield,
+  ArrowRight,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -43,9 +49,9 @@ const LLMFeatureCard = ({
   icon: React.ElementType;
 }) => {
   return (
-    <Card className="bg-card/50 border border-border/80 h-full">
+    <Card className="bg-card/50 border border-border/80 h-full hover:border-primary/30 hover:shadow-md transition-all group">
       <CardHeader className="pb-2">
-        <div className="p-2 rounded-lg bg-primary/10 w-fit mb-2">
+        <div className="p-2 rounded-lg bg-primary/10 w-fit mb-2 group-hover:bg-primary/20 transition-colors">
           <Icon className="h-5 w-5 text-primary" />
         </div>
         <CardTitle>{title}</CardTitle>
@@ -65,6 +71,41 @@ const LLMHero = () => {
       <div className="absolute inset-0 z-0">
         <div className="absolute left-1/3 top-1/4 h-64 w-64 rounded-full bg-primary/10 blur-[100px]"></div>
         <div className="absolute right-1/3 bottom-1/4 h-64 w-64 rounded-full bg-primary/10 blur-[100px]"></div>
+      </div>
+
+      {/* Animated network visualization */}
+      <div className="absolute inset-0 z-0 opacity-20 overflow-hidden">
+        <svg width="100%" height="100%" viewBox="0 0 1000 800" className="absolute inset-0">
+          <g className="nodes">
+            {Array.from({ length: 12 }).map((_, i) => (
+              <circle 
+                key={i} 
+                r="8" 
+                cx={200 + Math.random() * 600} 
+                cy={100 + Math.random() * 600}
+                fill="#00CBDD" 
+                className="animate-pulse-slow" 
+                style={{ animationDelay: `${i * 0.3}s` }}
+              />
+            ))}
+          </g>
+          <g className="links">
+            {Array.from({ length: 20 }).map((_, i) => (
+              <line 
+                key={i} 
+                x1={200 + Math.random() * 600} 
+                y1={100 + Math.random() * 600}
+                x2={200 + Math.random() * 600} 
+                y2={100 + Math.random() * 600}
+                stroke="#00CBDD" 
+                strokeOpacity="0.2" 
+                strokeWidth="1"
+                className="animate-dash-offset"
+                style={{ animationDelay: `${i * 0.1}s` }}
+              />
+            ))}
+          </g>
+        </svg>
       </div>
 
       {/* Grid pattern background */}
@@ -91,11 +132,11 @@ const LLMHero = () => {
             </h1>
 
             <p className="text-lg text-muted-foreground mb-6">
-              Explore our collection of Large Language Models (LLMs) designed for advanced reasoning, complex understanding, and sophisticated generation.
+              Large Language Models (LLMs) deliver remarkable reasoning, knowledge, and generation capabilities for advanced applications that require deep understanding and sophisticated responses.
             </p>
 
             <div className="mb-8 grid grid-cols-3 gap-4">
-              <div className="rounded-lg border border-primary/20 bg-card/30 p-3 backdrop-blur-sm">
+              <div className="rounded-lg border border-primary/20 bg-card/30 p-3 backdrop-blur-sm hover:bg-primary/5 transition-colors duration-300">
                 <div className="mb-1 flex items-center">
                   <Brain className="mr-1 h-4 w-4 text-primary" />
                   <span className="text-sm font-medium text-foreground">
@@ -106,7 +147,7 @@ const LLMHero = () => {
                   Deep understanding
                 </p>
               </div>
-              <div className="rounded-lg border border-primary/20 bg-card/30 p-3 backdrop-blur-sm">
+              <div className="rounded-lg border border-primary/20 bg-card/30 p-3 backdrop-blur-sm hover:bg-primary/5 transition-colors duration-300">
                 <div className="mb-1 flex items-center">
                   <Database className="mr-1 h-4 w-4 text-primary" />
                   <span className="text-sm font-medium text-foreground">
@@ -117,7 +158,7 @@ const LLMHero = () => {
                   8K-100K tokens
                 </p>
               </div>
-              <div className="rounded-lg border border-primary/20 bg-card/30 p-3 backdrop-blur-sm">
+              <div className="rounded-lg border border-primary/20 bg-card/30 p-3 backdrop-blur-sm hover:bg-primary/5 transition-colors duration-300">
                 <div className="mb-1 flex items-center">
                   <Rocket className="mr-1 h-4 w-4 text-primary" />
                   <span className="text-sm font-medium text-foreground">
@@ -154,7 +195,7 @@ const LLMHero = () => {
             <div className="relative z-0 flex items-center justify-center">
               <div className="relative">
                 <div className="absolute inset-0 bg-primary/5 rounded-full blur-3xl transform scale-75 opacity-50"></div>
-                <div className="relative bg-card/30 border border-primary/20 rounded-xl p-6 backdrop-blur-sm">
+                <div className="relative bg-card/30 border border-primary/20 rounded-xl p-6 backdrop-blur-sm hover:border-primary/40 transition-colors duration-300">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="p-2 rounded-lg bg-primary/10">
                       <Brain className="h-6 w-6 text-primary" />
@@ -192,6 +233,21 @@ const LLMHero = () => {
   );
 };
 
+// Animated section component
+const AnimatedSection = ({ title, description, children }: { title: string; description: string; children: React.ReactNode }) => {
+  return (
+    <AnimationContainer className="w-full mt-12">
+      <div className="text-center mb-10">
+        <h2 className="text-3xl font-bold mb-4 bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">{title}</h2>
+        <p className="text-muted-foreground max-w-2xl mx-auto">
+          {description}
+        </p>
+      </div>
+      {children}
+    </AnimationContainer>
+  );
+};
+
 // Model Card component
 const ModelCard = ({
   name,
@@ -207,10 +263,10 @@ const ModelCard = ({
   license: string;
 }) => {
   return (
-    <Card className="h-full flex flex-col border-border/80 hover:border-primary/50 transition-colors">
+    <Card className="h-full flex flex-col border-border/80 hover:border-primary/50 transition-colors hover:shadow-md group">
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-xl">{name}</CardTitle>
+          <CardTitle className="text-xl group-hover:text-primary transition-colors">{name}</CardTitle>
           <Badge variant="outline" className="border-primary/30 bg-primary/5 text-primary">
             LLM
           </Badge>
@@ -246,20 +302,22 @@ export default function LLMModelPage() {
 
       <Wrapper className="mb-12 mt-12 flex flex-col items-center justify-center">
         {/* Definition Section */}
-        <AnimationContainer className="w-full">
-          <div className="text-center mb-10">
-            <h2 className="text-3xl font-bold mb-4">What Are Large Language Models?</h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
+        <AnimatedSection 
+          title="What Are Large Language Models?" 
+          description="LLMs are sophisticated neural networks with billions of parameters, trained on vast text datasets">
+          <div className="max-w-3xl mx-auto text-center">
+            <p className="text-muted-foreground">
               Large Language Models (LLMs) typically range from a few billion to hundreds of billions of parameters. 
               These sophisticated neural networks are trained on vast datasets to understand and generate human-like text,
               demonstrating remarkable capabilities in reasoning, knowledge retrieval, and creative generation.
             </p>
           </div>
-        </AnimationContainer>
+        </AnimatedSection>
 
         {/* Key Strengths Section */}
-        <AnimationContainer className="w-full mt-12">
-          <h2 className="text-2xl font-bold mb-6">Key Strengths of LLMs</h2>
+        <AnimatedSection 
+          title="Key Strengths of LLMs" 
+          description="Advanced capabilities that make LLMs powerful tools for complex tasks">
           <div className="grid md:grid-cols-3 gap-6">
             <LLMFeatureCard
               title="Advanced Reasoning"
@@ -292,11 +350,36 @@ export default function LLMModelPage() {
               icon={CheckCircle}
             />
           </div>
-        </AnimationContainer>
+        </AnimatedSection>
+
+        {/* Advanced Capabilities Section */}
+        <AnimatedSection 
+          title="Advanced Capabilities" 
+          description="What makes LLMs particularly powerful for complex tasks">
+          <div className="grid md:grid-cols-3 gap-6">
+            <LLMFeatureCard
+              title="Emergent Abilities"
+              description="As models scale, they develop unexpected capabilities that weren't explicitly trained for, such as chain-of-thought reasoning and multi-step planning."
+              icon={Lightbulb}
+            />
+            <LLMFeatureCard
+              title="Zero/Few-shot Learning"
+              description="LLMs can perform new tasks with minimal or no examples, generalizing their knowledge to unfamiliar problems."
+              icon={Zap}
+            />
+            <LLMFeatureCard
+              title="Cross-domain Transfer"
+              description="Knowledge acquired in one domain can be applied to other domains, enabling versatile applications across different fields."
+              icon={Network}
+            />
+          </div>
+        </AnimatedSection>
 
         {/* Popular Models Section */}
-        <AnimationContainer className="w-full mt-16" id="models">
-          <h2 className="text-2xl font-bold mb-6">Popular LLM Models</h2>
+        <AnimatedSection 
+          title="Popular LLM Models" 
+          description="Leading Large Language Models with exceptional capabilities" 
+          id="models">
           <div className="grid md:grid-cols-3 gap-6">
             <ModelCard
               name="GPT-4"
@@ -341,12 +424,37 @@ export default function LLMModelPage() {
               license="Llama 2 Community License"
             />
           </div>
-        </AnimationContainer>
+        </AnimatedSection>
+
+        {/* Enterprise Applications */}
+        <AnimatedSection 
+          title="Enterprise Applications" 
+          description="How organizations are using LLMs to transform their operations">
+          <div className="grid md:grid-cols-3 gap-6">
+            <LLMFeatureCard
+              title="Content Creation"
+              description="Marketing teams leverage LLMs to generate blogs, social media content, product descriptions, and email campaigns at scale."
+              icon={BookOpen}
+            />
+            <LLMFeatureCard
+              title="Research Assistance"
+              description="Research teams use LLMs to analyze scientific literature, generate hypotheses, and summarize complex findings across disciplines."
+              icon={Lightbulb}
+            />
+            <LLMFeatureCard
+              title="Conversational AI"
+              description="Customer service operations deploy LLMs to handle complex support issues, providing detailed, contextual responses to user queries."
+              icon={Globe}
+            />
+          </div>
+        </AnimatedSection>
 
         {/* Resource Requirements Section */}
-        <AnimationContainer className="w-full mt-16">
-          <h2 className="text-2xl font-bold mb-6">Resource Requirements</h2>
-          <Card className="bg-card/50 border border-border/80">
+        <AnimatedSection 
+          title="Resource Requirements" 
+          description="Hardware considerations for deploying Large Language Models">
+          <Card className="bg-card/50 border border-border/80 hover:border-primary/30 transition-colors hover:shadow-md overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary/30 via-primary/50 to-primary/30"></div>
             <CardContent className="pt-6">
               <div className="grid md:grid-cols-2 gap-8">
                 <div className="space-y-4">
@@ -406,27 +514,51 @@ export default function LLMModelPage() {
               </div>
             </CardContent>
           </Card>
-        </AnimationContainer>
+        </AnimatedSection>
+
+        {/* Optimization Techniques */}
+        <AnimatedSection 
+          title="Optimization Techniques" 
+          description="Methods to make LLM deployment more efficient and cost-effective">
+          <div className="grid md:grid-cols-3 gap-6">
+            <LLMFeatureCard
+              title="Quantization"
+              description="Reduce model precision from 32-bit or 16-bit floating-point to 8-bit integers or lower, decreasing memory usage while maintaining most of the performance."
+              icon={Cpu}
+            />
+            <LLMFeatureCard
+              title="Parameter-Efficient Fine-Tuning"
+              description="Techniques like LoRA and QLoRA allow adapting LLMs to specific tasks by training only a small number of additional parameters."
+              icon={Zap}
+            />
+            <LLMFeatureCard
+              title="Model Pruning"
+              description="Remove unnecessary connections in the neural network to create more compact models with similar capabilities."
+              icon={Shield}
+            />
+          </div>
+        </AnimatedSection>
 
         {/* Call to Action */}
         <AnimationContainer className="w-full mt-16">
-          <Card className="bg-primary/5 border border-primary/20">
-            <CardContent className="flex flex-col md:flex-row items-center justify-between gap-6 pt-6">
+          <Card className="bg-primary/5 border border-primary/20 overflow-hidden relative group">
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent"></div>
+            <CardContent className="flex flex-col md:flex-row items-center justify-between gap-6 pt-6 pb-6 relative z-10">
               <div className="max-w-2xl">
-                <h2 className="text-2xl font-bold mb-2">Ready to leverage the power of LLMs?</h2>
+                <h2 className="text-2xl font-bold mb-2 bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">Ready to leverage the power of LLMs?</h2>
                 <p className="text-muted-foreground">
                   Artintel provides a comprehensive platform to help you discover, fine-tune, and deploy LLMs for your specific use cases.
                 </p>
               </div>
               <div className="flex flex-wrap gap-4">
-                <Button asChild size="lg" className="rounded-full">
+                <Button asChild size="lg" className="rounded-full group-hover:bg-primary/90 transition-colors">
                   <Link href="/features">Explore Features</Link>
                 </Button>
                 <Button
                   asChild
                   variant="outline"
                   size="lg"
-                  className="rounded-full"
+                  className="rounded-full group-hover:bg-primary/5 transition-colors"
                 >
                   <Link href="/contact">Contact Sales</Link>
                 </Button>

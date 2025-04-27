@@ -46,6 +46,8 @@ import {
   Network,
   Pen,
   FileText,
+  CheckCircle,
+  Brain,
 } from "lucide-react";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
@@ -179,18 +181,22 @@ const ComparisonHero = () => {
     <div
       ref={containerRef}
       className="relative w-full py-28 bg-gradient-to-br from-background via-background to-background/90 overflow-hidden"
-      data-oid="kaapwaa"
     >
+      {/* Enhanced gradient background */}
+      <div 
+        className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-primary/5 opacity-70"
+        aria-hidden="true"
+      ></div>
+      
       {/* Decorative mesh grid background */}
       <div
         className="absolute inset-0 bg-[linear-gradient(to_right,rgb(38,38,38,0.2)_1px,transparent_1px),linear-gradient(to_bottom,rgb(38,38,38,0.2)_1px,transparent_1px)] bg-[size:20px_20px]"
         aria-hidden="true"
-        data-oid="-lob3ol"
       ></div>
 
       {/* Decorative particles */}
-      <div className="absolute inset-0" aria-hidden="true" data-oid="lnitywz">
-        {Array.from({ length: 12 }).map((_, i) => (
+      <div className="absolute inset-0" aria-hidden="true">
+        {Array.from({ length: 18 }).map((_, i) => (
           <div
             key={i}
             className={`${styles.particle} absolute h-px w-[40px] bg-gradient-to-r ${i % 2 === 0 ? "from-primary/30 to-transparent" : "from-transparent to-primary/30"}`}
@@ -199,30 +205,48 @@ const ComparisonHero = () => {
               left: `${Math.random() * 100}%`,
               opacity: 0.3 + Math.random() * 0.5,
             }}
-            data-oid="9yc9p_3"
           />
         ))}
       </div>
 
-      {/* Model type comparison visualization */}
+      {/* Enhanced model type comparison visualization */}
       <div
-        className="absolute left-1/2 top-0 -translate-x-1/2 w-full h-full flex items-center justify-center opacity-10 pointer-events-none"
+        className="absolute left-1/2 top-0 -translate-x-1/2 w-full h-full flex items-center justify-center opacity-20 pointer-events-none"
         aria-hidden="true"
-        data-oid="q1rd0wa"
       >
-        <div
-          className={`transition-all duration-1000 ease-in-out ${activeModelType === "slm" ? "scale-75" : "scale-100"}`}
-          data-oid="-_rzy--"
-        >
-          <div className="relative" data-oid="0mjk7ta">
-            <div
-              className="h-[350px] w-[350px] rounded-full border-4 border-dashed border-primary/30"
-              data-oid="ucx2f2p"
-            ></div>
-            <div
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[150px] w-[150px] rounded-full border-2 border-primary/40"
-              data-oid="2hlpjfw"
-            ></div>
+        <div className="relative">
+          <div
+            className={`transition-all duration-1000 ease-in-out ${activeModelType === "slm" ? "opacity-100" : "opacity-20"}`}
+          >
+            <div className="relative">
+              <div
+                className="h-[200px] w-[200px] rounded-full border-4 border-dashed border-primary/40"
+              ></div>
+              <div
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[100px] w-[100px] rounded-full border-2 border-primary/60"
+              ></div>
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[50px] w-[50px] rounded-full bg-primary/20"></div>
+            </div>
+          </div>
+          
+          <div
+            className={`absolute top-0 left-0 transition-all duration-1000 ease-in-out ${activeModelType === "llm" ? "opacity-100" : "opacity-20"}`}
+          >
+            <div className="relative">
+              <div
+                className="h-[400px] w-[400px] rounded-full border-4 border-dashed border-primary/40"
+              ></div>
+              <div
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[300px] w-[300px] rounded-full border-2 border-primary/30"
+              ></div>
+              <div
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[200px] w-[200px] rounded-full border-2 border-primary/20"
+              ></div>
+              <div
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[100px] w-[100px] rounded-full border-2 border-primary/40"
+              ></div>
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[50px] w-[50px] rounded-full bg-primary/20"></div>
+            </div>
           </div>
         </div>
       </div>
@@ -230,130 +254,109 @@ const ComparisonHero = () => {
       {/* Animated floating elements */}
       <div
         className={`absolute transition-opacity duration-500 ${activeModelType === "llm" ? "opacity-100" : "opacity-30"}`}
-        data-oid="h_jyhdl"
       >
         <img
-          src="/icons/Black Icon.jpg"
+          src="/icons/artintel-logo.png"
           alt="Artintel Logo"
           className={`absolute h-14 w-14 top-1/3 left-[20%] ${styles.floatingElement} ${styles.parallax}`}
           style={{ animationDuration: "8s", animationDelay: "0.2s" }}
-          data-oid="a9vb__x"
         />
 
         <Languages
           className={`absolute text-primary/40 h-10 w-10 bottom-1/3 left-[15%] ${styles.floatingElement} ${styles.parallax}`}
           style={{ animationDuration: "7s", animationDelay: "0.5s" }}
-          data-oid="emw3uvx"
         />
 
         <Network
           className={`absolute text-primary/50 h-12 w-12 top-1/2 right-[20%] ${styles.floatingElement} ${styles.parallax}`}
           style={{ animationDuration: "9s", animationDelay: "1s" }}
-          data-oid="hzt-f80"
         />
 
         <Code
           className={`absolute text-primary/40 h-10 w-10 bottom-1/4 right-[25%] ${styles.floatingElement} ${styles.parallax}`}
           style={{ animationDuration: "6s", animationDelay: "1.5s" }}
-          data-oid="jlxme3b"
         />
       </div>
 
       <div
         className={`absolute transition-opacity duration-500 ${activeModelType === "slm" ? "opacity-100" : "opacity-30"}`}
-        data-oid="59o.emu"
       >
         <Cpu
           className={`absolute text-primary/60 h-10 w-10 top-1/4 left-[25%] ${styles.floatingElement} ${styles.parallax}`}
           style={{ animationDuration: "6s", animationDelay: "0.3s" }}
-          data-oid="bnm:sgx"
         />
 
         <HardDrive
           className={`absolute text-primary/40 h-8 w-8 bottom-1/4 left-[30%] ${styles.floatingElement} ${styles.parallax}`}
           style={{ animationDuration: "5s", animationDelay: "0.7s" }}
-          data-oid="q-6f49f"
         />
 
         <Server
           className={`absolute text-primary/50 h-9 w-9 top-1/3 right-[28%] ${styles.floatingElement} ${styles.parallax}`}
           style={{ animationDuration: "7s", animationDelay: "1.2s" }}
-          data-oid="dhvz5ez"
         />
 
         <Clock
           className={`absolute text-primary/40 h-7 w-7 bottom-1/3 right-[22%] ${styles.floatingElement} ${styles.parallax}`}
           style={{ animationDuration: "5.5s", animationDelay: "0.9s" }}
-          data-oid="i6yd6_:"
         />
       </div>
 
       {/* Hero content */}
-      <MaxWidthWrapper className="relative z-10" data-oid="wqwp5e3">
-        <div className="text-center space-y-6 mb-12" data-oid="oztwhm8">
+      <MaxWidthWrapper className="relative z-10">
+        <div className="text-center space-y-6 mb-12">
           <div
             className={`p-3 inline-flex rounded-full bg-primary/10 ${styles.pulsingElement}`}
-            data-oid="f-e9h_e"
           >
-            <Scale className="h-6 w-6 text-primary" data-oid="wwtc4_r" />
+            <Scale className="h-6 w-6 text-primary" />
           </div>
 
           <h1
             className={`text-4xl md:text-5xl lg:text-6xl font-bold tracking-tighter ${styles.slideUp}`}
-            data-oid="azqwi:5"
           >
-            SLM{" "}
-            <span className="text-primary" data-oid="w_c.oip">
-              vs
-            </span>{" "}
-            LLM
+            <span className="bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">SLM vs LLM:</span>{" "}
+            Choosing the Right Model
           </h1>
 
           <p
             className={`max-w-[700px] mx-auto text-muted-foreground text-lg md:text-xl ${styles.slideUp}`}
             style={{ animationDelay: "0.2s" }}
-            data-oid="o5z:z0q"
           >
             Understanding the key differences between Small Language Models and
-            Large Language Models
+            Large Language Models to make informed decisions for your AI strategy
           </p>
 
           {/* Model type toggle */}
           <div
             className={`flex justify-center pt-8 ${styles.slideUp}`}
             style={{ animationDelay: "0.3s" }}
-            data-oid="08ukf53"
           >
             <div
-              className="inline-flex items-center gap-4 p-1 rounded-full border border-border/40 bg-background/50"
-              data-oid="bgkm:6p"
+              className="inline-flex items-center gap-4 p-1 rounded-full border border-border/40 bg-background/50 backdrop-blur-md shadow-md"
             >
               <button
                 onClick={() => handleModelTypeToggle("slm")}
                 className={`flex items-center gap-2 py-2 px-4 rounded-full transition-all ${activeModelType === "slm" ? "bg-primary text-white shadow-md" : "text-muted-foreground hover:text-foreground"}`}
-                data-oid="ene:3lp"
               >
-                <Cpu className="h-4 w-4" data-oid="jsg-7fu" />
-                <span data-oid="m7z5ukg">Small LMs</span>
+                <Cpu className="h-4 w-4" />
+                <span>Small LMs</span>
               </button>
               <button
                 onClick={() => handleModelTypeToggle("llm")}
                 className={`flex items-center gap-2 py-2 px-4 rounded-full transition-all ${activeModelType === "llm" ? "bg-primary text-white shadow-md" : "text-muted-foreground hover:text-foreground"}`}
-                data-oid="8j2pb6d"
               >
-                <BrainCircuit className="h-4 w-4" data-oid="z0zqdw3" />
-                <span data-oid="qi53zrk">Large LMs</span>
+                <BrainCircuit className="h-4 w-4" />
+                <span>Large LMs</span>
               </button>
             </div>
           </div>
         </div>
 
         {/* Quick comparison cards */}
-        <div className="grid md:grid-cols-2 gap-8 lg:gap-12" data-oid="lu2l2pu">
+        <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
           <div
             className={styles.fadeIn}
             style={{ animationDelay: "0.4s" }}
-            data-oid="55575:_"
           >
             <ModelTypeCard
               icon={Cpu}
@@ -371,14 +374,12 @@ const ComparisonHero = () => {
                   ? "ring-2 ring-primary/50 shadow-lg shadow-primary/5"
                   : "",
               )}
-              data-oid="9xt.:8u"
             />
           </div>
 
           <div
             className={styles.fadeIn}
             style={{ animationDelay: "0.6s" }}
-            data-oid="k0x4_5_"
           >
             <ModelTypeCard
               icon={BrainCircuit}
@@ -396,7 +397,6 @@ const ComparisonHero = () => {
                   ? "ring-2 ring-primary/50 shadow-lg shadow-primary/5"
                   : "",
               )}
-              data-oid="5s6q-ny"
             />
           </div>
         </div>
@@ -1135,21 +1135,159 @@ const ArtintelPlatformSection = () => {
   );
 };
 
+// Add a new decision guide component
+const DecisionGuideSection = () => {
+  return (
+    <div className="py-16 relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-primary/5 opacity-50"></div>
+      <div className="absolute h-px w-full top-0 bg-gradient-to-r from-transparent via-primary/30 to-transparent"></div>
+      <div className="absolute h-px w-full bottom-0 bg-gradient-to-r from-transparent via-primary/30 to-transparent"></div>
+      
+      <MaxWidthWrapper className="relative z-10">
+        <AnimationContainer>
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold mb-3 bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+              Decision Guide: Which Model Type Is Right For You?
+            </h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Follow this decision tree to help determine whether Small or Large Language Models better fit your use case
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-2 gap-8 mt-12">
+            <Card className="bg-card/50 border border-border/80 hover:border-primary/30 transition-colors hover:shadow-md overflow-hidden">
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary/30 via-primary/50 to-primary/30"></div>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <HardDrive className="h-5 w-5 text-primary" />
+                  <span>Resource Constraints</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-start gap-4">
+                  <div className="p-2 rounded-full bg-primary/10 mt-1">
+                    <Cpu className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-lg mb-1">Choose SLMs if:</h4>
+                    <ul className="space-y-2 text-sm text-muted-foreground">
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                        <span>Deployment on mobile devices, IoT, or edge hardware</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                        <span>Limited GPU resources or budget constraints</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                        <span>Offline operation is required</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+                
+                <div className="flex items-start gap-4">
+                  <div className="p-2 rounded-full bg-primary/10 mt-1">
+                    <Brain className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-lg mb-1">Choose LLMs if:</h4>
+                    <ul className="space-y-2 text-sm text-muted-foreground">
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                        <span>Access to high-end GPUs or cloud resources</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                        <span>Can tolerate higher latency (100ms-2s)</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                        <span>Budget allows for higher compute costs</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            
+            <Card className="bg-card/50 border border-border/80 hover:border-primary/30 transition-colors hover:shadow-md overflow-hidden">
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary/30 via-primary/50 to-primary/30"></div>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <BrainCircuit className="h-5 w-5 text-primary" />
+                  <span>Task Complexity</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-start gap-4">
+                  <div className="p-2 rounded-full bg-primary/10 mt-1">
+                    <Cpu className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-lg mb-1">Choose SLMs if:</h4>
+                    <ul className="space-y-2 text-sm text-muted-foreground">
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                        <span>Simple classification or categorization tasks</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                        <span>Specific, well-defined NLP functions</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                        <span>High-volume, repetitive text processing</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+                
+                <div className="flex items-start gap-4">
+                  <div className="p-2 rounded-full bg-primary/10 mt-1">
+                    <Brain className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-lg mb-1">Choose LLMs if:</h4>
+                    <ul className="space-y-2 text-sm text-muted-foreground">
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                        <span>Multi-step reasoning or complex problem-solving</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                        <span>Creative content generation or summarization</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                        <span>Tasks requiring broad knowledge or contextual understanding</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </AnimationContainer>
+      </MaxWidthWrapper>
+    </div>
+  );
+};
+
 // Main Page Component
 const ModelComparisonPage = () => {
   return (
     <>
-      {/* Hero Section */}
-      <ComparisonHero data-oid="lfks:w-" />
-
-      {/* Feature comparison */}
-      <FeatureComparison data-oid="95s1aet" />
-
-      {/* Use Case Section */}
-      <UseCaseSection data-oid="bm7t0z-" />
-
-      {/* Artintel Platform Section */}
-      <ArtintelPlatformSection data-oid="9.ii2c." />
+      <ComparisonHero />
+      
+      <FeatureComparison />
+      
+      <DecisionGuideSection />
+      
+      <UseCaseSection />
+      
+      <ArtintelPlatformSection />
     </>
   );
 };

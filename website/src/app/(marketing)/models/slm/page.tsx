@@ -12,6 +12,12 @@ import {
   Zap,
   Server,
   Database,
+  Code,
+  Check,
+  FileCheck,
+  Smartphone,
+  Lightbulb,
+  Shield
 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -34,6 +40,28 @@ const SLMHero = () => {
       <div className="absolute inset-0 z-0">
         <div className="absolute left-1/3 top-1/4 h-64 w-64 rounded-full bg-primary/10 blur-[100px]"></div>
         <div className="absolute right-1/3 bottom-1/4 h-64 w-64 rounded-full bg-primary/10 blur-[100px]"></div>
+      </div>
+
+      {/* Animated pulse circles */}
+      <div className="absolute inset-0 z-0 overflow-hidden">
+        <div className="absolute left-1/4 top-1/3 animate-pulse-slow">
+          <div className="h-32 w-32 rounded-full border border-primary/20 flex items-center justify-center">
+            <div className="h-24 w-24 rounded-full border border-primary/30 flex items-center justify-center">
+              <div className="h-16 w-16 rounded-full border border-primary/40 flex items-center justify-center">
+                <div className="h-8 w-8 rounded-full bg-primary/20"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="absolute right-1/4 bottom-1/3 animate-pulse-slow animation-delay-1000">
+          <div className="h-40 w-40 rounded-full border border-primary/10 flex items-center justify-center">
+            <div className="h-32 w-32 rounded-full border border-primary/20 flex items-center justify-center">
+              <div className="h-24 w-24 rounded-full border border-primary/30 flex items-center justify-center">
+                <div className="h-16 w-16 rounded-full bg-primary/10"></div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Grid pattern background */}
@@ -60,11 +88,11 @@ const SLMHero = () => {
             </h1>
 
             <p className="text-lg text-muted-foreground mb-6">
-              Explore our collection of Small Language Models (SLMs) designed for efficiency, speed, and resource-constrained environments.
+              Small Language Models (SLMs) deliver impressive performance with minimal resource requirements, making them ideal for edge computing, mobile applications, and high-throughput services.
             </p>
 
             <div className="mb-8 grid grid-cols-3 gap-4">
-              <div className="rounded-lg border border-primary/20 bg-card/30 p-3 backdrop-blur-sm">
+              <div className="rounded-lg border border-primary/20 bg-card/30 p-3 backdrop-blur-sm hover:bg-primary/5 transition-colors duration-300">
                 <div className="mb-1 flex items-center">
                   <Zap className="mr-1 h-4 w-4 text-primary" />
                   <span className="text-sm font-medium text-foreground">
@@ -75,7 +103,7 @@ const SLMHero = () => {
                   Low resource usage
                 </p>
               </div>
-              <div className="rounded-lg border border-primary/20 bg-card/30 p-3 backdrop-blur-sm">
+              <div className="rounded-lg border border-primary/20 bg-card/30 p-3 backdrop-blur-sm hover:bg-primary/5 transition-colors duration-300">
                 <div className="mb-1 flex items-center">
                   <Clock className="mr-1 h-4 w-4 text-primary" />
                   <span className="text-sm font-medium text-foreground">
@@ -86,7 +114,7 @@ const SLMHero = () => {
                   Sub-100ms latency
                 </p>
               </div>
-              <div className="rounded-lg border border-primary/20 bg-card/30 p-3 backdrop-blur-sm">
+              <div className="rounded-lg border border-primary/20 bg-card/30 p-3 backdrop-blur-sm hover:bg-primary/5 transition-colors duration-300">
                 <div className="mb-1 flex items-center">
                   <Laptop className="mr-1 h-4 w-4 text-primary" />
                   <span className="text-sm font-medium text-foreground">
@@ -123,7 +151,7 @@ const SLMHero = () => {
             <div className="relative z-0 flex items-center justify-center">
               <div className="relative">
                 <div className="absolute inset-0 bg-primary/5 rounded-full blur-3xl transform scale-75 opacity-50"></div>
-                <div className="relative bg-card/30 border border-primary/20 rounded-xl p-6 backdrop-blur-sm">
+                <div className="relative bg-card/30 border border-primary/20 rounded-xl p-6 backdrop-blur-sm hover:border-primary/40 transition-colors duration-300">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="p-2 rounded-lg bg-primary/10">
                       <Cpu className="h-6 w-6 text-primary" />
@@ -172,9 +200,9 @@ const SLMFeatureCard = ({
   icon: React.ElementType;
 }) => {
   return (
-    <Card className="bg-card/50 border border-border/80 h-full">
+    <Card className="bg-card/50 border border-border/80 h-full hover:border-primary/30 hover:shadow-md transition-all group">
       <CardHeader className="pb-2">
-        <div className="p-2 rounded-lg bg-primary/10 w-fit mb-2">
+        <div className="p-2 rounded-lg bg-primary/10 w-fit mb-2 group-hover:bg-primary/20 transition-colors">
           <Icon className="h-5 w-5 text-primary" />
         </div>
         <CardTitle>{title}</CardTitle>
@@ -201,10 +229,10 @@ const ModelCard = ({
   license: string;
 }) => {
   return (
-    <Card className="h-full flex flex-col border-border/80 hover:border-primary/50 transition-colors">
+    <Card className="h-full flex flex-col border-border/80 hover:border-primary/50 transition-colors hover:shadow-md group">
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-xl">{name}</CardTitle>
+          <CardTitle className="text-xl group-hover:text-primary transition-colors">{name}</CardTitle>
           <Badge variant="outline" className="border-primary/30 bg-primary/5 text-primary">
             SLM
           </Badge>
@@ -232,6 +260,21 @@ const ModelCard = ({
   );
 };
 
+// Animated section component
+const AnimatedSection = ({ title, description, children }: { title: string; description: string; children: React.ReactNode }) => {
+  return (
+    <AnimationContainer className="w-full">
+      <div className="text-center mb-10">
+        <h2 className="text-3xl font-bold mb-4 bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">{title}</h2>
+        <p className="text-muted-foreground max-w-2xl mx-auto">
+          {description}
+        </p>
+      </div>
+      {children}
+    </AnimationContainer>
+  );
+};
+
 // Main Page Component
 const SLMModelsPage = () => {
   return (
@@ -241,18 +284,11 @@ const SLMModelsPage = () => {
 
       <Wrapper className="mb-12 mt-12 flex flex-col items-center justify-center">
         {/* Definition Section */}
-        <AnimationContainer className="w-full">
-          <div className="text-center mb-10">
-            <h2 className="text-3xl font-bold mb-4">What Are Small Language Models?</h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
-              Small Language Models (SLMs) typically range from a few million to a few billion parameters. 
-              These models are designed to be efficient and performant in resource-constrained environments, 
-              making them ideal for edge deployments and applications with limited computing resources.
-            </p>
-          </div>
-
+        <AnimatedSection 
+          title="What Are Small Language Models?" 
+          description="Small Language Models (SLMs) are compact, efficient AI models designed for specific tasks and resource-constrained environments">
           <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-            <Card className="bg-card/50 border border-border/80">
+            <Card className="bg-card/50 border border-border/80 hover:border-primary/30 transition-colors hover:shadow-md">
               <CardHeader className="pb-2">
                 <CardTitle>Popular Examples</CardTitle>
               </CardHeader>
@@ -268,7 +304,7 @@ const SLMModelsPage = () => {
                     <Badge
                       key={i}
                       variant="outline"
-                      className="text-sm py-1.5 border-primary/20 bg-primary/5"
+                      className="text-sm py-1.5 border-primary/20 bg-primary/5 hover:bg-primary/10 transition-colors"
                     >
                       {model}
                     </Badge>
@@ -277,7 +313,7 @@ const SLMModelsPage = () => {
               </CardContent>
             </Card>
 
-            <Card className="bg-card/50 border border-border/80">
+            <Card className="bg-card/50 border border-border/80 hover:border-primary/30 transition-colors hover:shadow-md">
               <CardHeader className="pb-2">
                 <CardTitle>Typical Parameter Range</CardTitle>
               </CardHeader>
@@ -287,6 +323,7 @@ const SLMModelsPage = () => {
                 </p>
                 <div className="flex items-center justify-center">
                   <div className="w-full h-4 bg-primary/10 rounded-full relative">
+                    <div className="absolute left-0 top-0 h-4 w-1/3 bg-primary/30 rounded-l-full"></div>
                     <div className="absolute inset-0 flex items-center justify-between px-4 text-xs">
                       <span>1M</span>
                       <span>3B</span>
@@ -296,23 +333,26 @@ const SLMModelsPage = () => {
               </CardContent>
             </Card>
           </div>
-        </AnimationContainer>
+
+          <div className="mt-8 max-w-3xl mx-auto text-center">
+            <p className="text-muted-foreground">
+              Small Language Models represent a class of AI models that balance performance with efficiency. 
+              With parameter counts ranging from a few million to a few billion, these models are designed 
+              to perform specific tasks with exceptional speed and minimal resource requirements.
+            </p>
+          </div>
+        </AnimatedSection>
 
         {/* Key Advantages */}
         <div id="features">
-          <AnimationContainer className="w-full mt-20">
-            <div className="text-center mb-10">
-              <h2 className="text-3xl font-bold mb-4">Key Advantages</h2>
-              <p className="text-muted-foreground max-w-2xl mx-auto">
-                Small Language Models offer significant benefits for resource-constrained environments
-              </p>
-            </div>
-
+          <AnimatedSection 
+            title="Key Advantages" 
+            description="Small Language Models offer significant benefits for resource-constrained environments">
             <div className="grid md:grid-cols-3 gap-6">
               <SLMFeatureCard
                 icon={Laptop}
                 title="Lower Resource Footprint"
-                description="Can often be run on a standard CPU or lower-tier GPUs, making them ideal for devices with limited memory including edge devices and mobile applications."
+                description="Can run on standard CPUs or lower-tier GPUs, making them ideal for devices with limited memory including edge devices and mobile applications."
               />
               <SLMFeatureCard
                 icon={Clock}
@@ -325,20 +365,33 @@ const SLMModelsPage = () => {
                 description="Lower computational requirements translate to reduced infrastructure costs, especially for high-volume or continuous processing scenarios."
               />
             </div>
-          </AnimationContainer>
+
+            <div className="grid md:grid-cols-3 gap-6 mt-6">
+              <SLMFeatureCard
+                icon={Smartphone}
+                title="On-Device Processing"
+                description="Keep data local and improve privacy by processing information directly on user devices without sending sensitive data to the cloud."
+              />
+              <SLMFeatureCard
+                icon={Shield}
+                title="Enhanced Privacy"
+                description="On-device processing means sensitive user data never leaves the device, making SLMs an excellent choice for privacy-sensitive applications."
+              />
+              <SLMFeatureCard
+                icon={Gauge}
+                title="Reduced Latency"
+                description="Eliminate network round-trips to deliver near-instantaneous responses, critical for real-time applications and improved user experience."
+              />
+            </div>
+          </AnimatedSection>
         </div>
 
         {/* SLM-Friendly Tasks */}
-        <AnimationContainer className="w-full mt-20">
-          <div className="text-center mb-10">
-            <h2 className="text-3xl font-bold mb-4">SLM-Friendly Tasks</h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
-              Tasks where Small Language Models excel
-            </p>
-          </div>
-
+        <AnimatedSection 
+          title="SLM-Friendly Tasks" 
+          description="Applications where Small Language Models excel">
           <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-            <Card className="bg-card/50 border border-border/80">
+            <Card className="bg-card/50 border border-border/80 hover:border-primary/30 transition-colors hover:shadow-md">
               <CardHeader>
                 <div className="flex items-center gap-2">
                   <BrainCircuit className="h-5 w-5 text-primary" />
@@ -347,19 +400,19 @@ const SLMModelsPage = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <div className="p-3 rounded-lg bg-card/30">
+                  <div className="p-3 rounded-lg bg-card/30 hover:bg-primary/5 transition-colors">
                     <h4 className="font-medium mb-1">Text Classification</h4>
                     <p className="text-sm text-muted-foreground">
                       Sentiment analysis, spam detection, topic categorization, and intent recognition.
                     </p>
                   </div>
-                  <div className="p-3 rounded-lg bg-card/30">
+                  <div className="p-3 rounded-lg bg-card/30 hover:bg-primary/5 transition-colors">
                     <h4 className="font-medium mb-1">Named Entity Recognition</h4>
                     <p className="text-sm text-muted-foreground">
                       Identifying people, organizations, locations, and other entities in text.
                     </p>
                   </div>
-                  <div className="p-3 rounded-lg bg-card/30">
+                  <div className="p-3 rounded-lg bg-card/30 hover:bg-primary/5 transition-colors">
                     <h4 className="font-medium mb-1">Question Answering</h4>
                     <p className="text-sm text-muted-foreground">
                       Simple factual Q&A systems with predefined knowledge bases.
@@ -369,7 +422,7 @@ const SLMModelsPage = () => {
               </CardContent>
             </Card>
 
-            <Card className="bg-card/50 border border-border/80">
+            <Card className="bg-card/50 border border-border/80 hover:border-primary/30 transition-colors hover:shadow-md">
               <CardHeader>
                 <div className="flex items-center gap-2">
                   <Server className="h-5 w-5 text-primary" />
@@ -378,19 +431,19 @@ const SLMModelsPage = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <div className="p-3 rounded-lg bg-card/30">
+                  <div className="p-3 rounded-lg bg-card/30 hover:bg-primary/5 transition-colors">
                     <h4 className="font-medium mb-1">Edge Devices</h4>
                     <p className="text-sm text-muted-foreground">
                       IoT devices, mobile phones, and other hardware with limited processing power.
                     </p>
                   </div>
-                  <div className="p-3 rounded-lg bg-card/30">
+                  <div className="p-3 rounded-lg bg-card/30 hover:bg-primary/5 transition-colors">
                     <h4 className="font-medium mb-1">Embedded Systems</h4>
                     <p className="text-sm text-muted-foreground">
                       Integration with hardware-constrained systems that require natural language understanding.
                     </p>
                   </div>
-                  <div className="p-3 rounded-lg bg-card/30">
+                  <div className="p-3 rounded-lg bg-card/30 hover:bg-primary/5 transition-colors">
                     <h4 className="font-medium mb-1">High-Volume Processing</h4>
                     <p className="text-sm text-muted-foreground">
                       Applications that need to process thousands of text samples per second with low latency.
@@ -400,18 +453,36 @@ const SLMModelsPage = () => {
               </CardContent>
             </Card>
           </div>
-        </AnimationContainer>
+        </AnimatedSection>
+
+        {/* Technical Innovations Section */}
+        <AnimatedSection 
+          title="Technical Innovations" 
+          description="Advanced techniques that make SLMs efficient and powerful">
+          <div className="grid md:grid-cols-3 gap-6">
+            <SLMFeatureCard
+              icon={Cpu}
+              title="Quantization"
+              description="Reduce precision of model weights from 32-bit float to 8-bit or even 4-bit integers, dramatically decreasing memory footprint while maintaining accuracy."
+            />
+            <SLMFeatureCard
+              icon={Code}
+              title="Knowledge Distillation"
+              description="Train smaller models to mimic the behavior of larger ones, effectively condensing knowledge while reducing computational requirements."
+            />
+            <SLMFeatureCard
+              icon={Lightbulb}
+              title="Efficient Architectures"
+              description="Specialized model designs like MobileBERT and TinyBERT optimize for speed and memory usage through architectural innovations."
+            />
+          </div>
+        </AnimatedSection>
 
         {/* Featured SLM Models */}
         <div id="models">
-          <AnimationContainer className="w-full mt-20">
-            <div className="text-center mb-10">
-              <h2 className="text-3xl font-bold mb-4">Featured SLM Models</h2>
-              <p className="text-muted-foreground max-w-2xl mx-auto">
-                Explore our collection of Small Language Models
-              </p>
-            </div>
-
+          <AnimatedSection 
+            title="Featured SLM Models" 
+            description="Explore our collection of Small Language Models optimized for different use cases">
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               <ModelCard
                 name="BERT Base"
@@ -465,29 +536,53 @@ const SLMModelsPage = () => {
                 </Link>
               </Button>
             </div>
-          </AnimationContainer>
+          </AnimatedSection>
         </div>
+
+        {/* Real-world Applications */}
+        <AnimatedSection 
+          title="Real-world Applications" 
+          description="How organizations leverage SLMs in production environments">
+          <div className="grid md:grid-cols-3 gap-6">
+            <SLMFeatureCard
+              icon={FileCheck}
+              title="Document Processing"
+              description="Financial institutions use SLMs to automate document categorization, data extraction, and compliance verification on thousands of documents daily."
+            />
+            <SLMFeatureCard
+              icon={Database}
+              title="Customer Support"
+              description="E-commerce companies deploy SLMs on their platforms to provide instant responses to common customer queries without routing to expensive larger models."
+            />
+            <SLMFeatureCard
+              icon={Smartphone}
+              title="Mobile Assistants"
+              description="SLMs power on-device voice assistants that respond quickly to commands while preserving user privacy and functioning offline."
+            />
+          </div>
+        </AnimatedSection>
 
         {/* CTA Section */}
         <AnimationContainer className="mt-20 w-full">
-          <Card className="border-none shadow-md bg-gradient-to-br from-primary/5 to-primary/10">
-            <CardContent className="pt-8 pb-8">
+          <Card className="border-none shadow-md bg-gradient-to-br from-primary/5 to-primary/10 overflow-hidden relative group">
+            <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
+            <CardContent className="pt-8 pb-8 relative z-10">
               <div className="text-center mb-8">
-                <h2 className="text-3xl font-bold mb-4">Ready to Get Started with SLMs?</h2>
+                <h2 className="text-3xl font-bold mb-4 bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">Ready to Get Started with SLMs?</h2>
                 <p className="text-muted-foreground max-w-2xl mx-auto">
                   Explore our platform and discover how Artintel can help you leverage the power of Small Language Models for your specific use case.
                 </p>
               </div>
 
               <div className="flex flex-wrap gap-4 justify-center">
-                <Button asChild size="lg" className="rounded-full">
+                <Button asChild size="lg" className="rounded-full group-hover:bg-primary/90 transition-colors">
                   <Link href="/pricing">View Pricing Plans</Link>
                 </Button>
                 <Button
                   asChild
                   variant="outline"
                   size="lg"
-                  className="rounded-full"
+                  className="rounded-full group-hover:bg-primary/5 transition-colors"
                 >
                   <Link href="/contact">Contact Sales</Link>
                 </Button>
