@@ -55,25 +55,70 @@
 
 ### Model Pages
 1. **Models Overview** (`/models` - src/app/(marketing)/models/page.tsx)
-   - General models page with SLM vs LLM comparison
-   - Contains links to dedicated SLM and LLM pages
+   - **Purpose:** Main landing page for the models section, providing an overview of language models
+   - **Content Focus:** Presents a clear comparison between SLMs and LLMs at a high level
+   - **Key Sections:**
+     - Introduction to language models
+     - Visual comparison of SLM vs LLM
+     - Key strengths and use cases for each model type
+     - Links to dedicated model pages
    
 2. **LLM Models** (`/models/llm` - src/app/(marketing)/models/llm/page.tsx)
-   - Focuses specifically on Large Language Models
-   - Includes model benefits, use cases, and hardware requirements
-   - Contains recommended LLM models and their specifications
+   - **Purpose:** Dedicated page focused solely on Large Language Models
+   - **Content Focus:** Detailed information about LLMs without comparisons to SLMs
+   - **Key Sections:**
+     - LLM definition and capabilities
+     - Key strengths (advanced reasoning, rich knowledge, long context windows)
+     - Popular LLM models with specifications
+     - Resource requirements and hardware recommendations
+     - LLM-specific use cases and applications
    
 3. **SLM Models** (`/models/slm` - src/app/(marketing)/models/slm/page.tsx)
-   - Focuses specifically on Small Language Models
-   - Includes model benefits, use cases, and resource efficiency
-   - Contains recommended SLM models and their specifications
-
+   - **Purpose:** Dedicated page focused solely on Small Language Models
+   - **Content Focus:** Detailed information about SLMs without comparisons to LLMs
+   - **Key Sections:**
+     - SLM definition and capabilities
+     - Key advantages (lower resource footprint, faster inference, cost-effectiveness)
+     - Popular SLM models with specifications
+     - SLM-friendly tasks and deployment scenarios
+     - Edge deployment and mobile use cases
+   
 4. **Models Comparison** (`/models/comparison` - src/app/(marketing)/models/comparison/page.tsx)
-   - Detailed side-by-side comparison of LLMs and SLMs
-   - Interactive comparison tool for specific use cases
-   - Performance benchmarks and tradeoff analysis
+   - **Purpose:** The only page that directly compares SLMs and LLMs side-by-side
+   - **Content Focus:** Comprehensive comparison across multiple dimensions
+   - **Key Sections:**
+     - Interactive comparison with model type toggle
+     - Feature comparison table (parameters, hardware, speed, cost)
+     - Use case recommendations for both model types
+     - Performance comparisons and tradeoffs
+     - Resources for making an informed model selection
 
-5. **Model Catalog** (`/models/catalog` - src/app/(marketing)/models/catalog/page.tsx)
+5. **Model Performance** (`/models/performance` - src/app/(marketing)/models/performance/page.tsx)
+   - **Purpose:** Detailed performance metrics and benchmarks for all model types
+   - **Content Focus:** Technical performance data and benchmarking comparisons
+   - **Key Sections:**
+     - Performance metrics explanation
+     - Benchmark categories (NLU, generation quality, resource efficiency)
+     - Interactive benchmark tables and visualizations
+     - Performance optimization techniques
+     - Model efficiency considerations
+
+### Other Key Pages
+1. **Features** (`/features` - src/app/(marketing)/features/page.tsx)
+   - **Purpose:** Comprehensive breakdown of the Artintel platform's capabilities
+   - **Content Focus:** Detailed explanation of all platform features and benefits
+   - **Key Sections:**
+     - Model Selection: Finding the right models for specific use cases
+     - Data Integration: Tools for integrating with existing data systems
+     - Fine-Tuning: Workflows for customizing models
+     - Deployment: Options for deploying models in various environments
+     - Monitoring: Tools for tracking model performance
+     - Data Correction & Quality Enhancement: Tools for improving data quality
+     - Mash AI Agent: Agent-based capabilities for complex tasks
+     - Security: End-to-end encryption and security features
+
+### Model Catalog
+1. **Model Catalog** (`/models/catalog` - src/app/(marketing)/models/catalog/page.tsx)
    - Searchable catalog of all available models
    - Filterable by type, size, domain and capabilities
 

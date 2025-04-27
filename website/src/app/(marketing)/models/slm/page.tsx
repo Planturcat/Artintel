@@ -111,8 +111,8 @@ const SLMHero = () => {
                 size="lg"
                 className="rounded-full"
               >
-                <Link href="/models/comparison">
-                  Compare with LLMs
+                <Link href="#features">
+                  Learn More About SLMs
                 </Link>
               </Button>
             </div>
@@ -299,32 +299,34 @@ const SLMModelsPage = () => {
         </AnimationContainer>
 
         {/* Key Advantages */}
-        <AnimationContainer className="w-full mt-20">
-          <div className="text-center mb-10">
-            <h2 className="text-3xl font-bold mb-4">Key Advantages</h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
-              Small Language Models offer significant benefits for resource-constrained environments
-            </p>
-          </div>
+        <div id="features">
+          <AnimationContainer className="w-full mt-20">
+            <div className="text-center mb-10">
+              <h2 className="text-3xl font-bold mb-4">Key Advantages</h2>
+              <p className="text-muted-foreground max-w-2xl mx-auto">
+                Small Language Models offer significant benefits for resource-constrained environments
+              </p>
+            </div>
 
-          <div className="grid md:grid-cols-3 gap-6">
-            <SLMFeatureCard
-              icon={Laptop}
-              title="Lower Resource Footprint"
-              description="Can often be run on a standard CPU or lower-tier GPUs, making them ideal for devices with limited memory including edge devices and mobile applications."
-            />
-            <SLMFeatureCard
-              icon={Clock}
-              title="Faster Inference"
-              description="Due to smaller size, these models can process requests more quickly, often with sub-100ms latencies, supporting near-real-time applications."
-            />
-            <SLMFeatureCard
-              icon={CircleDollarSign}
-              title="Cost-Effectiveness"
-              description="Lower computational requirements translate to reduced infrastructure costs, especially for high-volume or continuous processing scenarios."
-            />
-          </div>
-        </AnimationContainer>
+            <div className="grid md:grid-cols-3 gap-6">
+              <SLMFeatureCard
+                icon={Laptop}
+                title="Lower Resource Footprint"
+                description="Can often be run on a standard CPU or lower-tier GPUs, making them ideal for devices with limited memory including edge devices and mobile applications."
+              />
+              <SLMFeatureCard
+                icon={Clock}
+                title="Faster Inference"
+                description="Due to smaller size, these models can process requests more quickly, often with sub-100ms latencies, supporting near-real-time applications."
+              />
+              <SLMFeatureCard
+                icon={CircleDollarSign}
+                title="Cost-Effectiveness"
+                description="Lower computational requirements translate to reduced infrastructure costs, especially for high-volume or continuous processing scenarios."
+              />
+            </div>
+          </AnimationContainer>
+        </div>
 
         {/* SLM-Friendly Tasks */}
         <AnimationContainer className="w-full mt-20">
@@ -401,68 +403,70 @@ const SLMModelsPage = () => {
         </AnimationContainer>
 
         {/* Featured SLM Models */}
-        <AnimationContainer className="w-full mt-20" id="models">
-          <div className="text-center mb-10">
-            <h2 className="text-3xl font-bold mb-4">Featured SLM Models</h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
-              Explore our collection of Small Language Models
-            </p>
-          </div>
+        <div id="models">
+          <AnimationContainer className="w-full mt-20">
+            <div className="text-center mb-10">
+              <h2 className="text-3xl font-bold mb-4">Featured SLM Models</h2>
+              <p className="text-muted-foreground max-w-2xl mx-auto">
+                Explore our collection of Small Language Models
+              </p>
+            </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <ModelCard
-              name="BERT Base"
-              description="A bidirectional transformer pre-trained using masked language modeling and next sentence prediction, ideal for understanding context in text."
-              parameterCount="110M"
-              domains={["NLP", "Classification", "Embeddings"]}
-              license="Apache 2.0"
-            />
-            <ModelCard
-              name="DistilBERT"
-              description="A smaller, faster, cheaper version of BERT that retains 97% of its language understanding capabilities while being 60% faster."
-              parameterCount="66M"
-              domains={["NLP", "Classification", "Mobile"]}
-              license="Apache 2.0"
-            />
-            <ModelCard
-              name="Phi-2"
-              description="A compact yet powerful language model designed for edge devices and resource-constrained environments."
-              parameterCount="2.7B"
-              domains={["Edge Computing", "Text Generation", "Q&A"]}
-              license="MIT"
-            />
-            <ModelCard
-              name="TinyBERT"
-              description="An extremely compact model designed for mobile and edge devices with minimal resource requirements."
-              parameterCount="14.5M"
-              domains={["Mobile", "Classification", "Embedded Systems"]}
-              license="MIT"
-            />
-            <ModelCard
-              name="MobileBERT"
-              description="A compressed version of BERT optimized for mobile devices with minimal accuracy loss."
-              parameterCount="25M"
-              domains={["Mobile", "On-device NLP", "Low-latency"]}
-              license="Apache 2.0"
-            />
-            <ModelCard
-              name="GPT-2 Small"
-              description="A smaller version of GPT-2 that offers decent text generation capabilities with modest resource requirements."
-              parameterCount="124M"
-              domains={["Text Generation", "Completion", "Summarization"]}
-              license="MIT"
-            />
-          </div>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <ModelCard
+                name="BERT Base"
+                description="A bidirectional transformer pre-trained using masked language modeling and next sentence prediction, ideal for understanding context in text."
+                parameterCount="110M"
+                domains={["NLP", "Classification", "Embeddings"]}
+                license="Apache 2.0"
+              />
+              <ModelCard
+                name="DistilBERT"
+                description="A smaller, faster, cheaper version of BERT that retains 97% of its language understanding capabilities while being 60% faster."
+                parameterCount="66M"
+                domains={["NLP", "Classification", "Mobile"]}
+                license="Apache 2.0"
+              />
+              <ModelCard
+                name="Phi-2"
+                description="A compact yet powerful language model designed for edge devices and resource-constrained environments."
+                parameterCount="2.7B"
+                domains={["Edge Computing", "Text Generation", "Q&A"]}
+                license="MIT"
+              />
+              <ModelCard
+                name="TinyBERT"
+                description="An extremely compact model designed for mobile and edge devices with minimal resource requirements."
+                parameterCount="14.5M"
+                domains={["Mobile", "Classification", "Embedded Systems"]}
+                license="MIT"
+              />
+              <ModelCard
+                name="MobileBERT"
+                description="A compressed version of BERT optimized for mobile devices with minimal accuracy loss."
+                parameterCount="25M"
+                domains={["Mobile", "On-device NLP", "Low-latency"]}
+                license="Apache 2.0"
+              />
+              <ModelCard
+                name="GPT-2 Small"
+                description="A smaller version of GPT-2 that offers decent text generation capabilities with modest resource requirements."
+                parameterCount="124M"
+                domains={["Text Generation", "Completion", "Summarization"]}
+                license="MIT"
+              />
+            </div>
 
-          <div className="flex justify-center mt-8">
-            <Button asChild size="lg" className="rounded-full">
-              <Link href="/catalog">
-                View Full Catalog
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
-          </div>
-        </AnimationContainer>
+            <div className="flex justify-center mt-8">
+              <Button asChild size="lg" className="rounded-full">
+                <Link href="/catalog">
+                  View Full Catalog
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
+              </Button>
+            </div>
+          </AnimationContainer>
+        </div>
 
         {/* CTA Section */}
         <AnimationContainer className="mt-20 w-full">

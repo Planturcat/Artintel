@@ -18,7 +18,7 @@ const APP_NAME = "Artintel";
 const PRODUCT_LINKS = [
   { label: "Features", href: "/features" },
   { label: "How It Works", href: "/how-it-works" },
-  { label: "AI Models", href: "#" },
+  { label: "AI Models", href: "/models" },
   { label: "Integration Tools", href: "#" },
   { label: "API Access", href: "#" },
 ];

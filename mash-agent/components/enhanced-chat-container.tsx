@@ -11,6 +11,7 @@ import TemplateWizard from './template-wizard';
 
 // Import API services
 import { aiService } from "@/lib/services/ai-service";
+import { setOllamaBaseUrl } from "@/lib/ollama-service";
 
 // Import reasoning services
 import { reasoningEngine } from "@/lib/services/reasoning-engine";
@@ -204,8 +205,28 @@ export const EnhancedChatContainer: React.FC<EnhancedChatContainerProps> = ({ mo
       }
 
       if (!silent) {
+        // Set Ollama to mock mode if we can't connect to the real service
+        console.log("Failed to connect after retries, setting to mock mode");
+        setOllamaBaseUrl('mock');
+        
+        // Try again with mock mode
+        try {
+          const mockStatus = await aiService.checkConnection();
+          if (mockStatus.connected) {
+            setAIServiceConnected(true);
+            const models = await aiService.getModels();
+            if (models && models.length > 0) {
+              setAvailableModels(models);
+            }
+            setConnectionError("Using demo mode (no Ollama connection)");
+            return true;
+          }
+        } catch (mockError) {
+          console.error("Mock mode setup failed:", mockError);
+        }
+        
         setAIServiceConnected(false);
-        setConnectionError("Could not connect to AI service. Please check your connection.");
+        setConnectionError("Could not connect to AI service. Using fallback mode.");
       }
       return false;
     } catch (error) {
@@ -218,9 +239,29 @@ export const EnhancedChatContainer: React.FC<EnhancedChatContainerProps> = ({ mo
       }
 
       if (!silent) {
+        // Set Ollama to mock mode if we can't connect to the real service
+        console.log("Connection error, setting to mock mode");
+        setOllamaBaseUrl('mock');
+        
+        // Try again with mock mode
+        try {
+          const mockStatus = await aiService.checkConnection();
+          if (mockStatus.connected) {
+            setAIServiceConnected(true);
+            const models = await aiService.getModels();
+            if (models && models.length > 0) {
+              setAvailableModels(models);
+            }
+            setConnectionError("Using demo mode (no Ollama connection)");
+            return true;
+          }
+        } catch (mockError) {
+          console.error("Mock mode setup failed:", mockError);
+        }
+        
         setAIServiceConnected(false);
         const errorMessage = error instanceof Error ? error.message : String(error);
-        setConnectionError(`Error connecting to AI service: ${errorMessage}`);
+        setConnectionError(`Error connecting to AI service: ${errorMessage}. Using fallback mode.`);
       }
       return false;
     } finally {
@@ -230,162 +271,186 @@ export const EnhancedChatContainer: React.FC<EnhancedChatContainerProps> = ({ mo
     }
   };
 
-  // Process user message
-  const processUserMessage = async (userMessage: string): Promise<string> => {
-    // In chat mode, use a simpler approach with the AI service but without the full reasoning engine
-    if (mode === 'unified' && agentMode === 'chat') {
+  // Process a message in chat mode versus agent mode
+  const processMessage = async (userMessage: string): Promise<string> => {
+    setIsProcessing(true);
+    
+    try {
+      // For chat mode, we'll use the AI service directly or fall back to pre-defined responses
+      if (mode === 'unified' && agentMode === 'chat') {
+        console.log("Processing in chat mode");
+        
+        // Try to use the AI service if available, but don't wait too long
+        try {
+          // Set a timeout for AI service connection
+          const timeoutPromise = new Promise<boolean>((_, reject) => 
+            setTimeout(() => reject(new Error("AI service connection timeout")), 3000)
+          );
+          
+          // Try to connect to AI service with timeout
+          if (!aiServiceConnected) {
+            try {
+              const connectionPromise = checkAIServiceConnection(1, true);
+              await Promise.race([connectionPromise, timeoutPromise]);
+            } catch (error) {
+              console.warn("AI service connection failed or timed out, using fallback response");
+              return generateSimpleChatResponse(userMessage);
+            }
+          }
+
+          // If we reach here, connection was successful or already established
+          // Use the AI service with a timeout as well
+          const modelName = currentModel || "llama2:7b";
+          aiService.setCurrentModel(modelName);
+
+          // Create a prompt with context about Artintel
+          const prompt = `You are Mash, an AI assistant for Artintel, a platform for discovering, fine-tuning, and deploying language models.
+Your goal is to provide helpful, accurate information about AI technologies, particularly language models.
+You should be conversational but concise, and focus on providing practical guidance.
+
+User message: ${userMessage}
+
+Your response:`;
+
+          // Set a timeout for AI generation
+          const generationPromise = aiService.generateText(prompt);
+          const responseWithTimeout = await Promise.race([
+            generationPromise,
+            new Promise<null>((_, reject) => 
+              setTimeout(() => reject(new Error("AI generation timeout")), 6000)
+            )
+          ]);
+          
+          // Check if we got a valid response
+          if (responseWithTimeout && responseWithTimeout.response) {
+            console.log("Got valid response from AI service");
+            return responseWithTimeout.response;
+          }
+        } catch (error) {
+          console.warn("Error in AI service interaction:", error);
+          // Fall through to fallback response
+        }
+        
+        // Always fall back to a simple response if anything goes wrong
+        console.log("Using fallback response");
+        return generateSimpleChatResponse(userMessage);
+      }
+      
+      // For agent mode, use the existing reasoning engine
+      if (mode === 'unified' && agentMode === 'agent') {
+        console.log("Processing in agent mode");
+        // ... existing code ...
+      }
+
+      // Determine if this is a UI generation request
+      const isUIRequest = userMessage.toLowerCase().includes('create ui') ||
+                         userMessage.toLowerCase().includes('build ui') ||
+                         userMessage.toLowerCase().includes('design ui') ||
+                         userMessage.toLowerCase().includes('generate ui') ||
+                         userMessage.toLowerCase().includes('create a form') ||
+                         userMessage.toLowerCase().includes('create a component') ||
+                         userMessage.toLowerCase().includes('build a dashboard') ||
+                         userMessage.toLowerCase().includes('design a card');
+
+      // Determine if this is a code generation request
+      const isCodeRequest = userMessage.toLowerCase().includes('generate code') ||
+                           userMessage.toLowerCase().includes('write code') ||
+                           userMessage.toLowerCase().includes('debug code') ||
+                           userMessage.toLowerCase().includes('optimize code') ||
+                           userMessage.toLowerCase().includes('refactor code') ||
+                           userMessage.toLowerCase().includes('convert code');
+
+      // Update steps for visualization
+      setSteps([
+        { name: "Understanding request", status: "pending" },
+        { name: "Determining task type", status: "pending" },
+        { name: isUIRequest ? "Generating UI" : isCodeRequest ? "Generating code" : "Processing task", status: "pending" },
+        { name: "Formulating response", status: "pending" }
+      ]);
+      setCurrentStep("Understanding request");
+      setThinkingSteps([]);
+      setExpandedSteps({});
+
       // Connect to AI service if needed
       if (!aiServiceConnected) {
         const connected = await checkAIServiceConnection(1, true);
         if (!connected) {
-          console.warn("AI service connection failed, using fallback response");
-          return generateSimpleChatResponse(userMessage);
+          setSteps((prev) =>
+            prev.map((step) =>
+              step.name === "Understanding request" ? { ...step, status: "error", message: "Couldn't connect to AI service" } : step
+            )
+          );
+          return "I couldn't connect to the AI model. Please check your connection and try again.";
         }
       }
 
-      // Use the AI service directly with a simplified prompt
-      const modelName = currentModel || "llama2:7b";
-      aiService.setCurrentModel(modelName);
+      try {
+        // Set the model for reasoning engine based on user selection
+        const modelName = currentModel || "llama2:7b";
+        reasoningEngine.setModel(modelName);
 
-      // Create a more detailed prompt with context about Artintel
-      const prompt = `You are Mash, an AI assistant for Artintel, a platform that helps organizations discover, fine-tune, and deploy language models (LLMs and SLMs).
+        // Add the user message to task manager conversation history
+        taskManager.addToConversationHistory({ role: 'user', content: userMessage });
 
-Artintel is a comprehensive, no-code platform that enables organizations to discover, fine-tune, and deploy open-source Large Language Models (LLMs) and Small Language Models (SLMs). It bridges the gap between cutting-edge AI research and practical industry applications, ensuring that even teams without deep machine learning expertise can leverage powerful language models for their unique use cases.
+        // Process the message through the task manager
+        setCurrentStep("Understanding request");
+        updateStepStatus("Understanding request", "complete");
+        setCurrentStep("Determining task type");
 
-Artintel offers features like:
-- Model Selection & Discovery: A curated catalog of models with performance benchmarks and domain tags
-- Data Integration & Preprocessing: Tools to connect to data sources and prepare data for fine-tuning
-- Fine-Tuning Workflows: Guided processes for adapting models to specific domains
-- Deployment & Serving: One-click deployment to cloud providers with auto-scaling
-- Monitoring & Alerts: Real-time metrics and custom alerts for model performance
+        // Process the user message through task manager - this will call the reasoning engine and APIs
+        const task = await taskManager.processUserMessage(userMessage);
+        updateStepStatus("Determining task type", "complete");
 
-Respond to the following message in a helpful, detailed way. Provide specific information about Artintel's capabilities related to the user's question.
+        // Capture thinking steps for display
+        if (task.thinkingProcess?.steps) {
+          setThinkingSteps(
+            task.thinkingProcess.steps.map(step => ({
+              stage: step.stage,
+              reasoning: step.reasoning
+            }))
+          );
+        }
 
-IMPORTANT: Never mention that you are using any specific AI model, local AI, or implementation details about how you work. Don't refer to yourself as an AI model or mention anything about your underlying technology.
+        // Update the processing task step
+        setCurrentStep("Processing task");
+        updateStepStatus("Processing task", "complete");
 
-User message: ${userMessage}
+        // Update the formulating response step
+        setCurrentStep("Formulating response");
+        updateStepStatus("Formulating response", "complete");
 
-Response:`;
+        // Add system message to conversation history
+        const responseText = getResponseFromTask(task);
+        taskManager.addToConversationHistory({ role: 'assistant', content: responseText });
 
-      // Call the AI service directly - we've modified the AI service to return a fallback response instead of throwing
-      const response = await aiService.generateText(prompt);
+        // Complete all steps
+        setSteps(prev => prev.map(step => ({ ...step, status: "complete" })));
 
-      // Check if we got a valid response
-      if (response && response.response) {
-        console.log("Got valid response from AI service");
-        return response.response;
+        // Return the formulated response
+        return responseText;
+      } catch (error: any) {
+        console.error("Error processing with reasoning engine:", error);
+
+        // Update steps to show error
+        setSteps(prev => prev.map(step =>
+          step.name === currentStep ? { ...step, status: "error", message: "Processing Error" } : step
+        ));
+
+        // Extract error message
+        let errorMessage = "I encountered an error while processing your request.";
+        if (error.message) {
+          if (error.message.includes("Failed to fetch") || error.message.includes("Could not connect")) {
+            errorMessage = "❌ Connection Error: Could not connect to the AI service.\n\nPlease ensure that:\n• Your internet connection is working\n• The AI service is available\n• No firewall is blocking the connection\n\nTry refreshing the page or restarting your computer if the issue persists.";
+          }
+        }
+
+        return errorMessage;
       }
-
-      // If we get here, something went wrong but the AI service handled it with a fallback
-      console.warn("Using fallback response from generateSimpleChatResponse");
-      return generateSimpleChatResponse(userMessage);
-    }
-
-    // For agent mode or other specialized modes, use the full reasoning engine
-
-    // Determine if this is a UI generation request
-    const isUIRequest = userMessage.toLowerCase().includes('create ui') ||
-                       userMessage.toLowerCase().includes('build ui') ||
-                       userMessage.toLowerCase().includes('design ui') ||
-                       userMessage.toLowerCase().includes('generate ui') ||
-                       userMessage.toLowerCase().includes('create a form') ||
-                       userMessage.toLowerCase().includes('create a component') ||
-                       userMessage.toLowerCase().includes('build a dashboard') ||
-                       userMessage.toLowerCase().includes('design a card');
-
-    // Determine if this is a code generation request
-    const isCodeRequest = userMessage.toLowerCase().includes('generate code') ||
-                         userMessage.toLowerCase().includes('write code') ||
-                         userMessage.toLowerCase().includes('debug code') ||
-                         userMessage.toLowerCase().includes('optimize code') ||
-                         userMessage.toLowerCase().includes('refactor code') ||
-                         userMessage.toLowerCase().includes('convert code');
-
-    // Update steps for visualization
-    setSteps([
-      { name: "Understanding request", status: "pending" },
-      { name: "Determining task type", status: "pending" },
-      { name: isUIRequest ? "Generating UI" : isCodeRequest ? "Generating code" : "Processing task", status: "pending" },
-      { name: "Formulating response", status: "pending" }
-    ]);
-    setCurrentStep("Understanding request");
-    setThinkingSteps([]);
-    setExpandedSteps({});
-
-    // Connect to AI service if needed
-    if (!aiServiceConnected) {
-      const connected = await checkAIServiceConnection(1, true);
-      if (!connected) {
-        setSteps((prev) =>
-          prev.map((step) =>
-            step.name === "Understanding request" ? { ...step, status: "error", message: "Couldn't connect to AI service" } : step
-          )
-        );
-        return "I couldn't connect to the AI model. Please check your connection and try again.";
-      }
-    }
-
-    try {
-      // Set the model for reasoning engine based on user selection
-      const modelName = currentModel || "llama2:7b";
-      reasoningEngine.setModel(modelName);
-
-      // Add the user message to task manager conversation history
-      taskManager.addToConversationHistory({ role: 'user', content: userMessage });
-
-      // Process the message through the task manager
-      setCurrentStep("Understanding request");
-      updateStepStatus("Understanding request", "complete");
-      setCurrentStep("Determining task type");
-
-      // Process the user message through task manager - this will call the reasoning engine and APIs
-      const task = await taskManager.processUserMessage(userMessage);
-      updateStepStatus("Determining task type", "complete");
-
-      // Capture thinking steps for display
-      if (task.thinkingProcess?.steps) {
-        setThinkingSteps(
-          task.thinkingProcess.steps.map(step => ({
-            stage: step.stage,
-            reasoning: step.reasoning
-          }))
-        );
-      }
-
-      // Update the processing task step
-      setCurrentStep("Processing task");
-      updateStepStatus("Processing task", "complete");
-
-      // Update the formulating response step
-      setCurrentStep("Formulating response");
-      updateStepStatus("Formulating response", "complete");
-
-      // Add system message to conversation history
-      const responseText = getResponseFromTask(task);
-      taskManager.addToConversationHistory({ role: 'assistant', content: responseText });
-
-      // Complete all steps
-      setSteps(prev => prev.map(step => ({ ...step, status: "complete" })));
-
-      // Return the formulated response
-      return responseText;
     } catch (error: any) {
-      console.error("Error processing with reasoning engine:", error);
-
-      // Update steps to show error
-      setSteps(prev => prev.map(step =>
-        step.name === currentStep ? { ...step, status: "error", message: "Processing Error" } : step
-      ));
-
-      // Extract error message
-      let errorMessage = "I encountered an error while processing your request.";
-      if (error.message) {
-        if (error.message.includes("Failed to fetch") || error.message.includes("Could not connect")) {
-          errorMessage = "❌ Connection Error: Could not connect to the AI service.\n\nPlease ensure that:\n• Your internet connection is working\n• The AI service is available\n• No firewall is blocking the connection\n\nTry refreshing the page or restarting your computer if the issue persists.";
-        }
-      }
-
-      return errorMessage;
+      console.error("Error processing message:", error);
+      return "Sorry, I encountered an error. Please check your connection and try again later.";
+    } finally {
+      setIsProcessing(false);
     }
   };
 
@@ -540,7 +605,7 @@ You can:
 
     try {
       // Process the message and get a response
-      const response = await processUserMessage(input);
+      const response = await processMessage(input);
 
       // Add assistant response
       setMessages((prev) => [...prev, { role: "assistant", content: response }]);
@@ -589,38 +654,73 @@ You can:
 
   // Generate a simple chat response without using the reasoning engine
   const generateSimpleChatResponse = (userMessage: string): string => {
+    // Normalize message for case-insensitive matching
+    const normalizedMessage = userMessage.toLowerCase().trim();
+    
     // Simple greeting detection
-    if (/^(hi|hello|hey|greetings|howdy|hola)/i.test(userMessage.trim())) {
-      return "Hello! Welcome to Artintel. I can help you discover, fine-tune, and deploy language models. If you need more advanced assistance with model selection or fine-tuning workflows, consider switching to agent mode.";
+    if (/^(hi|hello|hey|greetings|howdy|hola)(\s|$)/i.test(normalizedMessage)) {
+      const greetings = [
+        "Hello! Welcome to Artintel. I can help you discover, fine-tune, and deploy language models. What can I help you with today?",
+        "Hi there! I'm Mash, your Artintel assistant. I'm here to help with anything related to language models. What would you like to know?",
+        "Hey! Welcome to Mash Agent. How can I assist you with language models today?"
+      ];
+      return greetings[Math.floor(Math.random() * greetings.length)];
     }
 
     // Check if asking about capabilities
-    if (/what can you do|your capabilities|help me with|what are you/i.test(userMessage)) {
-      return "I'm your Artintel assistant in chat mode. I can help you with basic information about our platform that enables organizations to discover, fine-tune, and deploy open-source Large Language Models (LLMs) and Small Language Models (SLMs). For more advanced help with model selection, data integration, fine-tuning workflows, deployment, and monitoring, please switch to agent mode using the toggle above.";
+    if (/what can you do|your capabilities|help me with|what are you/i.test(normalizedMessage)) {
+      return "I'm your Artintel assistant. I can help you with:\n\n• Discovering language models suited for your tasks\n• Data preparation for fine-tuning\n• Setting up fine-tuning workflows\n• Model deployment strategies\n• Monitoring AI applications\n\nWhat would you like to know more about?";
     }
 
     // Check if asking about switching modes
-    if (/switch|change|agent mode|chat mode/i.test(userMessage)) {
+    if (/switch|change|agent mode|chat mode/i.test(normalizedMessage)) {
       return "You can switch between chat and agent mode using the toggle at the top of the chat. Chat mode is simpler and faster for basic questions, while agent mode gives you access to my full capabilities including detailed model selection guidance, fine-tuning workflows, deployment strategies, and monitoring setup.";
     }
-
+    
     // Check if asking about models
-    if (/models|llm|slm|language model|which model|model selection/i.test(userMessage)) {
-      return "Artintel supports a wide range of language models from small, resource-friendly models like DistilBERT to large-scale models like Falcon 180B, Llama 70B, and more. Each model in our catalog includes performance benchmarks, approximate inference speed, memory requirements, and licensing details. For detailed model recommendations based on your specific needs, please switch to agent mode.";
+    if (/models|model types|which model|available models|best model/i.test(normalizedMessage)) {
+      return "Artintel supports various language models, including:\n\n• Llama 2 (7B, 13B, 70B parameter variants)\n• Mistral (7B)\n• GPT models\n\nThe best choice depends on your specific use case, performance requirements, and deployment constraints. Would you like more specific recommendations?";
     }
-
+    
     // Check if asking about fine-tuning
-    if (/fine-tun|train|adapt|customize|domain adaptation/i.test(userMessage)) {
-      return "Artintel provides guided fine-tuning workflows with pre-built templates and best-practice hyperparameter suggestions for common tasks like customer service chatbots, sentiment analysis, and domain-specific summarization. Our platform supports parameter-efficient techniques like LoRA to reduce GPU memory usage and speed up training. For detailed fine-tuning guidance, please switch to agent mode.";
+    if (/fine-tune|finetune|training|train a model/i.test(normalizedMessage)) {
+      return "Fine-tuning allows you to adapt pre-trained language models to your specific domain or task. Artintel provides guided workflows for fine-tuning that handle data preprocessing, training configuration, and model evaluation. This significantly improves performance on domain-specific tasks compared to using general-purpose models.";
     }
-
+    
     // Check if asking about deployment
-    if (/deploy|serve|host|production|inference/i.test(userMessage)) {
-      return "Artintel offers one-click deployment to major cloud providers (AWS, Azure, GCP) with automated containerization, auto-scaling policies, and usage dashboards. We also support hybrid and on-premises deployment for organizations with sensitive data requirements. For detailed deployment guidance, please switch to agent mode.";
+    if (/deploy|deployment|hosting|serve|production/i.test(normalizedMessage)) {
+      return "Artintel offers seamless deployment options for your fine-tuned models, including:\n\n• One-click cloud deployment with auto-scaling\n• API endpoint generation\n• Monitoring and logging infrastructure\n• Cost optimization\n\nThis makes it easy to put your models into production quickly and reliably.";
+    }
+    
+    // Check if asking about data or datasets
+    if (/data|dataset|datasets|my data/i.test(normalizedMessage)) {
+      return "Artintel helps you manage your data for AI training and evaluation. You can:\n\n• Upload and organize datasets\n• Apply preprocessing and cleaning operations\n• Split data into training/validation sets\n• Analyze data quality and coverage\n\nProperly prepared data is essential for successful model fine-tuning.";
+    }
+    
+    // Check if asking about specific language models
+    if (/llama|mistral|gpt|neural|falcon/i.test(normalizedMessage)) {
+      return "The Artintel platform supports a variety of model families including:\n\n• Llama 2 - Meta's open-source LLM, good balance of performance and efficiency\n• Mistral - Powerful open-source model with excellent reasoning capabilities\n• Neural Chat - Optimized for conversational use cases with strong instruction-following\n\nEach model has different parameter sizes and quantization options to fit your computational resources.";
+    }
+    
+    // Check if asking about pricing or costs
+    if (/price|pricing|cost|subscription|pay/i.test(normalizedMessage)) {
+      return "Artintel offers flexible pricing tiers to meet different needs:\n\n• Community Edition: Free for personal projects and exploration\n• Professional: For businesses with moderate usage requirements\n• Enterprise: For organizations with high-volume needs and custom requirements\n\nAll tiers include access to open-source models, while higher tiers add advanced features like team collaboration, priority support, and SLAs.";
+    }
+    
+    // Check if asking for help or examples
+    if (/help|example|tutorial|guide|how to/i.test(normalizedMessage)) {
+      return "I'd be happy to help! Here are some things you can ask me about:\n\n• \"Which model should I use for customer service automation?\"\n• \"How do I prepare my text data for fine-tuning?\"\n• \"What's the process for deploying a model to production?\"\n• \"How can I monitor my model's performance?\"\n\nJust let me know what you'd like to learn more about.";
     }
 
-    // Default response for chat mode
-    return "I'm in chat mode now. I can provide basic information about Artintel's platform for discovering, fine-tuning, and deploying language models. For more advanced assistance with specific workflows, detailed model selection, or technical implementation guidance, please switch to agent mode using the toggle above.";
+    // Default response - more varied options
+    const defaultResponses = [
+      "I understand you're interested in AI and language models. Artintel's platform can help you discover, fine-tune, and deploy these models for your specific use cases. Could you provide more details about what you're looking to accomplish?",
+      "Thanks for your message. Artintel specializes in making language models accessible and effective for organizations. To give you the most helpful information, could you tell me a bit more about your specific needs or questions?",
+      "That's an interesting question about language models. To help you better, could you share what specific use case or industry you're working in? This will help me provide more tailored information.",
+      "I'd be happy to discuss how Artintel can help with language models for your needs. Could you elaborate on your question or share what particular aspect of AI implementation you're curious about?"
+    ];
+    
+    return defaultResponses[Math.floor(Math.random() * defaultResponses.length)];
   };
 
   // Handle generated code from UI Generator
@@ -663,6 +763,10 @@ I can help you customize this template with your specific content, styling, and 
 
   // Check AI service connection on component mount
   useEffect(() => {
+    // Initialize Ollama connection with auto mode first
+    setOllamaBaseUrl('auto');
+    
+    // Then check the connection (will switch to mock if needed)
     checkAIServiceConnection();
 
     // Set up periodic checks for system health and intelligent alerts
@@ -692,7 +796,7 @@ I can help you customize this template with your specific content, styling, and 
     localStorage.setItem('lastActivityTime', Date.now().toString());
 
     return () => clearInterval(intervalId);
-  }, [aiServiceConnected]);
+  }, []);
 
   // Save messages to localStorage and scroll to bottom when messages change
   useEffect(() => {

@@ -40,6 +40,9 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import MacbookShowcase from "@/components/MacbookShowcase";
+import FlipCard from "@/components/FlipCard";
+import SplitComparisonSection from "@/components/SplitComparisonSection";
 
 // Custom FeatureCard component
 const FeatureCard = ({
@@ -72,6 +75,34 @@ const FeatureCard = ({
 
 // Custom FeaturesHero component
 const FeaturesHero = () => {
+  // Define features to display in the MacbookShowcase
+  const features = [
+    {
+      title: "Model Selection & Discovery",
+      description: "Find the perfect model for your specific needs with our curated catalog."
+    },
+    {
+      title: "Data Integration & Preprocessing",
+      description: "Easily connect to your data sources and prepare data for training."
+    },
+    {
+      title: "Fine-Tuning Workflows",
+      description: "Adapt models to your domain with our no-code fine-tuning studio."
+    },
+    {
+      title: "Deployment & Serving",
+      description: "Deploy models to any environment with just a few clicks."
+    },
+    {
+      title: "Monitoring & Alerts",
+      description: "Track model performance and receive alerts when issues arise."
+    },
+    {
+      title: "Security & Compliance",
+      description: "Enterprise-grade security with end-to-end encryption and access controls."
+    }
+  ];
+
   return (
     <div className="relative overflow-hidden bg-gradient-to-b from-background to-background/80 py-20 md:py-24">
       {/* Decorative elements */}
@@ -122,50 +153,9 @@ const FeaturesHero = () => {
             </div>
           </div>
 
-          <div className="relative h-[400px] flex items-center justify-center">
-            {/* Animated feature showcase */}
-            <div className="relative w-[320px] h-[320px] rounded-full border border-primary/30 flex items-center justify-center">
-              <div className="absolute inset-0 rounded-full border border-dashed border-primary/20 animate-[spin_60s_linear_infinite]"></div>
-              <div className="absolute inset-2 rounded-full border border-dashed border-primary/20 animate-[spin_45s_linear_infinite_reverse]"></div>
-              <div className="absolute inset-4 rounded-full border border-dashed border-primary/20 animate-[spin_30s_linear_infinite]"></div>
-
-              {/* Feature icons */}
-              {[
-                { icon: Database, label: "Data Integration" },
-                { icon: Cpu, label: "Fine-Tuning" },
-                { icon: Server, label: "Deployment" },
-                { icon: Shield, label: "Security" },
-                { icon: BarChart, label: "Monitoring" },
-                { icon: Workflow, label: "Workflows" },
-              ].map((item, i) => {
-                const rotation = i * (360 / 6);
-                const distance = 130;
-                const x = Math.cos((rotation * Math.PI) / 180) * distance;
-                const y = Math.sin((rotation * Math.PI) / 180) * distance;
-                const Icon = item.icon;
-
-                return (
-                  <div
-                    key={i}
-                    className="absolute flex flex-col items-center justify-center"
-                    style={{
-                      transform: `translate(${x}px, ${y}px)`,
-                    }}
-                  >
-                    <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center mb-1 animate-pulse" style={{ animationDelay: `${i * 0.2}s` }}>
-                      <Icon className="h-5 w-5 text-primary" />
-                    </div>
-                    <span className="text-xs text-muted-foreground">{item.label}</span>
-                  </div>
-                );
-              })}
-
-              {/* Center sphere */}
-              <div className="relative h-24 w-24 rounded-full bg-gradient-to-br from-primary/30 to-primary/10 flex items-center justify-center backdrop-blur-sm border border-primary/30">
-                <Sparkles className="h-8 w-8 text-primary" />
-                <div className="absolute inset-0 rounded-full bg-primary/5 animate-pulse"></div>
-              </div>
-            </div>
+          <div className="relative flex items-center justify-center">
+            {/* Replace the previous animated showcase with MacbookShowcase */}
+            <MacbookShowcase features={features} />
           </div>
         </div>
       </Wrapper>
@@ -174,149 +164,168 @@ const FeaturesHero = () => {
 };
 
 const FeaturesPage = () => {
+  // Define comparison metrics for the SplitComparisonSection
+  const modelMetrics = [
+    {
+      id: "latency",
+      label: "Inference Latency",
+      llmValue: "300-1500ms",
+      slmValue: "20-100ms",
+      description: "Inference latency measures the time it takes to generate a response. SLMs excel at low latency, making them ideal for real-time applications, while LLMs may take longer but can generate more complex responses."
+    },
+    {
+      id: "memory",
+      label: "Memory Requirements",
+      llmValue: "8-80GB",
+      slmValue: "500MB-4GB",
+      description: "Memory requirements affect where and how you can deploy models. SLMs can run on edge devices with limited memory, while LLMs typically need substantial GPU/TPU resources."
+    },
+    {
+      id: "accuracy",
+      label: "Task Accuracy",
+      llmValue: "90-98%",
+      slmValue: "75-90%",
+      description: "Accuracy on standard benchmarks varies by task. LLMs tend to perform better on complex reasoning tasks, while SLMs can be competitive on specialized, narrow tasks."
+    },
+    {
+      id: "tokensec",
+      label: "Tokens/Second",
+      llmValue: "10-50",
+      slmValue: "100-500",
+      description: "Processing speed in tokens per second affects throughput. SLMs generate text much faster, allowing for higher throughput in production environments."
+    },
+    {
+      id: "cost",
+      label: "Monthly Serving Cost",
+      llmValue: "$500-5,000",
+      slmValue: "$50-500",
+      description: "Hosting costs vary based on usage patterns, but SLMs are typically an order of magnitude less expensive to serve than LLMs for similar workloads."
+    }
+  ];
+
   return (
     <>
       {/* Custom Hero Section */}
       <FeaturesHero />
 
       <Wrapper className="mb-12 mt-20 flex flex-col items-center justify-center">
-        {/* Model Selection & Discovery */}
+        {/* Model Selection & Discovery - Updated with FlipCards */}
         <AnimationContainer className="w-full">
-          <Card className="border-none shadow-md bg-card/30">
-            <CardHeader>
-              <CardTitle className="text-2xl font-bold">
-                Model Selection & Discovery
-              </CardTitle>
-              <CardDescription>
-                Find the perfect model for your specific use case
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="text-left space-y-4">
-              <p>
-                Artintel provides a curated catalog of language models, making it easy to find the right one for your specific needs:
-              </p>
-              <div className="grid md:grid-cols-2 gap-6">
-                <FeatureCard
-                  title="Curated Model Catalog"
-                  description="Browse a wide variety of models from small, resource-friendly options like DistilBERT to large-scale powerhouses like Falcon 180B."
-                  icon={Server}
-                />
-                <FeatureCard
-                  title="Intelligent Recommendations"
-                  description="Filter by parameter size, licensing constraints, domain relevance, or memory usage to find the perfect model for your needs."
-                  icon={Sparkles}
-                />
-              </div>
-            </CardContent>
-          </Card>
+          <div className="mb-8 text-center">
+            <h2 className="text-3xl font-bold mb-4">Model Selection & Discovery</h2>
+            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+              Find the perfect model for your specific use case with our intelligent discovery tools
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-6">
+            <FlipCard 
+              frontTitle="Curated Model Catalog"
+              frontDescription="Access a handpicked selection of the best open-source language models, pre-tested and ready to deploy."
+              frontIcon={<Server className="h-5 w-5" />}
+              backTitle="Extensive Model Library"
+              backDescription="Browse and compare over 200 models across different specialties, sizes, and capabilities."
+              backDetails={
+                <ul className="space-y-2 text-sm">
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                    <span>Filter by parameter count, license type, and performance</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                    <span>Detailed model cards with benchmarks and ideal use cases</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                    <span>Community reviews and ratings for each model</span>
+                  </li>
+                </ul>
+              }
+              buttonText="Browse Models"
+              buttonHref="/models"
+            />
+            
+            <FlipCard 
+              frontTitle="Intelligent Recommendations"
+              frontDescription="Our AI assistant helps you find the ideal model based on your specific requirements and constraints."
+              frontIcon={<Sparkles className="h-5 w-5" />}
+              backTitle="Smart Model Matching"
+              backDescription="Answer a few questions about your use case, and we'll recommend the perfect model."
+              backDetails={
+                <ul className="space-y-2 text-sm">
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                    <span>Personalized recommendations based on your priorities</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                    <span>Compare similar models head-to-head</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                    <span>Get alerted when better models for your use case are released</span>
+                  </li>
+                </ul>
+              }
+              buttonText="Get Recommendations"
+              buttonHref="/models/finder"
+            />
+            
+            <FlipCard 
+              frontTitle="Benchmarking Tools"
+              frontDescription="Evaluate model performance on your specific tasks and datasets before committing to a selection."
+              frontIcon={<BarChart className="h-5 w-5" />}
+              backTitle="Custom Evaluation Suite"
+              backDescription="Test models against your own data to find the best performer for your specific needs."
+              backDetails={
+                <ul className="space-y-2 text-sm">
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                    <span>Upload your test dataset and define evaluation metrics</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                    <span>Run comparative evaluations across multiple models</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                    <span>Detailed reports with accuracy, latency, and cost metrics</span>
+                  </li>
+                </ul>
+              }
+              buttonText="Start Benchmarking"
+              buttonHref="/models/benchmark"
+            />
+          </div>
         </AnimationContainer>
 
-        {/* Language Model Types */}
-        <AnimationContainer className="mt-12 w-full">
-          <Card className="border-none shadow-md bg-card/30">
-            <CardHeader>
-              <CardTitle className="text-2xl font-bold">
-                Comprehensive Model Support
-              </CardTitle>
-              <CardDescription>
-                Support for both Large and Small Language Models to fit any requirement
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="text-left space-y-4">
-              <p>
-                Artintel provides robust support for different types of language models, giving you flexibility to choose based on your specific requirements:
-              </p>
-              <div className="grid md:grid-cols-2 gap-6 mb-6">
-                <Card className="bg-primary/5 border border-primary/20">
-                  <CardHeader>
-                    <div className="flex items-center gap-2">
-                      <div className="p-2 rounded-lg bg-primary/10">
-                        <Rocket className="h-5 w-5 text-primary" />
-                      </div>
-                      <CardTitle className="text-xl">Large Language Models (LLMs)</CardTitle>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="mb-4 text-muted-foreground">
-                      Powerful models with billions of parameters for advanced use cases requiring deep understanding and complex reasoning.
-                    </p>
-                    <ul className="space-y-2 text-sm text-muted-foreground">
-                      <li className="flex items-start gap-2">
-                        <CheckCircle className="h-4 w-4 text-primary shrink-0 mt-0.5" />
-                        <span>Advanced reasoning capabilities with multi-step problem solving</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <CheckCircle className="h-4 w-4 text-primary shrink-0 mt-0.5" />
-                        <span>Rich knowledge base from extensive pre-training</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <CheckCircle className="h-4 w-4 text-primary shrink-0 mt-0.5" />
-                        <span>Support for long contexts (8K-100K tokens)</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <CheckCircle className="h-4 w-4 text-primary shrink-0 mt-0.5" />
-                        <span>Ideal for content generation, complex support, research</span>
-                      </li>
-                    </ul>
-                    <div className="mt-4">
-                      <Button asChild variant="outline" size="sm" className="rounded-full">
-                        <Link href="/models/llm">Explore LLMs</Link>
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-                
-                <Card className="bg-primary/5 border border-primary/20">
-                  <CardHeader>
-                    <div className="flex items-center gap-2">
-                      <div className="p-2 rounded-lg bg-primary/10">
-                        <Zap className="h-5 w-5 text-primary" />
-                      </div>
-                      <CardTitle className="text-xl">Small Language Models (SLMs)</CardTitle>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="mb-4 text-muted-foreground">
-                      Efficient, lightweight models optimized for speed, low resource usage, and deployment in constrained environments.
-                    </p>
-                    <ul className="space-y-2 text-sm text-muted-foreground">
-                      <li className="flex items-start gap-2">
-                        <CheckCircle className="h-4 w-4 text-primary shrink-0 mt-0.5" />
-                        <span>Fast inference with sub-100ms latency</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <CheckCircle className="h-4 w-4 text-primary shrink-0 mt-0.5" />
-                        <span>Low resource requirements for edge deployment</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <CheckCircle className="h-4 w-4 text-primary shrink-0 mt-0.5" />
-                        <span>Cost-effective for high-volume processing</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <CheckCircle className="h-4 w-4 text-primary shrink-0 mt-0.5" />
-                        <span>Ideal for mobile, IoT, and embedded systems</span>
-                      </li>
-                    </ul>
-                    <div className="mt-4">
-                      <Button asChild variant="outline" size="sm" className="rounded-full">
-                        <Link href="/models/slm">Explore SLMs</Link>
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-              
-              <div className="mt-4 text-center">
-                <Button asChild className="rounded-full">
-                  <Link href="/models/comparison">Compare LLMs vs SLMs</Link>
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+        {/* Comprehensive Model Support - Updated with SplitComparisonSection */}
+        <AnimationContainer className="mt-24 w-full">
+          <div className="mb-8 text-center">
+            <h2 className="text-3xl font-bold mb-4">Comprehensive Model Support</h2>
+            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+              Artintel gives you the flexibility to work with both Large and Small Language Models
+            </p>
+          </div>
+          
+          <SplitComparisonSection 
+            llmTitle="Large Language Models (LLMs)"
+            llmDescription="Powerful models with billions of parameters for advanced use cases requiring deep understanding and complex reasoning."
+            slmTitle="Small Language Models (SLMs)"
+            slmDescription="Efficient, lightweight models optimized for speed, low resource usage, and deployment in constrained environments."
+            metrics={modelMetrics}
+            className="mt-8"
+          />
+          
+          <div className="mt-12 text-center">
+            <Button asChild className="rounded-full">
+              <Link href="/models/comparison">View Detailed Comparison</Link>
+            </Button>
+          </div>
         </AnimationContainer>
 
         {/* Data Integration & Preprocessing */}
-        <AnimationContainer className="mt-12 w-full">
+        <AnimationContainer className="mt-24 w-full">
           <Card className="border-none shadow-md bg-card/30">
             <CardHeader>
               <CardTitle className="text-2xl font-bold">

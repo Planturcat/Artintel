@@ -142,8 +142,8 @@ const LLMHero = () => {
                 size="lg"
                 className="rounded-full"
               >
-                <Link href="/models/comparison">
-                  Compare with SLMs
+                <Link href="#features">
+                  Learn More About LLMs
                 </Link>
               </Button>
             </div>
