@@ -1,0 +1,5 @@
+[33mcommit 3f4906432b7ac9679e36fb653770f104d7585ef9[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m)[m
+Author: nazeer <nazeerngunga021@gmail.com>
+Date:   Wed Mar 12 19:35:48 2025 +0200
+
+    Add dashboard components with dark/light mode support for ArtIntel LLMs platform

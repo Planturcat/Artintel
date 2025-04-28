@@ -701,3 +701,86 @@ What's the most graceful way to handle this situation?`;
 
 // Create a singleton instance
 export const reasoningEngine = new ReasoningEngine();
+
+/**
+ * Determine if a user message is a knowledge query about Artintel
+ */
+export function detectKnowledgeQueryType(userMessage: string): string | null {
+  const normalizedMessage = userMessage.toLowerCase();
+  
+  // Check for platform information queries
+  if (
+    normalizedMessage.includes('what is artintel') ||
+    normalizedMessage.includes('about artintel') ||
+    normalizedMessage.includes('tell me about artintel') ||
+    normalizedMessage.includes('artintel platform') ||
+    normalizedMessage.includes('platform overview')
+  ) {
+    return 'platform_overview';
+  }
+  
+  // Check for feature queries
+  if (
+    normalizedMessage.includes('features') ||
+    normalizedMessage.includes('what can artintel do') ||
+    normalizedMessage.includes('capabilities') ||
+    normalizedMessage.includes('what does artintel offer') ||
+    normalizedMessage.includes('how does artintel work')
+  ) {
+    return 'features';
+  }
+  
+  // Check for pricing tier queries
+  if (
+    normalizedMessage.includes('pricing') ||
+    normalizedMessage.includes('tiers') ||
+    normalizedMessage.includes('subscription') ||
+    normalizedMessage.includes('how much does it cost') ||
+    normalizedMessage.includes('free tier') ||
+    normalizedMessage.includes('pro tier') ||
+    normalizedMessage.includes('enterprise tier')
+  ) {
+    return 'pricing_tiers';
+  }
+  
+  // Check for model type queries
+  if (
+    normalizedMessage.includes('models') ||
+    normalizedMessage.includes('slm') ||
+    normalizedMessage.includes('llm') ||
+    normalizedMessage.includes('small language model') ||
+    normalizedMessage.includes('large language model') ||
+    normalizedMessage.includes('model difference') ||
+    normalizedMessage.includes('which model')
+  ) {
+    return 'model_types';
+  }
+  
+  // Check for industry-specific queries
+  if (
+    normalizedMessage.includes('industry') ||
+    normalizedMessage.includes('healthcare') ||
+    normalizedMessage.includes('finance') ||
+    normalizedMessage.includes('legal') ||
+    normalizedMessage.includes('retail') ||
+    normalizedMessage.includes('e-commerce') ||
+    normalizedMessage.includes('ecommerce')
+  ) {
+    return 'industries';
+  }
+  
+  // Check for best practices queries
+  if (
+    normalizedMessage.includes('best practice') ||
+    normalizedMessage.includes('best way to') ||
+    normalizedMessage.includes('recommended way') ||
+    normalizedMessage.includes('how should i') ||
+    normalizedMessage.includes('tips for') ||
+    normalizedMessage.includes('advice on')
+  ) {
+    return 'best_practices';
+  }
+  
+  // Not a knowledge query
+  return null;
+}

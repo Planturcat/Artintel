@@ -1,0 +1,1 @@
+# ArtIntel LLM Authentication Mock API 

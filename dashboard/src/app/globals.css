@@ -1,0 +1,258 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  --primary: #00cbdd;
+  --primary-dark: #00a3b1;
+  --primary-light: #4fdfed;
+  --secondary: #00031b;
+  --secondary-light: #00061b;
+  --accent: #0066ff;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-dark: var(--primary-dark);
+  --color-primary-light: var(--primary-light);
+  --color-secondary: var(--secondary);
+  --color-secondary-light: var(--secondary-light);
+  --color-accent: var(--accent);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #00031b;
+    --foreground: #ededed;
+  }
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  zoom: 1;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Dark mode specific styles */
+.dark body {
+  background-color: #00021a;
+  color: #ffffff;
+}
+
+/* Glassmorphism effects */
+.glassmorphic {
+  background: rgba(0, 5, 45, 0.5);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 203, 221, 0.2);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+.light .glassmorphic {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(to right, #00cbdd, #0066ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Custom scrollbar for webkit browsers */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 203, 221, 0.3);
+  border-radius: 4px;
+}
+
+.light ::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Animation for floating effect */
+@keyframes floating {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-floating {
+  animation: floating 3s ease-in-out infinite;
+}
+
+/* Dashboard specific styles */
+.dashboard-panel {
+  transition: all 0.3s ease;
+}
+
+.dashboard-panel:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.dashboard-panel-core {
+  position: relative;
+  overflow: hidden;
+  transform-style: preserve-3d;
+}
+
+.dashboard-panel-core::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(
+    circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    rgba(0, 203, 221, 0.15),
+    transparent 20%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.dashboard-panel-core:hover::before {
+  opacity: 1;
+}
+
+.dashboard-pulse-element {
+  position: relative;
+}
+
+.dashboard-pulse-element::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: inherit;
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.dashboard-metric {
+  background-size: 200% 200%;
+  animation: shine 3s linear infinite;
+}
+
+.dashboard-floating-value {
+  animation: float 3s ease-in-out infinite;
+}
+
+.dashboard-chart-line {
+  animation: dash 2s linear forwards;
+}
+
+.dashboard-chart-bar {
+  animation: grow 1s ease-out forwards;
+}
+
+.dashboard-chart-point {
+  animation: pulse-small 2s ease-in-out infinite;
+}
+
+.dashboard-icon {
+  position: relative;
+  z-index: 10;
+}
+
+/* Dashboard animations */
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.5);
+    opacity: 0.3;
+  }
+}
+
+@keyframes pulse-small {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1.5);
+    opacity: 1;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes shine {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes dash {
+  from {
+    stroke-dashoffset: 1000;
+    stroke-dasharray: 1000;
+  }
+  to {
+    stroke-dashoffset: 0;
+    stroke-dasharray: 1000;
+  }
+}
+
+@keyframes grow {
+  from {
+    transform: scaleY(0);
+    transform-origin: bottom;
+  }
+  to {
+    transform: scaleY(1);
+    transform-origin: bottom;
+  }
+}

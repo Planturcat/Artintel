@@ -48,11 +48,14 @@ import {
   FileText,
   CheckCircle,
   Brain,
+  Smartphone,
+  Laptop,
 } from "lucide-react";
 import Link from "next/link";
-import { buttonVariants } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib";
 import styles from "@/styles/terms-animations.module.css";
+import { Wrapper } from "@/components";
 
 // Model Type Card Component
 const ModelTypeCard = ({
@@ -125,282 +128,307 @@ const ModelTypeCard = ({
 
 // Custom ComparisonHero component
 const ComparisonHero = () => {
+  const [sliderPosition, setSliderPosition] = useState<number>(50);
   const containerRef = useRef<HTMLDivElement>(null);
-  const [activeModelType, setActiveModelType] = useState<"slm" | "llm">("llm");
 
+  // Handle mouse movement to update slider position
+    const handleMouseMove = (e: MouseEvent) => {
+    if (!isSliding || !containerRef.current) return;
+
+      const rect = containerRef.current.getBoundingClientRect();
+    const x = Math.max(0, Math.min(e.clientX - rect.left, rect.width));
+    const newPosition = Math.max(30, Math.min(70, (x / rect.width) * 100));
+    setSliderPosition(newPosition);
+  };
+
+  // State to track if user is dragging the slider
+  const [isSliding, setIsSliding] = useState<boolean>(false);
+
+  // Add event listeners for mouse up/down
   useEffect(() => {
-    // Particle animation
-    const particles = containerRef.current?.querySelectorAll(
-      `.${styles.particle}`,
-    );
-
-    if (particles) {
-      particles.forEach((particle, i) => {
-        const speed = 30 + Math.random() * 30;
-        const rotation = Math.random() * 360;
-        (particle as HTMLElement).style.animation =
-          `${styles.floatParticle} ${speed}s linear infinite`;
-        (particle as HTMLElement).style.transform = `rotate(${rotation}deg)`;
-      });
+    const handleMouseUp = () => {
+      setIsSliding(false);
+    };
+    
+    if (isSliding) {
+      window.addEventListener('mousemove', handleMouseMove);
+      window.addEventListener('mouseup', handleMouseUp);
     }
 
-    // Handle parallax effect on mouse move
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!containerRef.current) return;
-
-      const icons = containerRef.current.querySelectorAll(
-        `.${styles.parallax}`,
-      );
-      const rect = containerRef.current.getBoundingClientRect();
-      const centerX = rect.left + rect.width / 2;
-      const centerY = rect.top + rect.height / 2;
-
-      const moveX = (e.clientX - centerX) / 30;
-      const moveY = (e.clientY - centerY) / 30;
-
-      icons.forEach((icon, index) => {
-        const depth = (index + 1) * 0.3;
-        (icon as HTMLElement).style.transform =
-          `translate(${moveX * depth}px, ${moveY * depth}px)`;
-      });
-    };
-
-    document.addEventListener("mousemove", handleMouseMove);
-
     return () => {
-      document.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
     };
-  }, []);
+  }, [isSliding]);
 
-  // Toggle model type animation
+  // Handle model type toggle for interactive comparison
   const handleModelTypeToggle = (type: "slm" | "llm") => {
-    setActiveModelType(type);
+    setSliderPosition(type === "slm" ? 30 : 70);
   };
 
   return (
-    <div
-      ref={containerRef}
-      className="relative w-full py-28 bg-gradient-to-br from-background via-background to-background/90 overflow-hidden"
-    >
-      {/* Enhanced gradient background */}
-      <div 
-        className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-primary/5 opacity-70"
-        aria-hidden="true"
-      ></div>
-      
-      {/* Decorative mesh grid background */}
-      <div
-        className="absolute inset-0 bg-[linear-gradient(to_right,rgb(38,38,38,0.2)_1px,transparent_1px),linear-gradient(to_bottom,rgb(38,38,38,0.2)_1px,transparent_1px)] bg-[size:20px_20px]"
-        aria-hidden="true"
-      ></div>
+    <div className="relative overflow-hidden bg-gradient-to-b from-background via-background/95 to-background/90 py-20 md:py-24">
+      {/* Split background effect - distinctive to comparison page */}
+      <div className="absolute inset-0 z-0">
+        <div className="absolute inset-y-0 left-0 w-1/2 bg-primary/5 blur-3xl opacity-30" 
+             style={{ right: `${100 - sliderPosition}%` }}></div>
+        <div className="absolute inset-y-0 right-0 w-1/2 bg-primary/10 blur-3xl opacity-40" 
+             style={{ left: `${sliderPosition}%` }}></div>
+      </div>
 
-      {/* Decorative particles */}
-      <div className="absolute inset-0" aria-hidden="true">
-        {Array.from({ length: 18 }).map((_, i) => (
-          <div
+      {/* Combined visual elements from both SLM and LLM pages */}
+      <div className="absolute inset-0 z-0 overflow-hidden">
+        {/* SLM-style lightning elements on left side */}
+        <div className="absolute inset-y-0 left-0 opacity-10" style={{ width: `${sliderPosition}%` }}>
+          <svg width="100%" height="100%" className="absolute inset-0">
+            <pattern id="lightning-pattern" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
+              <path d="M40,20 L30,50 L45,55 L25,80" stroke="#00CBDD" strokeWidth="2" fill="none" />
+              <path d="M70,10 L60,40 L75,45 L55,90" stroke="#00CBDD" strokeWidth="2" fill="none" />
+            </pattern>
+            <rect x="0" y="0" width="100%" height="100%" fill="url(#lightning-pattern)" />
+          </svg>
+        </div>
+
+        {/* LLM-style node connections on right side */}
+        <div className="absolute inset-y-0 right-0 opacity-10" style={{ width: `${100 - sliderPosition}%` }}>
+          <svg width="100%" height="100%" viewBox="0 0 500 500" className="absolute inset-0">
+            <g className="nodes">
+        {Array.from({ length: 12 }).map((_, i) => (
+                <circle 
             key={i}
-            className={`${styles.particle} absolute h-px w-[40px] bg-gradient-to-r ${i % 2 === 0 ? "from-primary/30 to-transparent" : "from-transparent to-primary/30"}`}
-            style={{
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
-              opacity: 0.3 + Math.random() * 0.5,
-            }}
+                  r="4" 
+                  cx={100 + Math.random() * 300} 
+                  cy={50 + Math.random() * 400}
+                  fill="#00CBDD" 
           />
         ))}
+            </g>
+            <g className="links">
+              {Array.from({ length: 20 }).map((_, i) => (
+                <line 
+                  key={i} 
+                  x1={100 + Math.random() * 300} 
+                  y1={50 + Math.random() * 400}
+                  x2={100 + Math.random() * 300} 
+                  y2={50 + Math.random() * 400}
+                  stroke="#00CBDD" 
+                  strokeOpacity="0.3" 
+                  strokeWidth="1"
+                />
+              ))}
+            </g>
+          </svg>
+        </div>
       </div>
 
-      {/* Enhanced model type comparison visualization */}
+      {/* Dividing line with interactive handle */}
       <div
-        className="absolute left-1/2 top-0 -translate-x-1/2 w-full h-full flex items-center justify-center opacity-20 pointer-events-none"
-        aria-hidden="true"
+        ref={containerRef}
+        className="absolute inset-0 z-10 pointer-events-none"
       >
-        <div className="relative">
-          <div
-            className={`transition-all duration-1000 ease-in-out ${activeModelType === "slm" ? "opacity-100" : "opacity-20"}`}
-          >
-            <div className="relative">
-              <div
-                className="h-[200px] w-[200px] rounded-full border-4 border-dashed border-primary/40"
-              ></div>
-              <div
-                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[100px] w-[100px] rounded-full border-2 border-primary/60"
-              ></div>
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[50px] w-[50px] rounded-full bg-primary/20"></div>
-            </div>
-          </div>
-          
-          <div
-            className={`absolute top-0 left-0 transition-all duration-1000 ease-in-out ${activeModelType === "llm" ? "opacity-100" : "opacity-20"}`}
-          >
-            <div className="relative">
-              <div
-                className="h-[400px] w-[400px] rounded-full border-4 border-dashed border-primary/40"
-              ></div>
-              <div
-                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[300px] w-[300px] rounded-full border-2 border-primary/30"
-              ></div>
-              <div
-                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[200px] w-[200px] rounded-full border-2 border-primary/20"
-              ></div>
-              <div
-                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[100px] w-[100px] rounded-full border-2 border-primary/40"
-              ></div>
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[50px] w-[50px] rounded-full bg-primary/20"></div>
-            </div>
+        <div
+          className="absolute top-0 bottom-0 w-0.5 bg-primary/30 pointer-events-auto cursor-col-resize"
+          style={{ left: `${sliderPosition}%` }}
+          onMouseDown={() => setIsSliding(true)}
+        >
+          <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-primary/20 border border-primary/40 flex items-center justify-center shadow-lg">
+            <div className="w-5 h-5 rounded-full bg-primary/50 animate-pulse"></div>
           </div>
         </div>
       </div>
 
-      {/* Animated floating elements */}
-      <div
-        className={`absolute transition-opacity duration-500 ${activeModelType === "llm" ? "opacity-100" : "opacity-30"}`}
-      >
-        <img
-          src="/icons/artintel-logo.png"
-          alt="Artintel Logo"
-          className={`absolute h-14 w-14 top-1/3 left-[20%] ${styles.floatingElement} ${styles.parallax}`}
-          style={{ animationDuration: "8s", animationDelay: "0.2s" }}
-        />
-
-        <Languages
-          className={`absolute text-primary/40 h-10 w-10 bottom-1/3 left-[15%] ${styles.floatingElement} ${styles.parallax}`}
-          style={{ animationDuration: "7s", animationDelay: "0.5s" }}
-        />
-
-        <Network
-          className={`absolute text-primary/50 h-12 w-12 top-1/2 right-[20%] ${styles.floatingElement} ${styles.parallax}`}
-          style={{ animationDuration: "9s", animationDelay: "1s" }}
-        />
-
-        <Code
-          className={`absolute text-primary/40 h-10 w-10 bottom-1/4 right-[25%] ${styles.floatingElement} ${styles.parallax}`}
-          style={{ animationDuration: "6s", animationDelay: "1.5s" }}
-        />
+      <Wrapper className="relative z-20">
+        <div className="grid gap-8 md:grid-cols-2 items-center">
+          <div>
+            <div className="mb-3 inline-flex items-center rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-sm text-primary">
+              <Scale className="mr-1 h-3 w-3" />
+              <span>Model Comparison</span>
       </div>
 
-      <div
-        className={`absolute transition-opacity duration-500 ${activeModelType === "slm" ? "opacity-100" : "opacity-30"}`}
-      >
-        <Cpu
-          className={`absolute text-primary/60 h-10 w-10 top-1/4 left-[25%] ${styles.floatingElement} ${styles.parallax}`}
-          style={{ animationDuration: "6s", animationDelay: "0.3s" }}
-        />
-
-        <HardDrive
-          className={`absolute text-primary/40 h-8 w-8 bottom-1/4 left-[30%] ${styles.floatingElement} ${styles.parallax}`}
-          style={{ animationDuration: "5s", animationDelay: "0.7s" }}
-        />
-
-        <Server
-          className={`absolute text-primary/50 h-9 w-9 top-1/3 right-[28%] ${styles.floatingElement} ${styles.parallax}`}
-          style={{ animationDuration: "7s", animationDelay: "1.2s" }}
-        />
-
-        <Clock
-          className={`absolute text-primary/40 h-7 w-7 bottom-1/3 right-[22%] ${styles.floatingElement} ${styles.parallax}`}
-          style={{ animationDuration: "5.5s", animationDelay: "0.9s" }}
-        />
-      </div>
-
-      {/* Hero content */}
-      <MaxWidthWrapper className="relative z-10">
-        <div className="text-center space-y-6 mb-12">
-          <div
-            className={`p-3 inline-flex rounded-full bg-primary/10 ${styles.pulsingElement}`}
-          >
-            <Scale className="h-6 w-6 text-primary" />
-          </div>
-
-          <h1
-            className={`text-4xl md:text-5xl lg:text-6xl font-bold tracking-tighter ${styles.slideUp}`}
-          >
-            <span className="bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">SLM vs LLM:</span>{" "}
-            Choosing the Right Model
+            <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-6xl mb-4">
+              <span className="text-primary">Choose</span> the{" "}
+              <span className="bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">Right Model</span>
           </h1>
 
-          <p
-            className={`max-w-[700px] mx-auto text-muted-foreground text-lg md:text-xl ${styles.slideUp}`}
-            style={{ animationDelay: "0.2s" }}
-          >
-            Understanding the key differences between Small Language Models and
-            Large Language Models to make informed decisions for your AI strategy
-          </p>
+            <p className="text-lg text-muted-foreground mb-6">
+              Compare Small Language Models (SLMs) and Large Language Models (LLMs) to find the perfect balance of performance, efficiency, and capabilities for your specific needs.
+            </p>
 
-          {/* Model type toggle */}
-          <div
-            className={`flex justify-center pt-8 ${styles.slideUp}`}
-            style={{ animationDelay: "0.3s" }}
-          >
-            <div
-              className="inline-flex items-center gap-4 p-1 rounded-full border border-border/40 bg-background/50 backdrop-blur-md shadow-md"
-            >
+            <div className="mb-8 flex gap-4">
               <button
                 onClick={() => handleModelTypeToggle("slm")}
-                className={`flex items-center gap-2 py-2 px-4 rounded-full transition-all ${activeModelType === "slm" ? "bg-primary text-white shadow-md" : "text-muted-foreground hover:text-foreground"}`}
+                className={`relative rounded-lg border p-4 transition-all duration-300 flex-1 ${sliderPosition <= 50 ? 'border-primary bg-primary/10' : 'border-primary/20 bg-card/30'}`}
               >
-                <Cpu className="h-4 w-4" />
-                <span>Small LMs</span>
+                <div className="flex items-center mb-1">
+                  <Zap className="mr-2 h-4 w-4 text-primary" />
+                  <span className="text-sm font-medium">Small Language Models</span>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Efficient & fast for specific tasks
+                </p>
+                {sliderPosition <= 50 && (
+                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-primary rounded-full" />
+                )}
               </button>
+              
               <button
                 onClick={() => handleModelTypeToggle("llm")}
-                className={`flex items-center gap-2 py-2 px-4 rounded-full transition-all ${activeModelType === "llm" ? "bg-primary text-white shadow-md" : "text-muted-foreground hover:text-foreground"}`}
+                className={`relative rounded-lg border p-4 transition-all duration-300 flex-1 ${sliderPosition > 50 ? 'border-primary bg-primary/10' : 'border-primary/20 bg-card/30'}`}
               >
-                <BrainCircuit className="h-4 w-4" />
-                <span>Large LMs</span>
+                <div className="flex items-center mb-1">
+                  <Brain className="mr-2 h-4 w-4 text-primary" />
+                  <span className="text-sm font-medium">Large Language Models</span>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Powerful & versatile for complex tasks
+                </p>
+                {sliderPosition > 50 && (
+                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-primary rounded-full" />
+                )}
               </button>
+            </div>
+
+            <div className="flex flex-wrap gap-4">
+              <Button asChild size="lg" className="rounded-full">
+                <Link href="#features">
+                  Compare Features
+                </Link>
+              </Button>
+              <Button
+                asChild
+                variant="outline"
+                size="lg"
+                className="rounded-full"
+              >
+                <Link href="#guide">
+                  Decision Guide
+                </Link>
+              </Button>
+          </div>
+        </div>
+
+          <div className="hidden md:block relative">
+            {/* Interactive model comparison visualization */}
+            <div className="relative flex items-center justify-center h-96">
+              <div className="absolute inset-0 flex">
+                {/* SLM side */}
+                <div 
+                  className="h-full bg-primary/5 border-r border-primary/20 flex items-center justify-center overflow-hidden transition-all duration-300"
+                  style={{ width: `${sliderPosition}%` }}
+                >
+                  <div className="relative transform scale-90 transition-all duration-300" style={{ opacity: sliderPosition > 30 ? 1 : 0.7 }}>
+                    <div className="p-4 rounded-lg bg-card/50 border border-primary/20 shadow-sm">
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="p-1.5 rounded-md bg-primary/10">
+                          <Zap className="h-4 w-4 text-primary" />
+                        </div>
+                        <span className="font-medium">Small Language Model</span>
+                      </div>
+                      <div className="space-y-2">
+                        <div className="flex justify-between text-xs">
+                          <span className="text-muted-foreground">Size:</span>
+                          <span>2.5 GB</span>
+                        </div>
+                        <div className="flex justify-between text-xs">
+                          <span className="text-muted-foreground">Speed:</span>
+                          <span>15ms</span>
+                        </div>
+                        <div className="flex justify-between text-xs">
+                          <span className="text-muted-foreground">Memory:</span>
+                          <span>4 GB RAM</span>
+                        </div>
+                      </div>
+                      <div className="mt-3 text-xs text-muted-foreground">
+                        Ideal for: Classification, NER, Text embeddings
+                      </div>
+          </div>
+
+                    {/* Small devices using SLM */}
+                    <div className="absolute -top-6 -left-6 w-12 h-20 bg-card/50 border border-primary/20 rounded-md shadow-sm flex flex-col items-center justify-center">
+                      <Smartphone className="h-3 w-3 text-primary mb-1" />
+                      <div className="h-0.5 w-5 bg-green-400 rounded-full"></div>
+                      <div className="text-[5px] mt-0.5">Mobile</div>
+                    </div>
+                    <div className="absolute -bottom-8 -left-12 w-10 h-10 bg-card/50 border border-primary/20 rounded-md shadow-sm flex flex-col items-center justify-center">
+                      <Laptop className="h-2 w-2 text-primary mb-0.5" />
+                      <div className="h-0.5 w-4 bg-green-400 rounded-full"></div>
+                      <div className="text-[4px]">Edge</div>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* LLM side */}
+                <div 
+                  className="h-full bg-primary/10 flex items-center justify-center overflow-hidden transition-all duration-300"
+                  style={{ width: `${100 - sliderPosition}%` }}
+                >
+                  <div className="relative transform scale-90 transition-all duration-300" style={{ opacity: sliderPosition < 70 ? 1 : 0.7 }}>
+                    <div className="p-4 rounded-lg bg-card/50 border border-primary/20 shadow-sm">
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="p-1.5 rounded-md bg-primary/10">
+                          <Brain className="h-4 w-4 text-primary" />
+          </div>
+                        <span className="font-medium">Large Language Model</span>
+        </div>
+                      <div className="space-y-2">
+                        <div className="flex justify-between text-xs">
+                          <span className="text-muted-foreground">Size:</span>
+                          <span>140 GB</span>
+                        </div>
+                        <div className="flex justify-between text-xs">
+                          <span className="text-muted-foreground">Speed:</span>
+                          <span>500ms</span>
+                        </div>
+                        <div className="flex justify-between text-xs">
+                          <span className="text-muted-foreground">Memory:</span>
+                          <span>80 GB RAM</span>
+                        </div>
+                      </div>
+                      <div className="mt-3 text-xs text-muted-foreground">
+                        Ideal for: Reasoning, generation, complex tasks
+                      </div>
+                    </div>
+                    
+                    {/* Datacenter using LLM */}
+                    <div className="absolute -top-8 -right-8 w-14 h-14 bg-card/50 border border-primary/20 rounded-md shadow-sm flex flex-col items-center justify-center">
+                      <Server className="h-3 w-3 text-primary mb-1" />
+                      <div className="h-0.5 w-6 bg-amber-400 rounded-full"></div>
+                      <div className="text-[5px] mt-0.5">Data Center</div>
+                    </div>
+                    <div className="absolute -bottom-7 -right-10 w-12 h-12 bg-card/50 border border-primary/20 rounded-md shadow-sm flex flex-col items-center justify-center">
+                      <HardDrive className="h-2.5 w-2.5 text-primary mb-0.5" />
+                      <div className="h-0.5 w-5 bg-amber-400 rounded-full"></div>
+                      <div className="text-[5px]">GPU Cluster</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+                
+              {/* Comparison metrics that appear at the bottom */}
+              <div className="absolute bottom-0 left-0 right-0 bg-card/60 backdrop-blur-sm border-t border-primary/10 p-2 flex justify-between text-xs">
+                <div className="flex flex-col items-center">
+                  <span className="text-muted-foreground">Memory</span>
+                  <div className="w-24 h-1.5 bg-gray-200 rounded-full mt-1 overflow-hidden">
+                    <div className="h-full bg-green-400 rounded-full" style={{ width: `${sliderPosition}%` }}></div>
+                  </div>
+                </div>
+                <div className="flex flex-col items-center">
+                  <span className="text-muted-foreground">Speed</span>
+                  <div className="w-24 h-1.5 bg-gray-200 rounded-full mt-1 overflow-hidden">
+                    <div className="h-full bg-green-400 rounded-full" style={{ width: `${sliderPosition}%` }}></div>
+                  </div>
+                </div>
+                <div className="flex flex-col items-center">
+                  <span className="text-muted-foreground">Capability</span>
+                  <div className="w-24 h-1.5 bg-gray-200 rounded-full mt-1 overflow-hidden">
+                    <div className="h-full bg-amber-400 rounded-full" style={{ width: `${100 - sliderPosition}%` }}></div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-
-        {/* Quick comparison cards */}
-        <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
-          <div
-            className={styles.fadeIn}
-            style={{ animationDelay: "0.4s" }}
-          >
-            <ModelTypeCard
-              icon={Cpu}
-              title="Small Language Models"
-              description="SLMs typically range from a few million to a few billion parameters. They're optimized for efficiency, speed, and specific tasks with lower resource requirements."
-              features={[
-                "Lower resource footprint, can run on standard CPUs or lower-tier GPUs",
-                "Faster inference with low latency (sub-100ms)",
-                "Cost-effective for high-volume or edge deployments",
-                "Ideal for specific, well-defined tasks",
-              ]}
-              recommendation="Best for: Edge devices, real-time applications, or specific tasks with limited computing resources"
-              className={cn(
-                activeModelType === "slm"
-                  ? "ring-2 ring-primary/50 shadow-lg shadow-primary/5"
-                  : "",
-              )}
-            />
-          </div>
-
-          <div
-            className={styles.fadeIn}
-            style={{ animationDelay: "0.6s" }}
-          >
-            <ModelTypeCard
-              icon={BrainCircuit}
-              title="Large Language Models"
-              description="LLMs range from several billion to hundreds of billions of parameters. They excel at complex reasoning, creative generation, and handling nuanced language understanding."
-              features={[
-                "Rich understanding with vast encoded knowledge",
-                "Longer context windows (thousands of tokens)",
-                "Creative and adaptive text generation capabilities",
-                "Strong zero-shot and few-shot performance",
-              ]}
-              recommendation="Best for: Complex reasoning, creative generation, or tasks requiring deep language understanding"
-              className={cn(
-                activeModelType === "llm"
-                  ? "ring-2 ring-primary/50 shadow-lg shadow-primary/5"
-                  : "",
-              )}
-            />
-          </div>
-        </div>
-      </MaxWidthWrapper>
+      </Wrapper>
     </div>
   );
 };
@@ -1280,11 +1308,11 @@ const ModelComparisonPage = () => {
   return (
     <>
       <ComparisonHero />
-      
+
       <FeatureComparison />
-      
+
       <DecisionGuideSection />
-      
+
       <UseCaseSection />
       
       <ArtintelPlatformSection />

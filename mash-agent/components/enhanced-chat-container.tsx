@@ -18,6 +18,9 @@ import { reasoningEngine } from "@/lib/services/reasoning-engine";
 import { taskManager } from "@/lib/services/task-manager";
 import { ThinkingStage } from "@/lib/services/reasoning-engine";
 
+// Import knowledge base services
+import { KnowledgeBaseService, KnowledgeCategory } from '../services/knowledge-base-service';
+
 // Define types
 interface Message {
   role: 'user' | 'assistant';
@@ -49,6 +52,9 @@ const BASE_MODELS: BaseModel[] = [
   { id: "gpt-3.5-turbo", name: "GPT-3.5 Turbo", description: "OpenAI's GPT-3.5 Turbo model" },
   { id: "gpt-4o", name: "GPT-4o", description: "OpenAI's GPT-4o model" },
 ];
+
+// Initialize the service
+const knowledgeBaseService = new KnowledgeBaseService();
 
 export const EnhancedChatContainer: React.FC<EnhancedChatContainerProps> = ({ mode }) => {
   // State for agent mode (chat or agent)
@@ -149,6 +155,11 @@ export const EnhancedChatContainer: React.FC<EnhancedChatContainerProps> = ({ mo
   const [showThinking, setShowThinking] = useState(false);
   const [thinkingSteps, setThinkingSteps] = useState<{stage: string, reasoning: string}[]>([]);
   const [expandedSteps, setExpandedSteps] = useState<{[key: number]: boolean}>({});
+  
+  // New state variables for enhanced chat mode
+  const [useReasoningInChat, setUseReasoningInChat] = useState<boolean>(true);
+  const [showThinkingInChat, setShowThinkingInChat] = useState<boolean>(false);
+  const [isProcessing, setIsProcessing] = useState<boolean>(false);
 
   // Ref for click outside detection
   const thinkingStepsRef = useRef<HTMLDivElement>(null);
@@ -276,35 +287,37 @@ export const EnhancedChatContainer: React.FC<EnhancedChatContainerProps> = ({ mo
     setIsProcessing(true);
     
     try {
-      // For chat mode, we'll use the AI service directly or fall back to pre-defined responses
+      // For chat mode, use the reasoning engine with conversational presentation
     if (mode === 'unified' && agentMode === 'chat') {
-        console.log("Processing in chat mode");
+        console.log("Processing in chat mode with reasoning:", useReasoningInChat);
         
-        // Try to use the AI service if available, but don't wait too long
-        try {
-          // Set a timeout for AI service connection
-          const timeoutPromise = new Promise<boolean>((_, reject) => 
-            setTimeout(() => reject(new Error("AI service connection timeout")), 3000)
-          );
-          
-          // Try to connect to AI service with timeout
-      if (!aiServiceConnected) {
-            try {
-              const connectionPromise = checkAIServiceConnection(1, true);
-              await Promise.race([connectionPromise, timeoutPromise]);
-            } catch (error) {
-              console.warn("AI service connection failed or timed out, using fallback response");
-          return generateSimpleChatResponse(userMessage);
-        }
-      }
+        // If not using reasoning in chat mode, fall back to direct API or predefined responses
+        if (!useReasoningInChat) {
+          // Try to use the AI service if available, but don't wait too long
+          try {
+            // Set a timeout for AI service connection
+            const timeoutPromise = new Promise<boolean>((_, reject) => 
+              setTimeout(() => reject(new Error("AI service connection timeout")), 3000)
+            );
+            
+            // Try to connect to AI service with timeout
+            if (!aiServiceConnected) {
+              try {
+                const connectionPromise = checkAIServiceConnection(1, true);
+                await Promise.race([connectionPromise, timeoutPromise]);
+              } catch (error) {
+                console.warn("AI service connection failed or timed out, using fallback response");
+                return generateSimpleChatResponse(userMessage);
+              }
+            }
 
-          // If we reach here, connection was successful or already established
-          // Use the AI service with a timeout as well
-      const modelName = currentModel || "llama2:7b";
-      aiService.setCurrentModel(modelName);
+            // If we reach here, connection was successful or already established
+            // Use the AI service with a timeout as well
+            const modelName = currentModel || "llama2:7b";
+            aiService.setCurrentModel(modelName);
 
-          // Create a prompt with context about Artintel
-          const prompt = `You are Mash, an AI assistant for Artintel, a platform for discovering, fine-tuning, and deploying language models.
+            // Create a prompt with context about Artintel
+            const prompt = `You are Mash, an AI assistant for Artintel, a platform for discovering, fine-tuning, and deploying language models.
 Your goal is to provide helpful, accurate information about AI technologies, particularly language models.
 You should be conversational but concise, and focus on providing practical guidance.
 
@@ -312,35 +325,150 @@ User message: ${userMessage}
 
 Your response:`;
 
-          // Set a timeout for AI generation
-          const generationPromise = aiService.generateText(prompt);
-          const responseWithTimeout = await Promise.race([
-            generationPromise,
-            new Promise<null>((_, reject) => 
-              setTimeout(() => reject(new Error("AI generation timeout")), 6000)
-            )
-          ]);
-
-      // Check if we got a valid response
-          if (responseWithTimeout && responseWithTimeout.response) {
-        console.log("Got valid response from AI service");
-            return responseWithTimeout.response;
+            // Set a timeout for AI generation
+            const generationPromise = aiService.generateText(prompt);
+            const responseWithTimeout = await Promise.race([
+              generationPromise,
+              new Promise<null>((_, reject) => 
+                setTimeout(() => reject(new Error("AI generation timeout")), 6000)
+              )
+            ]);
+            
+            // Check if we got a valid response
+            if (responseWithTimeout && responseWithTimeout.response) {
+              console.log("Got valid response from AI service");
+              return responseWithTimeout.response;
+            }
+          } catch (error) {
+            console.warn("Error in AI service interaction:", error);
+            // Fall through to fallback response
           }
-        } catch (error) {
-          console.warn("Error in AI service interaction:", error);
-          // Fall through to fallback response
+          
+          // Always fall back to a simple response if anything goes wrong
+          console.log("Using fallback response");
+          return generateSimpleChatResponse(userMessage);
         }
         
-        // Always fall back to a simple response if anything goes wrong
-        console.log("Using fallback response");
+        // Enhanced chat mode using reasoning engine with conversational presentation
+        console.log("Using reasoning engine in chat mode");
+        
+        // Detect task type
+        const taskType = detectTaskType(userMessage);
+        console.log("Detected task type:", taskType);
+        
+        // Update steps for visualization if showing thinking in chat mode
+        if (showThinkingInChat) {
+          setSteps([
+            { name: "Understanding request", status: "pending" },
+            { name: "Determining task type", status: "pending" },
+            { name: "Processing task", status: "pending" },
+            { name: "Formulating response", status: "pending" }
+          ]);
+          setCurrentStep("Understanding request");
+          setThinkingSteps([]);
+          setExpandedSteps({});
+        } else {
+          // Don't show steps in regular chat mode
+          setSteps([]);
+          setThinkingSteps([]);
+        }
+        
+      // Connect to AI service if needed
+      if (!aiServiceConnected) {
+        const connected = await checkAIServiceConnection(1, true);
+        if (!connected) {
+            if (showThinkingInChat) {
+              setSteps((prev) =>
+                prev.map((step) =>
+                  step.name === "Understanding request" ? { ...step, status: "error", message: "Couldn't connect to AI service" } : step
+                )
+              );
+            }
+            return "I couldn't connect to the AI model. Please check your connection and try again.";
+          }
+        }
+        
+        try {
+          // Set the model for reasoning engine based on user selection
+      const modelName = currentModel || "llama2:7b";
+          reasoningEngine.setModel(modelName);
+          
+          // Create a special conversational system prompt for chat mode
+          reasoningEngine.setSystemPrompt(`You are Mash, an AI assistant for Artintel, a platform that helps discover, fine-tune, and deploy language models.
+Be conversational, helpful, and focused on providing practical advice related to Artintel's offerings.
+When answering, be clear and concise while still being friendly. Focus on addressing the user's needs.
+Always maintain a helpful, positive tone even when dealing with technical subjects.`);
+
+          // Add the user message to task manager conversation history
+          taskManager.addToConversationHistory({ role: 'user', content: userMessage });
+
+          // Update steps if showing thinking
+          if (showThinkingInChat) {
+            updateStepStatus("Understanding request", "complete");
+            setCurrentStep("Determining task type");
+          }
+
+          // Process the user message through task manager with chat-optimized settings
+          const chatProcessingOptions = {
+            mode: 'chat',
+            showThinking: showThinkingInChat,
+            taskType: taskType
+          };
+          
+          const task = await taskManager.processUserMessage(userMessage, chatProcessingOptions);
+          
+          if (showThinkingInChat) {
+            updateStepStatus("Determining task type", "complete");
+            
+            // Capture thinking steps for display
+            if (task.thinkingProcess?.steps) {
+              setThinkingSteps(
+                task.thinkingProcess.steps.map(step => ({
+                  stage: step.stage,
+                  reasoning: step.reasoning
+                }))
+              );
+            }
+            
+            // Update UI steps
+            setCurrentStep("Processing task");
+            updateStepStatus("Processing task", "complete");
+            setCurrentStep("Formulating response");
+            updateStepStatus("Formulating response", "complete");
+          }
+
+          // Format the response appropriately for chat mode
+          const responseText = formatReasoningResponseForChat(task, taskType);
+          
+          // Add system message to conversation history
+          taskManager.addToConversationHistory({ role: 'assistant' as const, content: responseText });
+
+          // Complete all steps if showing thinking
+          if (showThinkingInChat) {
+            setSteps(prev => prev.map(step => ({ ...step, status: "complete" })));
+          }
+
+          // Return the formulated response
+          return responseText;
+        } catch (error: any) {
+          console.error("Error processing with reasoning engine in chat mode:", error);
+
+          // Update steps to show error if showing thinking
+          if (showThinkingInChat) {
+            setSteps(prev => prev.map(step =>
+              step.name === currentStep ? { ...step, status: "error", message: "Processing Error" } : step
+            ));
+          }
+
+          // Fall back to simple response on error
+          console.log("Falling back to simple response due to error");
       return generateSimpleChatResponse(userMessage);
+        }
     }
 
-      // For agent mode, use the existing reasoning engine
+      // For agent mode, use the existing full reasoning engine implementation
       if (mode === 'unified' && agentMode === 'agent') {
         console.log("Processing in agent mode");
-        // ... existing code ...
-      }
 
     // Determine if this is a UI generation request
     const isUIRequest = userMessage.toLowerCase().includes('create ui') ||
@@ -398,7 +526,7 @@ Your response:`;
       setCurrentStep("Determining task type");
 
       // Process the user message through task manager - this will call the reasoning engine and APIs
-      const task = await taskManager.processUserMessage(userMessage);
+          const task = await taskManager.processUserMessage(userMessage, 'agent');
       updateStepStatus("Determining task type", "complete");
 
       // Capture thinking steps for display
@@ -421,7 +549,7 @@ Your response:`;
 
       // Add system message to conversation history
       const responseText = getResponseFromTask(task);
-      taskManager.addToConversationHistory({ role: 'assistant', content: responseText });
+          taskManager.addToConversationHistory({ role: 'assistant' as const, content: responseText });
 
       // Complete all steps
       setSteps(prev => prev.map(step => ({ ...step, status: "complete" })));
@@ -445,13 +573,107 @@ Your response:`;
       }
 
       return errorMessage;
+        }
       }
+
+      // Default processing for other modes (fallback)
+      return "I'm processing your message, but I'm not sure which mode to use. Please try switching to chat or agent mode.";
     } catch (error: any) {
       console.error("Error processing message:", error);
       return "Sorry, I encountered an error. Please check your connection and try again later.";
     } finally {
       setIsProcessing(false);
     }
+  };
+
+  // Helper function to detect the type of task in the user message
+  const detectTaskType = (userMessage: string): string => {
+    const normalizedMessage = userMessage.toLowerCase().trim();
+    
+    if (/fine-tun|train|adapt|customize|domain adaptation/i.test(normalizedMessage)) {
+      return 'fine-tuning';
+    }
+    
+    if (/deploy|serve|host|production|inference/i.test(normalizedMessage)) {
+      return 'deployment';
+    }
+    
+    if (/data|dataset|preprocess|clean|format/i.test(normalizedMessage)) {
+      return 'data-processing';
+    }
+    
+    if (/model|llm|slm|language model|which model|model selection/i.test(normalizedMessage)) {
+      return 'model-selection';
+    }
+    
+    if (/monitor|metric|performance|track|analytic/i.test(normalizedMessage)) {
+      return 'monitoring';
+    }
+    
+    if (/ui|interface|component|design|visual/i.test(normalizedMessage)) {
+      return 'ui-generation';
+    }
+    
+    if (/code|program|function|script|debug/i.test(normalizedMessage)) {
+      return 'code-generation';
+    }
+    
+    return 'general';
+  };
+
+  // Helper function to format reasoning engine responses for chat mode
+  const formatReasoningResponseForChat = (task: any, taskType: string): string => {
+    // First try to get response from response_formulation step
+    const responseStep = task.reasoning?.find((step: any) => step.step === 'response_formulation');
+    if (responseStep?.output) {
+      // Post-process the response to ensure it's conversational
+      let response = responseStep.output;
+      
+      // Remove excessive technical details if present
+      response = response.replace(/Technical details:[\s\S]*?((?=\n\n)|$)/g, '');
+      
+      // Add task-specific follow-ups based on detected task type
+      if (taskType === 'fine-tuning') {
+        response += '\n\nAnything specific about fine-tuning you\'d like to explore further?';
+      } else if (taskType === 'deployment') {
+        response += '\n\nWould you like more details about any specific deployment aspect?';
+      } else if (taskType === 'model-selection') {
+        response += '\n\nWould you like recommendations for your specific use case?';
+      }
+      
+      return response;
+    }
+    
+    // If no response step found, check for specific task types
+    if (task.type && task.type !== 'general') {
+      switch (task.type) {
+        case 'fine-tuning':
+          return "I can help with fine-tuning models on Artintel. Would you like to know about preparing your data, choosing parameters, or evaluating results?";
+        case 'deployment':
+          return "Artintel offers several deployment options for your models. What kind of deployment are you interested in - cloud, on-premises, or edge?";
+        case 'model-selection':
+          return "Artintel supports various language models with different capabilities. What kind of task are you working on, so I can recommend the right model?";
+        default:
+          return "I understand you're asking about " + task.type + ". Could you tell me more about what you're trying to accomplish?";
+      }
+    }
+    
+    // Check if we had any API calls that should be included in the response
+    const apiCalls = task.apiCalls || [];
+    const datasetCalls = apiCalls.filter((call: {name: string}) => call.name === 'listDatasets');
+    
+    if (datasetCalls.length > 0) {
+      const datasets = datasetCalls[0].result?.datasets || [];
+      if (datasets.length > 0) {
+        const datasetList = datasets.map((ds: any) => `- ${ds.name || 'Unnamed dataset'}`).join('\n');
+        return `Here are your datasets:\n${datasetList}\n\nWould you like to know more about any of these?`;
+      } else {
+        return "I checked, but you don't have any datasets available yet. Would you like to upload one?";
+      }
+    }
+    
+    // Default response if we couldn't extract anything specific
+    return "I've processed your request using our reasoning engine. Could you please provide more details about what you're looking for?";
   };
 
   // Helper function to update step status
@@ -562,7 +784,6 @@ You can:
     }
 
     // Check if we had any dataset API calls that should be included in the response
-    const datasetCalls = apiCalls.filter(call => call.name === 'listDatasets');
     const hasDatasetsInfo = datasetCalls.length > 0;
 
     // If no response step found but we have API results, construct a response
@@ -850,6 +1071,211 @@ I can help you customize this template with your specific content, styling, and 
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+
+  /**
+   * Format a response for knowledge-based queries using the knowledge base
+   */
+  const formatResponseForKnowledgeQuery = (queryType: string, userMessage: string): string => {
+    // Map query type to knowledge category
+    let category;
+    switch (queryType) {
+      case 'platform_overview':
+        category = KnowledgeCategory.PlatformOverview;
+        break;
+      case 'features':
+        category = KnowledgeCategory.Features;
+        break;
+      case 'pricing_tiers':
+        category = KnowledgeCategory.PricingTiers;
+        break;
+      case 'model_types':
+        category = KnowledgeCategory.ModelTypes;
+        break;
+      case 'industries':
+        category = KnowledgeCategory.Industries;
+        break;
+      case 'best_practices':
+        category = KnowledgeCategory.BestPractices;
+        break;
+      default:
+        // Search across all categories
+        category = null;
+    }
+    
+    // Retrieve relevant knowledge entries
+    let entries: Array<{title: string, content: string}>;
+    if (category) {
+      entries = knowledgeBaseService.getByCategory(category);
+    } else {
+      entries = knowledgeBaseService.search(userMessage);
+    }
+    
+    if (!entries || entries.length === 0) {
+      return "I don't have specific information about that aspect of Artintel yet. Would you like me to help you with something else?";
+    }
+    
+    // Create a conversational response based on the retrieved knowledge
+    const normalizedMessage = userMessage.toLowerCase();
+    let response = '';
+    
+    // For platform overview queries
+    if (queryType === 'platform_overview') {
+      const overview = entries.find((e: {title: string, content: string}) => e.title === 'What is Artintel')?.content || '';
+      const philosophy = entries.find((e: {title: string, content: string}) => e.title === 'Artintel Philosophy')?.content || '';
+      
+      response = `${overview}\n\n${philosophy}\n\nArtintel makes it easy for teams of all sizes to leverage powerful language models without deep machine learning expertise. Is there a specific aspect of the platform you'd like to know more about?`;
+    }
+    
+    // For feature queries
+    else if (queryType === 'features') {
+      // Check if asking about a specific feature
+      const featureKeywords = [
+        { term: 'model selection', title: 'Model Selection & Discovery' },
+        { term: 'data integration', title: 'Data Integration & Preprocessing' },
+        { term: 'fine-tuning', title: 'Fine-Tuning Workflows' },
+        { term: 'deployment', title: 'Deployment & Serving' },
+        { term: 'monitoring', title: 'Monitoring & Alerts' },
+        { term: 'mash', title: 'Mash AI Agent' },
+      ];
+      
+      // Try to find a specific feature the user is asking about
+      const matchedFeature = featureKeywords.find(f => 
+        normalizedMessage.includes(f.term)
+      );
+      
+      if (matchedFeature) {
+        const featureEntry = entries.find((e: {title: string, content: string}) => e.title === matchedFeature.title);
+        if (featureEntry) {
+          response = `${featureEntry.content}\n\nWould you like to know more about other Artintel features or more details about ${matchedFeature.title}?`;
+        }
+      } else {
+        // General features overview
+        response = "Artintel offers a comprehensive set of features for working with language models:\n\n";
+        entries.forEach((entry: {title: string, content: string}) => {
+          response += `• ${entry.title}: ${entry.content.split('.')[0]}.\n\n`;
+        });
+        response += "Which of these features would you like to learn more about?";
+      }
+    }
+    
+    // For pricing tier queries
+    else if (queryType === 'pricing_tiers') {
+      // Check if asking about a specific tier
+      if (normalizedMessage.includes('free tier') || normalizedMessage.includes('free plan')) {
+        const freeTier = entries.find((e: {title: string, content: string}) => e.title === 'Free Tier');
+        response = freeTier ? freeTier.content : '';
+      } else if (normalizedMessage.includes('pro tier') || normalizedMessage.includes('professional')) {
+        const proTier = entries.find((e: {title: string, content: string}) => e.title === 'Pro Tier');
+        response = proTier ? proTier.content : '';
+      } else if (normalizedMessage.includes('enterprise') || normalizedMessage.includes('premium')) {
+        const enterpriseTier = entries.find((e: {title: string, content: string}) => e.title === 'Enterprise Premium Tier');
+        response = enterpriseTier ? enterpriseTier.content : '';
+      } else {
+        // Compare all tiers
+        response = "Artintel offers three pricing tiers to match different needs:\n\n";
+        entries.forEach((entry: {title: string, content: string}) => {
+          response += `**${entry.title}**: ${entry.content.split('.')[0]}.\n\n`;
+        });
+        response += "Would you like more details about a specific tier?";
+      }
+    }
+    
+    // For model type queries
+    else if (queryType === 'model_types') {
+      if (normalizedMessage.includes('slm') || normalizedMessage.includes('small language model')) {
+        const slmEntry = entries.find((e: {title: string, content: string}) => e.title === 'Small Language Models (SLMs)');
+        response = slmEntry ? slmEntry.content : '';
+      } else if (normalizedMessage.includes('llm') || normalizedMessage.includes('large language model')) {
+        const llmEntry = entries.find((e: {title: string, content: string}) => e.title === 'Large Language Models (LLMs)');
+        response = llmEntry ? llmEntry.content : '';
+      } else if (normalizedMessage.includes('comparison') || normalizedMessage.includes('versus') || normalizedMessage.includes('vs')) {
+        const comparisonEntry = entries.find((e: {title: string, content: string}) => e.title === 'SLM vs LLM Use Cases');
+        response = comparisonEntry ? comparisonEntry.content : '';
+      } else {
+        // Overview of both model types
+        const slmEntry = entries.find(e => e.title === 'Small Language Models (SLMs)');
+        const llmEntry = entries.find(e => e.title === 'Large Language Models (LLMs)');
+        
+        response = "Artintel supports both Small Language Models (SLMs) and Large Language Models (LLMs):\n\n";
+        
+        if (slmEntry) {
+          response += `**Small Language Models (SLMs)**: ${slmEntry.content.split('.')[0]}.\n\n`;
+        }
+        
+        if (llmEntry) {
+          response += `**Large Language Models (LLMs)**: ${llmEntry.content.split('.')[0]}.\n\n`;
+        }
+        
+        response += "Would you like more details about a specific model type or use case?";
+      }
+    }
+    
+    // For industry-specific queries
+    else if (queryType === 'industries') {
+      // Check if asking about a specific industry
+      const industries = [
+        { term: 'healthcare', title: 'Healthcare Applications' },
+        { term: 'finance', title: 'Finance Applications' },
+        { term: 'legal', title: 'Legal Applications' },
+        { term: 'retail', title: 'Retail & E-Commerce' },
+      ];
+      
+      const matchedIndustry = industries.find(i => 
+        normalizedMessage.includes(i.term)
+      );
+      
+      if (matchedIndustry) {
+        const industryEntry = entries.find(e => e.title === matchedIndustry.title);
+        if (industryEntry) {
+          response = `${industryEntry.content}\n\nWould you like to know how Artintel is used in other industries as well?`;
+        }
+      } else {
+        // Overview of all industries
+        response = "Artintel supports various industries with specialized solutions:\n\n";
+        entries.forEach(entry => {
+          response += `**${entry.title}**: ${entry.content.split('.')[0]}.\n\n`;
+        });
+        response += "Which industry are you most interested in learning more about?";
+      }
+    }
+    
+    // For best practices queries
+    else if (queryType === 'best_practices') {
+      // Check if asking about specific best practices
+      const practices = [
+        { term: 'model selection', title: 'Model Selection Best Practices' },
+        { term: 'fine-tuning', title: 'Fine-Tuning Best Practices' },
+        { term: 'deployment', title: 'Deployment Best Practices' },
+      ];
+      
+      const matchedPractice = practices.find(p => 
+        normalizedMessage.includes(p.term)
+      );
+      
+      if (matchedPractice) {
+        const practiceEntry = entries.find(e => e.title === matchedPractice.title);
+        if (practiceEntry) {
+          response = `${practiceEntry.content}\n\nIs there a specific aspect of these best practices you'd like me to elaborate on?`;
+        }
+      } else {
+        // Overview of all best practices
+        response = "Here are some key best practices for using Artintel effectively:\n\n";
+        entries.forEach(entry => {
+          response += `**${entry.title}**:\n${entry.content}\n\n`;
+        });
+        response += "Would you like more specific guidance on any of these areas?";
+      }
+    }
+    
+    // Fallback to using the first entry if we haven't built a response yet
+    if (!response && entries.length > 0) {
+      const mainEntry = entries[0];
+      response = `${mainEntry.content}\n\nIs there anything specific about this you'd like to know more about?`;
+    }
+    
+    // Add a conversational touch to the response
+    return response;
+  };
 
   // Render different content based on mode
   const renderContent = () => {
