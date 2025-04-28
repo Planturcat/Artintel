@@ -1,0 +1,105 @@
+<think>I need to create documentation explaining how to use the PipelineBuilder component and its features. Based on the provided code and functionality, I'll structure a comprehensive user guide that covers:
+
+1. Overview of the Pipeline Builder
+2. Component Library and Adding Components
+3. Creating Connections Between Components
+4. Manipulating Components (Moving, Configuring, Deleting)
+5. Managing Connections
+6. Canvas Navigation (Zooming, Panning)
+7. Saving Pipelines
+
+I'll make this documentation clear, concise, and user-friendly.</think># Pipeline Builder User Guide
+
+## Introduction
+
+The Pipeline Builder is a powerful visual tool for creating custom AI pipelines in the Artintel LLM Dashboard. It allows you to visually design complex workflows by connecting components like data inputs, AI models, transformers, and outputs without writing code.
+
+## Getting Started
+
+To access the Pipeline Builder, navigate to the Custom Pipelines section of the dashboard and either create a new pipeline or edit an existing one.
+
+![Pipeline Builder Interface](https://placeholder-image.com/pipeline-builder-ui.png)
+
+## Building Your First Pipeline
+
+### 1. Working with the Interface
+
+The Pipeline Builder consists of three main sections:
+- **Components Panel** (left): Lists available component types that can be added to your workflow
+- **Canvas** (center): The design surface where you build your pipeline
+- **Properties Panel** (right): Shows details and settings for selected components
+
+### 2. Adding Components
+
+1. Browse the component library in the left panel
+2. Click on any component to add it to your canvas
+3. New components will appear at a default position, which you can then reposition
+
+Available components include:
+- **Text Input**: Entry point for text data
+- **Text Classifier**: Classifies text into categories
+- **Text Generator**: Creates new text based on prompts
+- **Text Transformer**: Manipulates and processes text data
+- **JSON Output**: Formats and outputs results as JSON
+
+### 3. Moving & Positioning Components
+
+- **Drag and Drop**: Click and drag any component to reposition it on the canvas
+- **Manual Positioning**: Select a component and adjust X/Y coordinates in the Properties panel
+
+### 4. Creating Connections
+
+Connections define how data flows from one component to another:
+
+1. Click on an **output port** (blue circle) on the source component
+2. A connection line will follow your cursor
+3. Click on an **input port** (gray circle) on the target component to complete the connection
+
+**Tips:**
+- Hover over any port to see its name and data type
+- Connections can only be made between compatible ports
+- You cannot connect a component to itself
+- Each input port can only have one incoming connection
+
+### 5. Editing Components
+
+1. Select any component by clicking on it
+2. The Properties panel will show its settings
+3. Edit the component name and other properties
+4. Position can be fine-tuned using the X/Y coordinate inputs
+
+### 6. Deleting Elements
+
+- **Remove a component**: Click the trash icon in the component's header
+- **Delete a connection**: Click on a connection to select it, then click the trash icon that appears
+
+### 7. Canvas Navigation
+
+- **Zoom In/Out**: Use the +/- buttons in the toolbar or mouse wheel
+- **Pan the Canvas**: Click and drag on empty areas of the canvas
+- **Reset View**: Refresh the page to reset the view (note: unsaved changes will be lost)
+
+### 8. Saving Your Pipeline
+
+1. After making changes, the "Save" button will become active
+2. Click "Save" to persist your pipeline design
+3. A confirmation message will appear when saved successfully
+
+## Best Practices
+
+1. **Plan your flow**: Consider the structure of your pipeline before building
+2. **Use meaningful names**: Rename components to describe their purpose
+3. **Organize spatially**: Position components in a logical left-to-right flow
+4. **Test connections**: Verify that each connection represents the desired data flow
+5. **Save frequently**: Save your pipeline after making significant changes
+
+## Troubleshooting
+
+- If components aren't connecting, ensure that the data types are compatible
+- If you can't select a component, try clicking on its header area
+- If the canvas becomes unresponsive, save your work and refresh the page
+- If connections appear misaligned, try adjusting the component positions
+
+---
+
+With this Pipeline Builder, you can create sophisticated AI workflows by visually connecting components, defining data flow, and configuring behaviors—all without writing code. This empowers you to build custom solutions for text classification, content generation, data transformation, and much more.

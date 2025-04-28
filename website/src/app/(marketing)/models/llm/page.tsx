@@ -32,6 +32,7 @@ import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import AnimationContainer from "@/components/global/animation-container";
 import { Metadata } from "next";
+import MacbookShowcase from "@/components/MacbookShowcase";
 
 export const metadata: Metadata = {
   title: "Large Language Models (LLMs) | Artintel",
@@ -65,19 +66,47 @@ const LLMFeatureCard = ({
 
 // Custom LLMHero component
 const LLMHero = () => {
+  // Define LLM-specific features for the MacbookShowcase
+  const llmFeatures = [
+    {
+      title: "Advanced Reasoning",
+      description: "Solve complex multi-step problems with sophisticated logical reasoning capabilities"
+    },
+    {
+      title: "Rich Knowledge Base",
+      description: "Access extensive pre-trained knowledge spanning diverse domains and topics"
+    },
+    {
+      title: "Long Context Windows",
+      description: "Process 8K-100K tokens for comprehensive document analysis and extended conversations"
+    },
+    {
+      title: "Creative Generation",
+      description: "Generate high-quality content across formats including text, code, and creative writing"
+    },
+    {
+      title: "Multi-task Capabilities",
+      description: "Perform diverse tasks from summarization to translation without specialized fine-tuning"
+    },
+    {
+      title: "Complex Instruction Following",
+      description: "Execute sophisticated, multi-part instructions with nuanced understanding"
+    }
+  ];
+
   return (
-    <div className="relative overflow-hidden bg-gradient-to-b from-background to-background/80 py-20 md:py-24">
+    <div className="relative overflow-hidden bg-gradient-to-b from-background via-background/95 to-background/90 py-20 md:py-24">
       {/* Decorative elements */}
       <div className="absolute inset-0 z-0">
-        <div className="absolute left-1/3 top-1/4 h-64 w-64 rounded-full bg-primary/10 blur-[100px]"></div>
-        <div className="absolute right-1/3 bottom-1/4 h-64 w-64 rounded-full bg-primary/10 blur-[100px]"></div>
+        <div className="absolute left-1/4 top-1/4 h-80 w-80 rounded-full bg-primary/10 blur-[120px]"></div>
+        <div className="absolute right-1/4 bottom-1/4 h-80 w-80 rounded-full bg-primary/10 blur-[120px]"></div>
       </div>
 
-      {/* Animated network visualization */}
-      <div className="absolute inset-0 z-0 opacity-20 overflow-hidden">
+      {/* Neural network visualization - distinctive to LLM page */}
+      <div className="absolute inset-0 z-0 opacity-15 overflow-hidden">
         <svg width="100%" height="100%" viewBox="0 0 1000 800" className="absolute inset-0">
           <g className="nodes">
-            {Array.from({ length: 12 }).map((_, i) => (
+            {Array.from({ length: 18 }).map((_, i) => (
               <circle 
                 key={i} 
                 r="8" 
@@ -85,12 +114,12 @@ const LLMHero = () => {
                 cy={100 + Math.random() * 600}
                 fill="#00CBDD" 
                 className="animate-pulse-slow" 
-                style={{ animationDelay: `${i * 0.3}s` }}
+                style={{ animationDelay: `${i * 0.2}s` }}
               />
             ))}
           </g>
           <g className="links">
-            {Array.from({ length: 20 }).map((_, i) => (
+            {Array.from({ length: 30 }).map((_, i) => (
               <line 
                 key={i} 
                 x1={200 + Math.random() * 600} 
@@ -98,37 +127,37 @@ const LLMHero = () => {
                 x2={200 + Math.random() * 600} 
                 y2={100 + Math.random() * 600}
                 stroke="#00CBDD" 
-                strokeOpacity="0.2" 
-                strokeWidth="1"
+                strokeOpacity="0.3" 
+                strokeWidth="1.5"
                 className="animate-dash-offset"
-                style={{ animationDelay: `${i * 0.1}s` }}
+                style={{ animationDelay: `${i * 0.07}s` }}
               />
             ))}
           </g>
         </svg>
       </div>
 
-      {/* Grid pattern background */}
-      <div className="absolute inset-0 z-0 opacity-5">
+      {/* Grid pattern background with deeper opacity - distinctive to LLM page */}
+      <div className="absolute inset-0 z-0 opacity-7">
         <div className="h-full w-full grid grid-cols-12 grid-rows-6">
           {Array.from({ length: 72 }).map((_, i) => (
-            <div key={i} className="border border-primary/20" />
+            <div key={i} className="border border-primary/30" />
           ))}
         </div>
       </div>
 
       <Wrapper className="relative z-10">
-        <div className="grid gap-8 md:grid-cols-2 items-center">
+        <div className="grid gap-12 md:grid-cols-2 items-center">
           <div>
-            <div className="mb-3 inline-flex items-center rounded-full border border-primary/30 bg-primary/5 px-3 py-1 text-sm text-primary">
+            <div className="mb-3 inline-flex items-center rounded-full border border-primary/40 bg-primary/5 px-3 py-1 text-sm text-primary">
               <Brain className="mr-1 h-3 w-3" />
               <span>Large Language Models</span>
             </div>
 
             <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-6xl mb-4">
-              Powerful{" "}
-              <span className="text-primary">AI</span>{" "}
-              for Complex Tasks
+              <span className="text-primary">Powerful</span>{" "}
+              Intelligence for{" "}
+              <span className="bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">Complex Tasks</span>
             </h1>
 
             <p className="text-lg text-muted-foreground mb-6">
@@ -172,7 +201,7 @@ const LLMHero = () => {
             </div>
 
             <div className="flex flex-wrap gap-4">
-              <Button asChild size="lg" className="rounded-full">
+              <Button asChild size="lg" className="rounded-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary">
                 <Link href="#models">
                   Browse LLM Models
                 </Link>
@@ -181,7 +210,7 @@ const LLMHero = () => {
                 asChild
                 variant="outline"
                 size="lg"
-                className="rounded-full"
+                className="rounded-full border-primary/30 hover:bg-primary/5"
               >
                 <Link href="#features">
                   Learn More About LLMs
@@ -190,41 +219,17 @@ const LLMHero = () => {
             </div>
           </div>
 
-          <div className="hidden md:block relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-background via-transparent to-background z-10"></div>
-            <div className="relative z-0 flex items-center justify-center">
-              <div className="relative">
-                <div className="absolute inset-0 bg-primary/5 rounded-full blur-3xl transform scale-75 opacity-50"></div>
-                <div className="relative bg-card/30 border border-primary/20 rounded-xl p-6 backdrop-blur-sm hover:border-primary/40 transition-colors duration-300">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="p-2 rounded-lg bg-primary/10">
-                      <Brain className="h-6 w-6 text-primary" />
+          <div className="relative flex items-center justify-center">
+            {/* Using MacbookShowcase to display LLM features */}
+            <div className="relative z-10 w-full">
+              <MacbookShowcase features={llmFeatures} rotationSpeed={8} featureChangeInterval={3500} />
                     </div>
-                    <div>
-                      <h3 className="font-bold">Large Language Models</h3>
-                      <p className="text-sm text-muted-foreground">Advanced AI for complex tasks</p>
-                    </div>
-                  </div>
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-muted-foreground">Parameter Range:</span>
-                      <span className="font-medium">~1B to ~180B+</span>
-                    </div>
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-muted-foreground">Memory Usage:</span>
-                      <span className="font-medium">~5GB to ~400GB</span>
-                    </div>
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-muted-foreground">Inference Speed:</span>
-                      <span className="font-medium">100ms-5s</span>
-                    </div>
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-muted-foreground">Deployment:</span>
-                      <span className="font-medium">GPU Servers, Cloud</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
+            
+            {/* Additional decorative elements specific to LLM page */}
+            <div className="absolute inset-0 z-0 opacity-30">
+              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 rounded-full border border-primary/20 animate-pulse-slow"></div>
+              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full border border-primary/10 animate-pulse-slow animation-delay-1000"></div>
+              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-128 h-128 rounded-full border border-primary/5 animate-pulse-slow animation-delay-2000"></div>
             </div>
           </div>
         </div>

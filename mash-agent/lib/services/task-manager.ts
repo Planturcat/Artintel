@@ -114,8 +114,27 @@ export class TaskManager {
   /**
    * Process a user message through multiple thinking steps
    * Using the enhanced reasoning engine for improved results
+   * @param userMessage The user's message to process
+   * @param options Processing options (mode, showThinking, taskType)
    */
-  public async processUserMessage(userMessage: string): Promise<TaskState> {
+  public async processUserMessage(userMessage: string, options?: string | { mode?: string; showThinking?: boolean; taskType?: string }): Promise<TaskState> {
+    // Parse options if provided as a string (for backward compatibility)
+    let processingMode = 'agent';
+    let showThinking = true;
+    let detectedTaskType = null;
+    
+    if (options) {
+      if (typeof options === 'string') {
+        processingMode = options;
+      } else {
+        processingMode = options.mode || 'agent';
+        showThinking = options.showThinking !== undefined ? options.showThinking : true;
+        detectedTaskType = options.taskType || null;
+      }
+    }
+
+    console.log(`Processing message in ${processingMode} mode. Show thinking: ${showThinking}`);
+    
     // Create a new task
     const taskId = `task-${Date.now()}`;
     const task: TaskState = {
@@ -179,12 +198,44 @@ export class TaskManager {
         return task;
       }
 
+      // If we're in chat mode with a detected task type, use a more directed system prompt
+      if (processingMode === 'chat' && detectedTaskType) {
+        reasoningEngine.setSystemPrompt(this.getTaskSpecificPrompt(detectedTaskType));
+      }
+
       // Use the enhanced reasoning engine for detailed thinking
       const thinkingProcess = await reasoningEngine.think(userMessage, conversationContext);
       task.thinkingProcess = thinkingProcess;
 
-      // Update task type based on reasoning engine result
-      task.type = thinkingProcess.taskType;
+      // If we have a detected task type, override the reasoning engine's detection
+      if (detectedTaskType) {
+        switch (detectedTaskType) {
+          case 'platform_overview':
+          case 'features':
+          case 'pricing_tiers':
+          case 'model_types':
+          case 'industries':
+          case 'best_practices':
+            // Knowledge-based queries
+            task.type = TaskType.Conversation;
+            break;
+          case 'fine-tuning':
+            task.type = TaskType.ModelTraining;
+            break;
+          case 'deployment':
+            task.type = TaskType.ModelDeployment;
+            break;
+          case 'model-selection':
+            task.type = TaskType.ModelInference;
+            break;
+          default:
+            // Use the detected type from the reasoning engine
+            task.type = thinkingProcess.taskType;
+        }
+      } else {
+        // Update task type based on reasoning engine result
+        task.type = thinkingProcess.taskType;
+      }
 
       // Add reasoning steps to task for tracking
       thinkingProcess.steps.forEach((step) => {
@@ -591,6 +642,104 @@ export class TaskManager {
   public getLatestTask(): TaskState | undefined {
     if (this.tasks.length === 0) return undefined;
     return this.tasks[this.tasks.length - 1];
+  }
+
+  /**
+   * Generate a task-specific system prompt based on detected task type
+   */
+  private getTaskSpecificPrompt(taskType: string): string {
+    switch (taskType) {
+      case 'platform_overview':
+        return `You are Mash, the intelligent assistant for Artintel, a comprehensive platform for discovering, fine-tuning, and deploying language models.
+The user is asking about general information about the Artintel platform. Provide a clear, concise overview of what Artintel is, its core philosophy, goals, and vision.
+Focus on explaining how Artintel bridges the gap between AI research and practical applications for organizations.
+Be conversational but informative, emphasizing Artintel's key differentiators and value proposition.`;
+
+      case 'features':
+        return `You are Mash, the intelligent assistant for Artintel, a comprehensive platform for discovering, fine-tuning, and deploying language models.
+The user is asking about Artintel's features and capabilities. Explain the key components of the platform including:
+- Model Selection & Discovery
+- Data Integration & Preprocessing
+- Fine-Tuning Workflows
+- Deployment & Serving
+- Monitoring & Alerts
+- Cost Management
+Focus on practical benefits and how these features solve real business problems.
+Be conversational but specific, highlighting the most relevant features based on the user's specific query.`;
+
+      case 'pricing_tiers':
+        return `You are Mash, the intelligent assistant for Artintel, a comprehensive platform for discovering, fine-tuning, and deploying language models.
+The user is asking about Artintel's pricing and tier options. Provide clear information about the available tiers:
+- Free Tier: For startups, educators, solo developers with access to lightweight models
+- Pro Tier: For SMEs and mid-sized teams with access to mid-sized LLMs and guided fine-tuning
+- Enterprise Premium: For regulated industries and large enterprises with access to the largest models
+Focus on helping the user understand which tier would best fit their needs based on their requirements.
+Be conversational but factual, highlighting the value proposition of each tier.`;
+
+      case 'model_types':
+        return `You are Mash, the intelligent assistant for Artintel, a comprehensive platform for discovering, fine-tuning, and deploying language models.
+The user is asking about different types of language models. Explain the differences between:
+- Small Language Models (SLMs): Typically ranging from a few million to a few billion parameters
+- Large Language Models (LLMs): Ranging from several billion to hundreds of billions of parameters
+Focus on the strengths, limitations, and appropriate use cases for each model type.
+Be conversational but educational, helping the user understand which model type would be most suitable for their specific needs.`;
+
+      case 'industries':
+        return `You are Mash, the intelligent assistant for Artintel, a comprehensive platform for discovering, fine-tuning, and deploying language models.
+The user is asking about industry-specific applications of Artintel. Provide insights on how Artintel is used in different sectors such as:
+- Healthcare: For analyzing EHRs, medical coding, and clinical decision support
+- Finance: For fraud detection, loan underwriting, and market analysis
+- Legal: For contract analysis, eDiscovery, and legal brief summarization
+- Retail & E-Commerce: For chatbots, inventory forecasting, and product review analysis
+Focus on real-world examples and specific benefits for each industry.
+Be conversational but practical, highlighting industry-specific challenges that Artintel solves.`;
+
+      case 'best_practices':
+        return `You are Mash, the intelligent assistant for Artintel, a comprehensive platform for discovering, fine-tuning, and deploying language models.
+The user is asking about best practices for using Artintel effectively. Provide expert guidance on:
+- Model Selection: Balancing complexity with resource constraints
+- Fine-Tuning: Ensuring high-quality data and appropriate hyperparameters
+- Deployment: Implementing proper monitoring, scaling, and version control
+Focus on actionable advice that helps users maximize their success with the platform.
+Be conversational but authoritative, sharing insights that come from experience with the platform.`;
+
+      case 'fine-tuning':
+        return `You are Mash, the intelligent assistant for Artintel, a comprehensive platform for discovering, fine-tuning, and deploying language models.
+The user is asking about fine-tuning language models. Provide detailed information about Artintel's fine-tuning capabilities including:
+- The no-code fine-tuning studio with step-by-step wizards
+- Support for different model types (SLMs and LLMs)
+- Training infrastructure options (cloud or on-prem)
+- Checkpoints and experiment tracking features
+Focus on the process, requirements, and best practices for successful fine-tuning.
+Be conversational but technical when necessary, offering practical guidance for users of different expertise levels.`;
+
+      case 'deployment':
+        return `You are Mash, the intelligent assistant for Artintel, a comprehensive platform for discovering, fine-tuning, and deploying language models.
+The user is asking about deploying language models. Explain Artintel's deployment capabilities including:
+- One-click deployment to different environments (cloud, on-prem, hybrid)
+- Kubernetes integration and containerization
+- REST & gRPC endpoint options with authentication and rate limiting
+- Version management for safe iterations
+Focus on the seamless deployment process and operational considerations.
+Be conversational but practical, highlighting deployment options that might be relevant to the user's needs.`;
+
+      case 'model-selection':
+        return `You are Mash, the intelligent assistant for Artintel, a comprehensive platform for discovering, fine-tuning, and deploying language models.
+The user is asking about selecting the right language model. Provide guidance on Artintel's model selection features including:
+- The curated model catalog with performance benchmarks
+- Metadata on model sizes, speeds, and memory requirements
+- Domain tagging for specialized fields
+- Intelligent recommendation system
+Focus on helping the user understand how to match models to their specific use case and constraints.
+Be conversational but objective, presenting the tradeoffs between different model options.`;
+
+      default:
+        // Default conversational prompt
+        return `You are Mash, an AI assistant for Artintel, a platform that helps discover, fine-tune, and deploy language models.
+Be conversational, helpful, and focused on providing practical advice related to Artintel's offerings.
+When answering, be clear and concise while still being friendly. Focus on addressing the user's needs.
+Always maintain a helpful, positive tone even when dealing with technical subjects.`;
+    }
   }
 }
 
