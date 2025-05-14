@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { APP_NAME } from "@/constants";
+import { Sparkles } from "../ui/sparkles";
 
 export default function HeroBackground({
   className,
@@ -175,6 +176,26 @@ export default function HeroBackground({
           initial="hidden"
           animate="visible"
         >
+          {/* Enhanced radial gradient effect with mask from example */}
+          <motion.div 
+            className="relative overflow-hidden w-full h-full [mask-image:radial-gradient(50%_50%,white,transparent)] before:absolute before:inset-0 before:bg-[radial-gradient(circle_at_bottom_center,#00cddd,transparent_80%)] before:opacity-60 after:absolute after:-left-1/2 after:top-1/2 after:aspect-[1/0.7] after:w-[200%] after:rounded-[100%] after:border-t after:border-[#00cddd66] after:bg-black"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 2 }}
+          >
+            {/* Grid pattern background */}
+            <div className="absolute bottom-0 left-0 right-0 top-0 bg-[linear-gradient(to_right,#ffffff2c_1px,transparent_1px),linear-gradient(to_bottom,#3a3a3a01_1px,transparent_1px)] bg-[size:70px_80px]"></div>
+            
+            {/* Sparkles integration with radial mask */}
+            <Sparkles
+              density={400}
+              speed={0.7}
+              size={1}
+              color="#00cddd"
+              className="absolute inset-x-0 bottom-0 h-full w-full [mask-image:radial-gradient(50%_50%,white,transparent_85%)]"
+            />
+          </motion.div>
+
           <svg
             width="100%"
             height="100%"

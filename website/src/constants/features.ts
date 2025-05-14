@@ -20,7 +20,7 @@ export const FEATURES = [
     {
         title: "Automated Model Training",
         description: "Fine-tune models with your data using our automated training pipelines powered by cutting-edge techniques.",
-        image: "/images/f4.svg",
+        image: "/images/feature-one.svg",
         size: "small"
     },
 ];

@@ -78,9 +78,20 @@ const Navbar = () => {
     e: React.MouseEvent<HTMLAnchorElement>,
     href: string,
   ) => {
-    if (href.startsWith("/#")) {
+    if (href.includes("#")) {
       e.preventDefault();
-      scrollToAnchor(href.replace("/", ""));
+
+      // Check if we're already on the page that contains the anchor
+      const currentPath = pathname.split("#")[0];
+      const targetPath = href.split("#")[0];
+
+      if (currentPath === targetPath || (currentPath === "/" && targetPath === "")) {
+        // We're on the same page, just scroll to the anchor
+        scrollToAnchor(href.split("#")[1]);
+      } else {
+        // We need to navigate to the page first, then scroll to the anchor
+        window.location.href = href;
+      }
     }
   };
 

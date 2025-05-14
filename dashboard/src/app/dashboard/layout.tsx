@@ -50,7 +50,7 @@ export default function DashboardLayout({
         <div className="flex h-screen overflow-hidden">
           {/* Sidebar */}
           <motion.div 
-            className="hidden md:block w-75 shrink-0 h-screen overflow-y-auto z-10"
+            className="hidden md:block w-60 shrink-0 h-screen overflow-y-auto z-10"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
@@ -62,7 +62,7 @@ export default function DashboardLayout({
           <div className="flex-1 flex flex-col overflow-hidden z-10">
             <DashHeader />
             <main className="flex-1 overflow-y-auto">
-              <div className="container mx-auto px-0.5 py-6">
+              <div className="container mx-auto px-3 py-6">
                 {children}
               </div>
             </main>

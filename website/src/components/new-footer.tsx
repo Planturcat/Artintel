@@ -179,15 +179,7 @@ const Footer = () => {
                     Pricing
                   </Link>
                 </li>
-                <li data-oid="hgpcq_z">
-                  <Link
-                    href="/community"
-                    className="hover:text-foreground transition-colors duration-300"
-                    data-oid=":ki5_2h"
-                  >
-                    Community
-                  </Link>
-                </li>
+
               </ul>
             </div>
           </AnimationContainer>

@@ -34,7 +34,7 @@ import { toast } from 'react-hot-toast';
 const navItems = [
   { name: 'Dashboard', icon: Home, path: '/dashboard' },
   { name: 'Models', icon: BrainCircuit, path: '/dashboard/models' },
-  { name: 'Datasets', icon: Database, path: '/dashboard/datasets' },
+  { name: 'Data Integration', icon: Database, path: '/dashboard/datasets' },
   { name: 'Fine-Tuning', icon: Code, path: '/dashboard/fine-tuning' },
   { name: 'Deployments', icon: Server, path: '/dashboard/deployment' },
   { name: 'Custom Pipelines', icon: Workflow, path: '/dashboard/custom-pipelines' },
@@ -95,7 +95,7 @@ export default function DashSidebar() {
             <span className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#00cbdd] to-blue-500">
               {isDark ? (
               <Image 
-                src="/White-Logo.png" 
+                src="/Logo - PNG (2).png" 
                 alt="ArtIntel Logo Dark" 
                 width={152} 
                 height={82}
@@ -104,7 +104,7 @@ export default function DashSidebar() {
               />
             ) : (
               <Image 
-                src="/Logo.png" 
+                src="/Logo - PNG (2).png" 
                 alt="ArtIntel Logo Light" 
                 width={152} 
                 height={82}

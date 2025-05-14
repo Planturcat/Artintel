@@ -19,7 +19,7 @@ import { taskManager } from "@/lib/services/task-manager";
 import { ThinkingStage } from "@/lib/services/reasoning-engine";
 
 // Import knowledge base services
-import { KnowledgeBaseService, KnowledgeCategory } from '../services/knowledge-base-service';
+import { knowledgeBaseService, KnowledgeCategory } from '../lib/services/knowledge-base';
 
 // Define types
 interface Message {
@@ -52,9 +52,6 @@ const BASE_MODELS: BaseModel[] = [
   { id: "gpt-3.5-turbo", name: "GPT-3.5 Turbo", description: "OpenAI's GPT-3.5 Turbo model" },
   { id: "gpt-4o", name: "GPT-4o", description: "OpenAI's GPT-4o model" },
 ];
-
-// Initialize the service
-const knowledgeBaseService = new KnowledgeBaseService();
 
 export const EnhancedChatContainer: React.FC<EnhancedChatContainerProps> = ({ mode }) => {
   // State for agent mode (chat or agent)
@@ -784,11 +781,12 @@ You can:
     }
 
     // Check if we had any dataset API calls that should be included in the response
-    const hasDatasetsInfo = datasetCalls.length > 0;
+    const hasDatasetsInfo = task.apiCalls.filter((call: {name: string; result: any}) => call.name === 'listDatasets').length > 0;
 
     // If no response step found but we have API results, construct a response
     if (hasDatasetsInfo) {
-      const datasets = datasetCalls[0].result?.datasets || [];
+      const datasetCall = task.apiCalls.find((call: {name: string; result: any}) => call.name === 'listDatasets');
+      const datasets = datasetCall?.result?.datasets || [];
       if (datasets && datasets.length > 0) {
         const datasetList = datasets.map((ds: any) => `- ${ds.name || 'Unnamed dataset'}`).join('\n');
         return `Here are your datasets:\n${datasetList}`;
@@ -829,7 +827,7 @@ You can:
       const response = await processMessage(input);
 
       // Add assistant response
-      setMessages((prev) => [...prev, { role: "assistant", content: response }]);
+      setMessages((prev) => [...prev, { role: "assistant" as const, content: response }]);
 
       // If in chat mode, don't show thinking steps
       if (mode === 'unified' && agentMode === 'chat') {
@@ -854,7 +852,7 @@ You can:
 
       setMessages((prev) => [
         ...prev,
-        { role: "assistant", content: errorMessage },
+        { role: "assistant" as const, content: errorMessage },
       ]);
     } finally {
       setIsLoading(false);
@@ -952,7 +950,7 @@ You can:
     setMessages((prev) => [
       ...prev,
       {
-        role: "assistant",
+        role: "assistant" as const,
         content: `I've generated the UI code for you. You can view and copy it from the code panel.
 
 \`\`\`jsx
@@ -972,7 +970,7 @@ The complete code is available in the editor.`
     setMessages((prev) => [
       ...prev,
       {
-        role: "assistant",
+        role: "assistant" as const,
         content: `I've added the **${template.name}** template from the ${category} category to our conversation. Let me know what customizations you'd like to make to this template.
 
 **Template Description**: ${template.description}
@@ -1309,7 +1307,7 @@ I can help you customize this template with your specific content, styling, and 
                     setAgentMode('chat');
                     // Add a message about switching modes instead of clearing history
                     setMessages(prev => [...prev, {
-                      role: "assistant",
+                      role: "assistant" as const,
                       content: "Switched to chat mode. I'll respond to your messages in a simple, conversational way focused on helping you with Artintel's language model platform. How can I help you today?"
                     }]);
                   }
@@ -1324,7 +1322,7 @@ I can help you customize this template with your specific content, styling, and 
                     setAgentMode('agent');
                     // Add a message about switching modes instead of clearing history
                     setMessages(prev => [...prev, {
-                      role: "assistant",
+                      role: "assistant" as const,
                       content: "Switched to agent mode. I'll now use my full capabilities to help you with Artintel's platform features including model selection, data integration, fine-tuning workflows, deployment, and monitoring of language models. What would you like help with?"
                     }]);
                   }
@@ -1384,7 +1382,7 @@ I can help you customize this template with your specific content, styling, and 
               onClick={() => {
                 // Clear chat history and start new chat
                 const welcomeMessage = {
-                  role: "assistant",
+                  role: "assistant" as const,
                   content: mode === 'unified'
                     ? agentMode === 'chat'
                       ? "Hi! I'm Mash, your Artintel assistant. I'm ready to help you discover, fine-tune, and deploy LLMs and SLMs. What can I help you with today?"

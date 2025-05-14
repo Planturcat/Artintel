@@ -378,24 +378,7 @@ export default function Dashboard() {
           isLoading={loading}
           gradient="from-green-500 to-emerald-500"
         />
-        <StatCard
-          title={t('activeDeployments')}
-          value={loading ? "—" : user?.stats?.deployments.toString() || "0"}
-          icon={<Server className="h-5 w-5" />}
-          change={-3}
-          changeText={t('fromLastMonth')}
-          isLoading={loading}
-          gradient="from-amber-500 to-orange-500"
-        />
-        <StatCard
-          title={t('datasetSize')}
-          value={loading ? "—" : user?.stats?.datasets_created.toString() || "0"}
-          icon={<Database className="h-5 w-5" />}
-          change={15}
-          changeText={t('fromLastMonth')}
-          isLoading={loading}
-          gradient="from-green-500 to-cyan-500"
-        />
+       
       </div>
       
       {/* Charts Row */}

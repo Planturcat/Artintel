@@ -2,7 +2,7 @@
 import { mockAuth } from './mockAuth';
 
 // Enable mock mode for demo purposes
-const ENABLE_MOCK_API = true; // Set to false to use real API
+const ENABLE_MOCK_API = false; // Set to false to use real API
 
 // API base URL from environment variables, with fallback value
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
