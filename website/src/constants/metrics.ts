@@ -1,6 +1,7 @@
 export const METRICS = [
     {
-        number: 25000,
+        number: 50,
+        suffix: "+",
         label: "Active AI models",
         image: "/icons/metric-one.svg",
         reverse: false

@@ -27,9 +27,9 @@ const PlatformMetrics = () => {
               className="text-2xl md:text-4xl lg:text-5xl font-medium !leading-tight text-transparent bg-clip-text bg-gradient-to-b from-foreground to-neutral-400"
               data-oid="o9-yoxt"
             >
-              Transforming real estate
+              Transforming AI development
               <br data-oid="__vyhaz" />
-              management globally
+              at global scale
             </h2>
           </AnimationContainer>
 
@@ -38,14 +38,13 @@ const PlatformMetrics = () => {
               className="text-sm md:text-base lg:text-lg text-muted-foreground max-w-2xl mx-auto"
               data-oid="g745ig0"
             >
-              Join thousands who trust our platform to streamline operations and
-              grow.
+              Join thousands of developers who trust our platform to build, deploy, and scale language models.
             </p>
           </AnimationContainer>
 
           <AnimationContainer animation="fadeUp" delay={0.5} data-oid="9t1w96q">
             <Button className="mt-4" data-oid="0x2c-um">
-              Start your journey
+              Start your free trial
             </Button>
           </AnimationContainer>
         </div>

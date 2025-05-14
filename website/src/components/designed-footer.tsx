@@ -32,16 +32,14 @@ const DesignedFooter = () => {
               href="/"
               className="flex items-center gap-2"
             >
-              <img
-                src="/logo/Icon - PNG (1).png"
-                alt="Artintel Logo"
-                className="w-7 h-7"
-              />
+
 
               <span
                 className="text-lg font-bold font-heading !leading-none text-white"
               >
-                {APP_NAME}
+
+        <TextHoverEffect text="ARTINTEL" />
+
               </span>
             </Link>
             <p
@@ -166,14 +164,7 @@ const DesignedFooter = () => {
                     Pricing
                   </Link>
                 </li>
-                <li>
-                  <Link
-                    href="/community"
-                    className="hover:text-foreground transition-colors duration-300"
-                  >
-                    Community
-                  </Link>
-                </li>
+
               </ul>
             </div>
           </AnimationContainer>
@@ -387,14 +378,12 @@ const DesignedFooter = () => {
             >
               Research
             </span>
+
           </div>
+
         </AnimationContainer>
       </div>
-      <div
-        className="h-[20rem] lg:h-[20rem] hidden md:flex items-center justify-center"
-      >
-        <TextHoverEffect text="ARTINTEL" />
-      </div>
+
     </footer>
   );
 };

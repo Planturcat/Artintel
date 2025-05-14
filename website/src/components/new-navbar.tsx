@@ -108,14 +108,14 @@ const Navbar = () => {
                   <Image
                     src="/icons/artintel-logo.png"
                     alt="Artintel Logo"
-                    width={24}
-                    height={24}
+                    width={36}
+                    height={36}
                     className="text-primary"
                     data-oid="7ju3c8f"
                   />
 
                   <span
-                    className="text-lg font-bold font-heading !leading-none bg-gradient-to-r from-primary to-blue-500 bg-clip-text text-transparent"
+                    className="text-xl font-bold font-heading !leading-none bg-gradient-to-r from-primary to-blue-500 bg-clip-text text-transparent"
                     data-oid="y2j8z7q"
                   >
                     {APP_NAME}
@@ -202,6 +202,12 @@ const Navbar = () => {
                     Sign In
                   </Link>
                   <Link
+                    href="/waiting-list"
+                    className={buttonVariants({ size: "sm", variant: "outline" })}
+                  >
+                    Join Waiting List
+                  </Link>
+                  <Link
                     href="/auth/sign-up"
                     className={buttonVariants({ size: "sm" })}
                     data-oid="xat5nap"
@@ -277,6 +283,15 @@ const Navbar = () => {
                             data-oid="_mid_18"
                           >
                             Sign In
+                          </Link>
+                          <Link
+                            href="/waiting-list"
+                            className={buttonVariants({
+                              variant: "secondary",
+                              className: "w-full",
+                            })}
+                          >
+                            Join Waiting List
                           </Link>
                           <Link
                             href="/auth/sign-up"

@@ -4,7 +4,9 @@ import Features from "@/components/features";
 import Hero from "@/components/hero";
 import HowItWorks from "@/components/how-it-works";
 import ModelSelection from "@/components/model-selection";
-import Perks from "@/components/perks-updated";
+import Perks from "@/components/perks";
+
+
 import PlatformMetrics from "@/components/platform-metrics";
 import Pricing from "@/components/pricing";
 import Testimonials from "@/components/testimonials";
@@ -41,14 +43,7 @@ const HomePage = () => {
         <Features data-oid="c3gb56x" />
       </section>
 
-      <section className="w-full" data-oid="vq7syk0">
-        <Testimonials data-oid="9wt8u03" />
-      </section>
-
-      <section className="w-full" data-oid="cwdq6ld">
-        <Pricing data-oid="-t8b1dk" />
-      </section>
-
+      
       <section className="w-full" data-oid="df7o_f_">
         <PlatformMetrics data-oid="6::oo-k" />
       </section>
@@ -58,7 +53,7 @@ const HomePage = () => {
       </section>
 
       <section className="w-full" data-oid="4p_x7ys">
-        <CTA data-oid="cvka:pn" />
+        < CTA data-oid="cvka:pn" />
       </section>
     </div>
   );

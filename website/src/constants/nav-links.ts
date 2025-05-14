@@ -5,22 +5,22 @@ export const NAV_LINKS = [
         submenu: [
             {
                 name: "Model Selection",
-                link: "/features/model-selection",
+                link: "/features#model-selection",
                 description: "Find the perfect AI model for your use case",
             },
             {
                 name: "Fine-Tuning",
-                link: "/features/fine-tuning",
+                link: "/features#fine-tuning",
                 description: "Customize models with your own data",
             },
             {
                 name: "Deployment",
-                link: "/features/deployment",
+                link: "/features#deployment",
                 description: "Deploy models to production environments",
             },
             {
                 name: "Analytics",
-                link: "/features/analytics",
+                link: "/features#analytics",
                 description: "Track performance and usage metrics",
             },
         ],

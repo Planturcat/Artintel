@@ -1,0 +1,151 @@
+<svg width="430" height="273" viewBox="0 0 430 273" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <g clip-path="url(#clip0_model_selection)">
+    <!-- Background element -->
+    <rect width="430" height="273" fill="#1F1F1F" fill-opacity="0.9"/>
+    
+    <!-- Main Title Bar -->
+    <rect width="363" height="50" rx="8" fill="url(#paint0_linear_model_selection)"/>
+    <g filter="url(#filter0_f_model_selection)">
+      <ellipse cx="223" cy="7.5" rx="72" ry="6.5" fill="white" fill-opacity="0.4"/>
+    </g>
+    <text x="30" y="30" font-family="Arial" font-size="16" font-weight="bold" fill="white">Model Catalog</text>
+    
+    <!-- Search and Filter Panel -->
+    <rect x="20" y="70" width="90" height="180" rx="8" fill="#222222" stroke="#333333" stroke-width="1"/>
+    <text x="35" y="90" font-family="Arial" font-size="12" fill="white">Filters</text>
+    
+    <!-- Filter Options -->
+    <rect x="30" y="105" width="70" height="8" rx="4" fill="#333333"/>
+    <circle cx="35" cy="109" r="5" fill="#00cbdd"/>
+    <text x="45" y="112" font-family="Arial" font-size="8" fill="#CCCCCC">Computer Vision</text>
+    
+    <rect x="30" y="125" width="70" height="8" rx="4" fill="#333333"/>
+    <circle cx="35" cy="129" r="5" fill="#00cbdd"/>
+    <text x="45" y="132" font-family="Arial" font-size="8" fill="#CCCCCC">NLP</text>
+    
+    <rect x="30" y="145" width="70" height="8" rx="4" fill="#333333"/>
+    <circle cx="35" cy="149" r="5" fill="#00cbdd"/>
+    <text x="45" y="152" font-family="Arial" font-size="8" fill="#CCCCCC">Multimodal</text>
+    
+    <rect x="30" y="165" width="70" height="8" rx="4" fill="#333333"/>
+    <circle cx="85" cy="169" r="5" fill="#333333" stroke="#00cbdd" stroke-width="1"/>
+    <text x="45" y="172" font-family="Arial" font-size="8" fill="#CCCCCC">Generative</text>
+    
+    <!-- Performance Slider -->
+    <text x="35" y="195" font-family="Arial" font-size="10" fill="white">Performance</text>
+    <rect x="35" y="205" width="60" height="4" rx="2" fill="#333333"/>
+    <circle cx="75" cy="207" r="6" fill="#00cbdd"/>
+    
+    <!-- Size Slider -->
+    <text x="35" y="225" font-family="Arial" font-size="10" fill="white">Model Size</text>
+    <rect x="35" y="235" width="60" height="4" rx="2" fill="#333333"/>
+    <circle cx="55" cy="237" r="6" fill="#00cbdd"/>
+    
+    <!-- Model Cards -->
+    <!-- Model Card 1 - Selected -->
+    <rect x="130" y="70" width="120" height="85" rx="8" fill="#222222" stroke="#00cbdd" stroke-width="2"/>
+    <rect x="140" y="80" width="100" height="12" rx="2" fill="#333333"/>
+    <text x="145" y="90" font-family="Arial" font-size="10" font-weight="bold" fill="white">Vision Transformer XL</text>
+    
+    <rect x="140" y="100" width="40" height="8" rx="2" fill="#333333"/>
+    <text x="145" y="107" font-family="Arial" font-size="7" fill="#AAAAAA">Accuracy: 98%</text>
+    
+    <rect x="190" y="100" width="40" height="8" rx="2" fill="#333333"/>
+    <text x="195" y="107" font-family="Arial" font-size="7" fill="#AAAAAA">Size: 2.3GB</text>
+    
+    <!-- Stars -->
+    <path d="M140 120L142 125L147 125L143 128L145 133L140 130L135 133L137 128L133 125L138 125L140 120Z" fill="#00cbdd"/>
+    <path d="M150 120L152 125L157 125L153 128L155 133L150 130L145 133L147 128L143 125L148 125L150 120Z" fill="#00cbdd"/>
+    <path d="M160 120L162 125L167 125L163 128L165 133L160 130L155 133L157 128L153 125L158 125L160 120Z" fill="#00cbdd"/>
+    <path d="M170 120L172 125L177 125L173 128L175 133L170 130L165 133L167 128L163 125L168 125L170 120Z" fill="#00cbdd"/>
+    <path d="M180 120L182 125L187 125L183 128L185 133L180 130L175 133L177 128L173 125L178 125L180 120Z" fill="#444444"/>
+    
+    <!-- Select Button -->
+    <rect x="155" y="140" width="70" height="10" rx="5" fill="#00cbdd"/>
+    <text x="170" y="148" font-family="Arial" font-size="8" fill="#222222">SELECTED</text>
+    
+    <!-- Model Card 2 -->
+    <rect x="130" y="165" width="120" height="85" rx="8" fill="#222222" stroke="#333333" stroke-width="1"/>
+    <rect x="140" y="175" width="100" height="12" rx="2" fill="#333333"/>
+    <text x="145" y="185" font-family="Arial" font-size="10" font-weight="bold" fill="white">NLP Transformer S</text>
+    
+    <rect x="140" y="195" width="40" height="8" rx="2" fill="#333333"/>
+    <text x="145" y="202" font-family="Arial" font-size="7" fill="#AAAAAA">Accuracy: 95%</text>
+    
+    <rect x="190" y="195" width="40" height="8" rx="2" fill="#333333"/>
+    <text x="195" y="202" font-family="Arial" font-size="7" fill="#AAAAAA">Size: 0.8GB</text>
+    
+    <!-- Stars -->
+    <path d="M140 215L142 220L147 220L143 223L145 228L140 225L135 228L137 223L133 220L138 220L140 215Z" fill="#00cbdd"/>
+    <path d="M150 215L152 220L157 220L153 223L155 228L150 225L145 228L147 223L143 220L148 220L150 215Z" fill="#00cbdd"/>
+    <path d="M160 215L162 220L167 220L163 223L165 228L160 225L155 228L157 223L153 220L158 220L160 215Z" fill="#00cbdd"/>
+    <path d="M170 215L172 220L177 220L173 223L175 228L170 225L165 228L167 223L163 220L168 220L170 215Z" fill="#444444"/>
+    <path d="M180 215L182 220L187 220L183 223L185 228L180 225L175 228L177 223L173 220L178 220L180 215Z" fill="#444444"/>
+    
+    <!-- Select Button -->
+    <rect x="155" y="235" width="70" height="10" rx="5" fill="#333333"/>
+    <text x="176" y="243" font-family="Arial" font-size="8" fill="white">SELECT</text>
+    
+    <!-- Model Card 3 -->
+    <rect x="265" y="70" width="120" height="85" rx="8" fill="#222222" stroke="#333333" stroke-width="1"/>
+    <rect x="275" y="80" width="100" height="12" rx="2" fill="#333333"/>
+    <text x="280" y="90" font-family="Arial" font-size="10" font-weight="bold" fill="white">MultiModal Fusion</text>
+    
+    <rect x="275" y="100" width="40" height="8" rx="2" fill="#333333"/>
+    <text x="280" y="107" font-family="Arial" font-size="7" fill="#AAAAAA">Accuracy: 96%</text>
+    
+    <rect x="325" y="100" width="40" height="8" rx="2" fill="#333333"/>
+    <text x="330" y="107" font-family="Arial" font-size="7" fill="#AAAAAA">Size: 4.1GB</text>
+    
+    <!-- Stars -->
+    <path d="M275 120L277 125L282 125L278 128L280 133L275 130L270 133L272 128L268 125L273 125L275 120Z" fill="#00cbdd"/>
+    <path d="M285 120L287 125L292 125L288 128L290 133L285 130L280 133L282 128L278 125L283 125L285 120Z" fill="#00cbdd"/>
+    <path d="M295 120L297 125L302 125L298 128L300 133L295 130L290 133L292 128L288 125L293 125L295 120Z" fill="#00cbdd"/>
+    <path d="M305 120L307 125L312 125L308 128L310 133L305 130L300 133L302 128L298 125L303 125L305 120Z" fill="#00cbdd"/>
+    <path d="M315 120L317 125L322 125L318 128L320 133L315 130L310 133L312 128L308 125L313 125L315 120Z" fill="#00cbdd"/>
+    
+    <!-- Select Button -->
+    <rect x="290" y="140" width="70" height="10" rx="5" fill="#333333"/>
+    <text x="311" y="148" font-family="Arial" font-size="8" fill="white">SELECT</text>
+    
+    <!-- Model Card 4 -->
+    <rect x="265" y="165" width="120" height="85" rx="8" fill="#222222" stroke="#333333" stroke-width="1"/>
+    <rect x="275" y="175" width="100" height="12" rx="2" fill="#333333"/>
+    <text x="280" y="185" font-family="Arial" font-size="10" font-weight="bold" fill="white">Gen-AI Micro</text>
+    
+    <rect x="275" y="195" width="40" height="8" rx="2" fill="#333333"/>
+    <text x="280" y="202" font-family="Arial" font-size="7" fill="#AAAAAA">Accuracy: 92%</text>
+    
+    <rect x="325" y="195" width="40" height="8" rx="2" fill="#333333"/>
+    <text x="330" y="202" font-family="Arial" font-size="7" fill="#AAAAAA">Size: 0.5GB</text>
+    
+    <!-- Stars -->
+    <path d="M275 215L277 220L282 220L278 223L280 228L275 225L270 228L272 223L268 220L273 220L275 215Z" fill="#00cbdd"/>
+    <path d="M285 215L287 220L292 220L288 223L290 228L285 225L280 228L282 223L278 220L283 220L285 215Z" fill="#00cbdd"/>
+    <path d="M295 215L297 220L302 220L298 223L300 228L295 225L290 228L292 223L288 220L293 220L295 215Z" fill="#444444"/>
+    <path d="M305 215L307 220L312 220L308 223L310 228L305 225L300 228L302 223L298 220L303 220L305 215Z" fill="#444444"/>
+    <path d="M315 215L317 220L322 220L318 223L320 228L315 225L310 228L312 223L308 220L313 220L315 215Z" fill="#444444"/>
+    
+    <!-- Select Button -->
+    <rect x="290" y="235" width="70" height="10" rx="5" fill="#333333"/>
+    <text x="311" y="243" font-family="Arial" font-size="8" fill="white">SELECT</text>
+    
+    <!-- Checkmark in Selected Card -->
+    <circle cx="215" cy="85" r="10" fill="#00cbdd" fill-opacity="0.2"/>
+    <path d="M210 85L215 90L222 83" stroke="#00cbdd" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <defs>
+    <filter id="filter0_f_model_selection" x="97.1" y="-52.9" width="251.8" height="120.8" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+      <feGaussianBlur stdDeviation="26.95" result="effect1_foregroundBlur_model_selection"/>
+    </filter>
+    <linearGradient id="paint0_linear_model_selection" x1="0" y1="25" x2="363" y2="25" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#242424"/>
+      <stop offset="1" stop-color="#161616"/>
+    </linearGradient>
+    <clipPath id="clip0_model_selection">
+      <rect width="430" height="273" fill="white"/>
+    </clipPath>
+  </defs>
+</svg> 
