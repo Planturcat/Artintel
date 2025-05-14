@@ -82,7 +82,7 @@ const Navbar = () => {
 
   return (
     <header
-      className="fixed top-4 inset-x-0 h-14 w-full z-[99999] select-none px-4 md:px-8 lg:px-12"
+      className="fixed top-4 inset-x-0 h-16 w-full z-[99999] select-none px-4 md:px-8 lg:px-12"
       data-oid="bly02rd"
     >
       <AnimationContainer
@@ -99,7 +99,7 @@ const Navbar = () => {
           data-oid="3wr928d"
         >
           <div
-            className="flex items-center justify-between h-14 px-6"
+            className="flex items-center justify-between h-16 px-6"
             data-oid="_i2d9xb"
           >
             <div className="flex items-center space-x-8" data-oid="xc4q1by">
@@ -216,8 +216,8 @@ const Navbar = () => {
                     <Image
                       src="/icons/artintel-logo.png"
                       alt="Artintel Logo"
-                      width={14}
-                      height={14}
+                      width={18}
+                      height={18}
                       className="ml-1.5"
                       data-oid="e2v6dh2"
                     />
@@ -302,8 +302,8 @@ const Navbar = () => {
                             <Image
                               src="/icons/artintel-logo.png"
                               alt="Artintel Logo"
-                              width={14}
-                              height={14}
+                              width={18}
+                              height={18}
                               className="ml-1.5"
                               data-oid="_xm8r6f"
                             />
