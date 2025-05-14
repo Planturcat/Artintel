@@ -7,10 +7,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
-import { LoaderIcon, CheckCircle, Users, Clock, Zap } from "lucide-react";
+import { LoaderIcon, CheckCircle, Users, Clock, Zap, Brain, Cpu } from "lucide-react";
 import Link from "next/link";
-import FloatingIPhone from "@/components/waiting-list/floating-iphone";
+import IPhoneShowcase from "@/components/waiting-list/iphone-showcase";
 import WaitingListStats from "@/components/waiting-list/waiting-list-stats";
+import { addToWaitingList } from "@/lib/email";
 
 const WaitingListPage = () => {
   const [email, setEmail] = useState("");
@@ -26,14 +27,17 @@ const WaitingListPage = () => {
 
     setIsLoading(true);
 
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-
-    // Generate random position between 100-500
-    const randomPosition = Math.floor(Math.random() * 400) + 100;
-    setPosition(randomPosition);
-    setIsLoading(false);
-    setIsSubmitted(true);
+    try {
+      // Add to waiting list and get position
+      const position = await addToWaitingList(email, name);
+      setPosition(position);
+      setIsSubmitted(true);
+    } catch (error) {
+      console.error("Error adding to waiting list:", error);
+      // In a real application, you would show an error message to the user
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
