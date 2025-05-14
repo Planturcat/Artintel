@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useId } from "react";
+import React, { useState, useEffect } from "react";
 import Wrapper from "@/components/global/wrapper";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,43 +8,18 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { LoaderIcon, CheckCircle, Users, Clock, Zap, Brain, Cpu, Share2, Mail } from "lucide-react";
 import Link from "next/link";
-import EnhancedIPhoneShowcase from "@/components/waiting-list/enhanced-iphone-showcase";
+import DetailedIPhoneShowcase from "@/components/waiting-list/detailed-iphone-showcase";
 import WaitingListStats from "@/components/waiting-list/waiting-list-stats";
 import { addToWaitingList } from "@/lib/email";
 import { motion } from "framer-motion";
 import { Twitter, Linkedin } from "lucide-react";
-import ClientOnly from "@/components/client-only";
-
-// Generate deterministic values based on index
-const getGridOpacity = (index: number): number => {
-  return index % 10 === 0 ? 0.7 : 0.3;
-};
-
-const getParticleDelay = (index: number): number => {
-  return (index % 6);
-};
-
-const getParticleDuration = (index: number): number => {
-  return 15 + (index % 6);
-};
-
-const getParticlePosition = (index: number, max: number = 100): number => {
-  return (index * 13) % max;
-};
 
 const EnhancedWaitingListPage = () => {
-  const componentId = useId(); // Stable ID for keys
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [position, setPosition] = useState(0);
-  const [isClient, setIsClient] = useState(false);
-
-  // Set isClient to true when component mounts on client
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -70,108 +45,20 @@ const EnhancedWaitingListPage = () => {
     <>
       {/* Hero Section */}
       <div className="relative overflow-hidden bg-gradient-to-b from-background via-background/95 to-background/90 py-24 md:py-32">
-        {/* Enhanced decorative elements */}
+        {/* Clean decorative background */}
         <div className="absolute inset-0 z-0">
-          <motion.div
-            className="absolute left-1/3 top-1/4 h-80 w-80 rounded-full bg-primary/15 blur-[120px]"
-            animate={{
-              scale: [1, 1.2, 1],
-              opacity: [0.5, 0.7, 0.5]
-            }}
-            transition={{
-              duration: 8,
-              repeat: Infinity,
-              ease: "easeInOut"
-            }}
-          />
-          <motion.div
-            className="absolute right-1/3 bottom-1/4 h-80 w-80 rounded-full bg-primary/10 blur-[120px]"
-            animate={{
-              scale: [1.2, 1, 1.2],
-              opacity: [0.4, 0.6, 0.4]
-            }}
-            transition={{
-              duration: 10,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: 1
-            }}
-          />
-          <motion.div
-            className="absolute right-1/4 top-1/3 h-40 w-40 rounded-full bg-blue-500/10 blur-[100px]"
-            animate={{
-              scale: [1, 1.3, 1],
-              opacity: [0.3, 0.5, 0.3]
-            }}
-            transition={{
-              duration: 7,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: 2
-            }}
-          />
+          {/* Subtle gradient glow */}
+          <div className="absolute left-1/3 top-1/4 h-80 w-80 rounded-full bg-primary/15 blur-[120px] opacity-60"></div>
+          <div className="absolute right-1/3 bottom-1/4 h-80 w-80 rounded-full bg-primary/10 blur-[120px] opacity-50"></div>
+          <div className="absolute right-1/4 top-1/3 h-40 w-40 rounded-full bg-blue-500/10 blur-[100px] opacity-40"></div>
         </div>
 
-        {/* Enhanced grid pattern background */}
+        {/* Subtle grid pattern */}
         <div className="absolute inset-0 z-0 opacity-5">
-          <div className="h-full w-full grid grid-cols-12 grid-rows-6">
-            {Array.from({ length: 72 }).map((_, i) => (
-              <motion.div
-                key={i}
-                className="border border-primary/30"
-                initial={{ opacity: 0.3 }}
-                animate={{
-                  opacity: Math.random() > 0.7 ? [0.3, 0.7, 0.3] : 0.3
-                }}
-                transition={{
-                  duration: Math.random() * 5 + 3,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                  delay: Math.random() * 2
-                }}
-              />
-            ))}
-          </div>
-        </div>
-
-        {/* Enhanced floating particles */}
-        <div className="absolute inset-0 z-0 overflow-hidden">
-          {Array.from({ length: 30 }).map((_, i) => (
-            <motion.div
-              key={i}
-              className="absolute rounded-full bg-gradient-to-r from-primary/40 to-blue-500/40"
-              style={{
-                width: Math.random() * 8 + 2,
-                height: Math.random() * 8 + 2,
-                filter: "blur(1px)"
-              }}
-              initial={{
-                x: Math.random() * 100,
-                y: Math.random() * 100,
-                opacity: 0
-              }}
-              animate={{
-                x: [
-                  Math.random() * 100,
-                  Math.random() * 100,
-                  Math.random() * 100
-                ],
-                y: [
-                  Math.random() * 100,
-                  Math.random() * 100,
-                  Math.random() * 100
-                ],
-                opacity: [0, 0.7, 0],
-                scale: [0.8, 1.2, 0.8]
-              }}
-              transition={{
-                duration: Math.random() * 20 + 15,
-                repeat: Infinity,
-                ease: "linear",
-                delay: Math.random() * 5
-              }}
-            />
-          ))}
+          <div className="h-full w-full" style={{
+            backgroundImage: 'linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px)',
+            backgroundSize: '40px 40px'
+          }}></div>
         </div>
 
         <Wrapper className="relative z-10">
@@ -238,32 +125,9 @@ const EnhancedWaitingListPage = () => {
             transition={{ duration: 0.8, delay: 0.2 }}
           >
             <Card id="waiting-list-form" className="border-none shadow-2xl bg-gradient-to-br from-primary/5 to-primary/10 backdrop-blur-sm relative overflow-hidden rounded-3xl">
-              {/* Enhanced decorative elements for the card */}
-              <motion.div
-                className="absolute top-0 right-0 w-40 h-40 bg-primary/10 rounded-full blur-xl -mr-20 -mt-20"
-                animate={{
-                  scale: [1, 1.2, 1],
-                  opacity: [0.5, 0.7, 0.5]
-                }}
-                transition={{
-                  duration: 8,
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }}
-              />
-              <motion.div
-                className="absolute bottom-0 left-0 w-32 h-32 bg-blue-500/10 rounded-full blur-xl -ml-16 -mb-16"
-                animate={{
-                  scale: [1.2, 1, 1.2],
-                  opacity: [0.4, 0.6, 0.4]
-                }}
-                transition={{
-                  duration: 10,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                  delay: 1
-                }}
-              />
+              {/* Clean decorative elements for the card */}
+              <div className="absolute top-0 right-0 w-40 h-40 bg-primary/10 rounded-full blur-xl -mr-20 -mt-20 opacity-50"></div>
+              <div className="absolute bottom-0 left-0 w-32 h-32 bg-blue-500/10 rounded-full blur-xl -ml-16 -mb-16 opacity-40"></div>
 
               <CardContent className="pt-10 pb-10 px-8 relative z-10">
                 {!isSubmitted ? (
@@ -387,7 +251,7 @@ const EnhancedWaitingListPage = () => {
             transition={{ duration: 0.8, delay: 0.4 }}
             className="flex flex-col items-center"
           >
-            <EnhancedIPhoneShowcase
+            <DetailedIPhoneShowcase
               features={[
                 {
                   title: "AI-Powered Platform",
