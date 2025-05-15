@@ -7,17 +7,17 @@ import { usePathname, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useLanguage, Language } from '@/contexts/LanguageContext';
-import { 
-  Home, 
-  BrainCircuit, 
-  Database, 
-  BarChart3, 
-  Settings, 
-  Code, 
-  FileText, 
-  Users, 
-  CreditCard, 
-  HelpCircle, 
+import {
+  Home,
+  BrainCircuit,
+  Database,
+  BarChart3,
+  Settings,
+  Code,
+  FileText,
+  Users,
+  CreditCard,
+  HelpCircle,
   LogOut,
   Moon,
   Sun,
@@ -63,10 +63,21 @@ export default function DashSidebar() {
   const { user } = useAuth();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
-  
+
   const handleLogout = async () => {
-    await signOut({ redirect: false });
-    router.push('/login');
+    try {
+      // Use AuthService for logout
+      const AuthService = (await import('@/lib/authService')).default;
+      AuthService.logout();
+
+      // Also call signOut for next-auth if it's being used
+      await signOut({ redirect: false });
+
+      // Toast notification will be shown on the login page
+    } catch (error) {
+      console.error('Logout error:', error);
+      toast.error('Failed to logout. Please try again.');
+    }
   };
 
   const handleLanguageChange = (newLanguage: Language) => {
@@ -78,9 +89,9 @@ export default function DashSidebar() {
   const isDark = theme === 'dark';
 
   return (
-    <motion.div 
+    <motion.div
       className={`h-full flex flex-col ${
-        isDark 
+        isDark
           ? 'bg-[#00031b]/90 border-r border-[#00031b]/20'
           : 'bg-white border-r border-[#00cbdd]/10'
       } backdrop-blur-md`}
@@ -94,19 +105,19 @@ export default function DashSidebar() {
           {!isCollapsed && (
             <span className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#00cbdd] to-blue-500">
               {isDark ? (
-              <Image 
-                src="/Logo - PNG (2).png" 
-                alt="ArtIntel Logo Dark" 
-                width={152} 
+              <Image
+                src="/Logo - PNG (2).png"
+                alt="ArtIntel Logo Dark"
+                width={152}
                 height={82}
                 className="object-contain"
                 priority
               />
             ) : (
-              <Image 
-                src="/Logo - PNG (2).png" 
-                alt="ArtIntel Logo Light" 
-                width={152} 
+              <Image
+                src="/Logo - PNG (2).png"
+                alt="ArtIntel Logo Light"
+                width={152}
                 height={82}
                 className="object-contain"
                 priority
@@ -119,12 +130,12 @@ export default function DashSidebar() {
           onClick={() => setIsCollapsed(!isCollapsed)}
           className={`p-1 rounded-full ${isDark ? 'hover:bg-white/10' : 'hover:bg-gray-100'}`}
         >
-          <svg 
-            xmlns="http://www.w3.org/2000/svg" 
-            width="16" 
-            height="16" 
-            fill="none" 
-            viewBox="0 0 24 24" 
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            fill="none"
+            viewBox="0 0 24 24"
             stroke="currentColor"
             className={`${isDark ? 'text-gray-300' : 'text-gray-700'} transition-transform duration-300 ${isCollapsed ? 'rotate-180' : ''}`}
           >
@@ -142,7 +153,7 @@ export default function DashSidebar() {
               key={item.name}
               href={item.path}
               className={`flex items-center group px-3 py-2 rounded-lg ${
-                isActive 
+                isActive
                   ? `bg-gradient-to-r from-[#00cbdd]/20 to-blue-500/10 font-medium ${isDark ? 'text-white' : 'text-[#00031b]'}`
                   : `${isDark ? 'text-gray-400 hover:text-white' : 'text-gray-700 hover:text-[#00cbdd]'} hover:bg-[#00cbdd]/10`
               } transition-all duration-200`}
@@ -173,12 +184,12 @@ export default function DashSidebar() {
           );
         })}
       </div>
-      
+
       {/* Footer Section */}
       <div className={`p-4 ${isDark ? 'border-t border-[#00cbdd]/10' : 'border-t border-gray-100'}`}>
         {/* Language Selector */}
         <div className="relative">
-          <button 
+          <button
             onClick={() => setShowLanguageDropdown(!showLanguageDropdown)}
             className={`w-full flex items-center px-3 py-2 rounded-lg ${isDark ? 'text-gray-300 hover:text-white' : 'text-gray-700 hover:text-[#00cbdd]'} hover:bg-[#00cbdd]/10 transition-colors duration-200`}
           >
@@ -189,12 +200,12 @@ export default function DashSidebar() {
               </span>
             )}
             {!isCollapsed && (
-              <svg 
-                xmlns="http://www.w3.org/2000/svg" 
-                width="16" 
-                height="16" 
-                fill="none" 
-                viewBox="0 0 24 24" 
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="none"
+                viewBox="0 0 24 24"
                 stroke="currentColor"
                 className={`${isDark ? 'text-gray-300' : 'text-gray-700'} transition-transform duration-300 ${showLanguageDropdown ? 'rotate-180' : ''}`}
               >
@@ -202,11 +213,11 @@ export default function DashSidebar() {
               </svg>
             )}
           </button>
-          
+
           {/* Language Dropdown */}
           {showLanguageDropdown && !isCollapsed && (
             <div className={`absolute bottom-full left-0 w-full mb-1 rounded-lg shadow-lg overflow-hidden z-20 ${
-              isDark 
+              isDark
                 ? 'bg-[#00031b] border border-[#00cbdd]/20'
                 : 'bg-white border border-gray-200'
             }`}>
@@ -216,10 +227,10 @@ export default function DashSidebar() {
                   onClick={() => handleLanguageChange(option.code as Language)}
                   className={`w-full text-left px-4 py-2 ${
                     language === option.code
-                      ? isDark 
+                      ? isDark
                         ? 'bg-[#00cbdd]/20 text-white'
                         : 'bg-[#00cbdd]/10 text-[#00031b]'
-                      : isDark 
+                      : isDark
                         ? 'text-gray-300 hover:bg-[#00cbdd]/10'
                         : 'text-gray-700 hover:bg-gray-100'
                   } transition-colors duration-200`}
@@ -230,9 +241,9 @@ export default function DashSidebar() {
             </div>
           )}
         </div>
-        
+
         {/* Theme Toggle */}
-        <button 
+        <button
           onClick={toggleTheme}
           className={`mt-2 w-full flex items-center px-3 py-2 rounded-lg ${isDark ? 'text-gray-300 hover:text-white' : 'text-gray-700 hover:text-[#00cbdd]'} hover:bg-[#00cbdd]/10 transition-colors duration-200`}
         >
@@ -248,9 +259,9 @@ export default function DashSidebar() {
             </>
           )}
         </button>
-        
+
         {/* Logout Button */}
-        <button 
+        <button
           onClick={handleLogout}
           className={`mt-2 w-full flex items-center px-3 py-2 rounded-lg ${isDark ? 'text-gray-300 hover:text-white' : 'text-gray-700 hover:text-[#00cbdd]'} hover:bg-[#00cbdd]/10 transition-colors duration-200`}
         >
@@ -260,4 +271,4 @@ export default function DashSidebar() {
       </div>
     </motion.div>
   );
-} 
+}

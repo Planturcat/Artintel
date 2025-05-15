@@ -7,6 +7,7 @@ import { Eye, EyeOff, Lock, Mail, User, Check, Building, Briefcase, ChevronDown,
 import { motion } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from 'react-hot-toast';
+import AuthService from '@/lib/authService';
 
 // Password strength levels
 const passwordStrengthLevels = [
@@ -90,9 +91,13 @@ export default function RegisterPage() {
   const [userType, setUserType] = useState<string | null>(null);
   const [selectedTier, setSelectedTier] = useState<string>("free");
 
+  // Get email from query params if coming from non-existent user modal
+  const searchParams = useSearchParams();
+  const emailFromQuery = searchParams.get('email') || '';
+
   const [formData, setFormData] = useState({
     name: "",
-    email: "",
+    email: emailFromQuery,
     password: "",
     confirmPassword: "",
     organization: "",
@@ -252,30 +257,18 @@ export default function RegisterPage() {
     }
 
     try {
-      console.log("Registration submission started");
-      console.log("Selected user type:", userType);
-      console.log("Selected tier:", selectedTier);
+      // Register the user using AuthService
+      await AuthService.register(
+        formData.email,
+        formData.password,
+        formData.confirmPassword,
+        formData.name,
+        userType === 'enterprise' ? formData.organization : undefined,
+        selectedTier
+      );
 
-      // Prepare data for registration - ensure we use the correct parameter names
-      const userData = {
-        username: formData.email.split('@')[0].toLowerCase().replace(/[^a-z0-9]/g, '') + Math.floor(Math.random() * 1000),  // Generate username from email with random suffix
-        email: formData.email,
-        password: formData.password,
-        full_name: formData.name,
-        organization: userType === "enterprise" ? formData.organization : null,
-        tier: selectedTier
-      };
-
-      console.log("Prepared user data:", {
-        ...userData,
-        password: '*****' // Mask password for security in logs
-      });
-
-      // Register the user using our AuthContext
-      await register(userData);
-
-      console.log("Registration submitted successfully");
       toast.success("Account created! Please check your email for verification instructions.");
+      router.push('/login?message=registered');
     } catch (error: any) {
       console.error("Registration error:", error);
       toast.error(error.message || "Failed to create account");
@@ -290,9 +283,9 @@ export default function RegisterPage() {
       {/* Header with progress indicator */}
       <header className="border-b border-cyan-950 bg-[#00031b]/80 backdrop-blur-lg py-4 px-6">
         <div className="max-w-6xl mx-auto flex justify-between items-center">
-          <div className="text-2xl font-bold text-white">
+          <Link href="/" className="text-2xl font-bold text-white">
             Artintel<span className="text-[#00cbdd]"> LLms</span>
-          </div>
+          </Link>
 
           {/* Progress steps */}
           <div className="hidden sm:flex items-center space-x-2">

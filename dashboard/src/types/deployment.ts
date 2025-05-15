@@ -56,6 +56,13 @@ export interface DeploymentMetricsResponse {
   totalRequests?: number;
   averageLatency?: number;
   errorRate?: number;
+  // Trend values (percentage change)
+  totalDeploymentsTrend?: number;
+  activeDeploymentsTrend?: number;
+  modelVersionsTrend?: number;
+  cpuUtilizationTrend?: number;
+  memoryUsageTrend?: number;
+  gpuUtilizationTrend?: number;
 }
 
 export interface DeploymentConfig {

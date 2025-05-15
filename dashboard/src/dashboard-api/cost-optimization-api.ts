@@ -1,9 +1,13 @@
 /**
  * Cost Optimization API Module
- * 
+ *
  * This module provides interfaces and functions for managing and optimizing
  * costs across the platform.
+ *
+ * It includes user-specific data generation when in mock mode.
  */
+
+import { getUserContext, seededRandomInt, seededRandomFloat } from './mock-user-context';
 
 // Cost Category
 export type CostCategory = 'compute' | 'storage' | 'models' | 'transfer' | 'api' | 'support';
@@ -145,13 +149,13 @@ const mockCostMetrics: CostMetrics = {
 const mockDailyCosts: CostDataPoint[] = Array.from({ length: 30 }, (_, i) => {
   const date = new Date();
   date.setDate(date.getDate() - (29 - i));
-  
+
   // Generate a somewhat realistic cost pattern with weekday variations
   const dayOfWeek = date.getDay();
   const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
   const baseCost = 35 + Math.random() * 15;
   const cost = isWeekend ? baseCost * 0.7 : baseCost;
-  
+
   return {
     date: date.toISOString().split('T')[0],
     amount: parseFloat(cost.toFixed(2))
@@ -400,6 +404,59 @@ export const costOptimizationApi = {
   getCostMetrics: async (timeRange: TimeRange = 'last30Days'): Promise<CostMetrics> => {
     // Simulate API call delay
     await new Promise(resolve => setTimeout(resolve, 800));
+
+    // Get user context for user-specific data
+    const userContext = getUserContext();
+
+    if (userContext) {
+      // Generate user-specific cost metrics based on user tier
+      const baseSpending = userContext.tier === 'free'
+        ? 50
+        : userContext.tier === 'pro'
+          ? 500
+          : 2000;
+
+      // Generate cost breakdown with user-specific values
+      const computePercentage = seededRandomFloat(userContext.userId + 'compute-pct', 0.4, 0.6, 2);
+      const storagePercentage = seededRandomFloat(userContext.userId + 'storage-pct', 0.15, 0.25, 2);
+      const modelsPercentage = seededRandomFloat(userContext.userId + 'models-pct', 0.1, 0.2, 2);
+      const transferPercentage = 1 - computePercentage - storagePercentage - modelsPercentage;
+
+      const compute = Math.round(baseSpending * computePercentage * 100) / 100;
+      const storage = Math.round(baseSpending * storagePercentage * 100) / 100;
+      const models = Math.round(baseSpending * modelsPercentage * 100) / 100;
+      const transfer = Math.round(baseSpending * transferPercentage * 100) / 100;
+      const total = baseSpending;
+
+      // Previous period spending with slight variation
+      const previousPeriodSpending = Math.round(baseSpending * seededRandomFloat(userContext.userId + 'prev-spending', 0.9, 1.1, 2) * 100) / 100;
+
+      // Calculate change percentage
+      const changePercentage = Math.round(((baseSpending - previousPeriodSpending) / previousPeriodSpending) * 100 * 10) / 10;
+
+      // Determine trend direction
+      const trendDirection = changePercentage > 1 ? 'up' : changePercentage < -1 ? 'down' : 'stable';
+
+      return {
+        currentSpending: baseSpending,
+        projectedSpending: Math.round(baseSpending * 3.5 * 100) / 100,
+        previousPeriodSpending,
+        changePercentage,
+        trendDirection,
+        forecastAccuracy: seededRandomFloat(userContext.userId + 'forecast-accuracy', 90, 98, 1),
+        breakdown: {
+          compute,
+          storage,
+          models,
+          transfer,
+          total
+        },
+        averageDailyCost: Math.round(baseSpending / 30 * 100) / 100,
+        peakDailyCost: Math.round(baseSpending / 30 * seededRandomFloat(userContext.userId + 'peak-factor', 1.3, 1.8, 2) * 100) / 100
+      };
+    }
+
+    // Fall back to mock data if no user context
     return { ...mockCostMetrics };
   },
 
@@ -409,11 +466,11 @@ export const costOptimizationApi = {
   getUsageTrends: async (timeRange: TimeRange = 'last30Days'): Promise<UsageTrends> => {
     // Simulate API call delay
     await new Promise(resolve => setTimeout(resolve, 1000));
-    
+
     // Create mock usage trends based on the specified time range
     const today = new Date();
     let startDate = new Date();
-    
+
     switch (timeRange) {
       case 'last7Days':
         startDate.setDate(today.getDate() - 7);
@@ -430,7 +487,87 @@ export const costOptimizationApi = {
       default:
         startDate.setDate(today.getDate() - 30);
     }
-    
+
+    // Get user context for user-specific data
+    const userContext = getUserContext();
+
+    if (userContext) {
+      // Generate user-specific daily costs
+      const dailyCosts: CostDataPoint[] = [];
+
+      // Base spending amount based on user tier
+      const baseSpending = userContext.tier === 'free'
+        ? 50
+        : userContext.tier === 'pro'
+          ? 500
+          : 2000;
+
+      // Daily average
+      const dailyAverage = baseSpending / 30;
+
+      // Generate daily costs for the specified time range
+      const days = Math.round((today.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
+
+      for (let i = 0; i < days; i++) {
+        const date = new Date(startDate);
+        date.setDate(startDate.getDate() + i);
+
+        // Generate a somewhat realistic cost pattern with weekday variations
+        const dayOfWeek = date.getDay();
+        const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+
+        // Base amount with weekday/weekend variation
+        let amount = dailyAverage * (isWeekend ? 0.7 : 1.1);
+
+        // Add user-specific variation
+        amount *= seededRandomFloat(userContext.userId + `day-${i}`, 0.8, 1.2, 2);
+
+        dailyCosts.push({
+          date: date.toISOString().split('T')[0],
+          amount: Math.round(amount * 100) / 100
+        });
+      }
+
+      // Calculate total cost
+      const totalCost = dailyCosts.reduce((sum, point) => sum + point.amount, 0);
+
+      // Generate cost breakdown with user-specific values
+      const computePercentage = seededRandomFloat(userContext.userId + 'compute-pct', 0.4, 0.6, 2);
+      const storagePercentage = seededRandomFloat(userContext.userId + 'storage-pct', 0.15, 0.25, 2);
+      const modelsPercentage = seededRandomFloat(userContext.userId + 'models-pct', 0.1, 0.2, 2);
+      const transferPercentage = 1 - computePercentage - storagePercentage - modelsPercentage;
+
+      const compute = Math.round(totalCost * computePercentage * 100) / 100;
+      const storage = Math.round(totalCost * storagePercentage * 100) / 100;
+      const models = Math.round(totalCost * modelsPercentage * 100) / 100;
+      const transfer = Math.round(totalCost * transferPercentage * 100) / 100;
+
+      // Find peak usage
+      const sortedCosts = [...dailyCosts].sort((a, b) => b.amount - a.amount);
+      const peakDate = sortedCosts[0].date;
+      const peakAmount = sortedCosts[0].amount;
+
+      return {
+        startDate: startDate.toISOString().split('T')[0],
+        endDate: today.toISOString().split('T')[0],
+        dailyCosts,
+        totalCost,
+        costBreakdown: {
+          compute,
+          storage,
+          models,
+          transfer,
+          total: totalCost
+        },
+        peakUsage: {
+          date: peakDate,
+          amount: peakAmount,
+          category: 'compute'
+        }
+      };
+    }
+
+    // Fall back to mock data if no user context
     return {
       startDate: startDate.toISOString().split('T')[0],
       endDate: today.toISOString().split('T')[0],
@@ -451,6 +588,140 @@ export const costOptimizationApi = {
   getSavingRecommendations: async (): Promise<SavingRecommendation[]> => {
     // Simulate API call delay
     await new Promise(resolve => setTimeout(resolve, 700));
+
+    // Get user context for user-specific data
+    const userContext = getUserContext();
+
+    if (userContext) {
+      // Base spending amount based on user tier
+      const baseSpending = userContext.tier === 'free'
+        ? 50
+        : userContext.tier === 'pro'
+          ? 500
+          : 2000;
+
+      // Generate cost breakdown with user-specific values
+      const computePercentage = seededRandomFloat(userContext.userId + 'compute-pct', 0.4, 0.6, 2);
+      const storagePercentage = seededRandomFloat(userContext.userId + 'storage-pct', 0.15, 0.25, 2);
+      const modelsPercentage = seededRandomFloat(userContext.userId + 'models-pct', 0.1, 0.2, 2);
+      const transferPercentage = 1 - computePercentage - storagePercentage - modelsPercentage;
+
+      const compute = Math.round(baseSpending * computePercentage * 100) / 100;
+      const storage = Math.round(baseSpending * storagePercentage * 100) / 100;
+      const models = Math.round(baseSpending * modelsPercentage * 100) / 100;
+      const transfer = Math.round(baseSpending * transferPercentage * 100) / 100;
+
+      // Number of recommendations based on user tier
+      const recommendationCount = userContext.tier === 'free'
+        ? 3
+        : userContext.tier === 'pro'
+          ? 5
+          : 7;
+
+      // Generate user-specific recommendations
+      const recommendations: SavingRecommendation[] = [
+        {
+          id: `rec-${userContext.userId.substring(0, 8)}-001`,
+          title: 'Idle GPU Instances',
+          description: 'Two GPU instances have been inactive for 7+ days. Consider shutting them down or switching to on-demand.',
+          category: 'compute',
+          savingAmount: Math.round(compute * 0.3 * 100) / 100,
+          implementationDifficulty: 'easy',
+          status: 'not_started',
+          createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+          resourceIds: [`res-gpu-${userContext.userId.substring(0, 8)}-01`, `res-gpu-${userContext.userId.substring(0, 8)}-03`],
+          impact: 'high'
+        },
+        {
+          id: `rec-${userContext.userId.substring(0, 8)}-002`,
+          title: 'Over-provisioned Storage',
+          description: 'Reduce unused storage allocation by 30% to save on costs.',
+          category: 'storage',
+          savingAmount: Math.round(storage * 0.3 * 100) / 100,
+          implementationDifficulty: 'easy',
+          status: 'not_started',
+          createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+          resourceIds: [`res-storage-${userContext.userId.substring(0, 8)}-cluster-a`],
+          impact: 'medium'
+        },
+        {
+          id: `rec-${userContext.userId.substring(0, 8)}-003`,
+          title: 'Right-size Model Deployments',
+          description: 'Use smaller models for low-complexity tasks to reduce inference costs.',
+          category: 'models',
+          savingAmount: Math.round(models * 0.3 * 100) / 100,
+          implementationDifficulty: 'complex',
+          status: 'not_started',
+          createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+          resourceIds: [`model-deployment-${userContext.userId.substring(0, 8)}-12`, `model-deployment-${userContext.userId.substring(0, 8)}-15`],
+          impact: 'medium',
+          additionalDetails: {
+            suggestedModels: ['small-bert', 'minilm-v2'],
+            currentModels: ['bert-large', 'roberta-large']
+          }
+        }
+      ];
+
+      // Add more recommendations based on user tier
+      if (recommendationCount > 3) {
+        recommendations.push({
+          id: `rec-${userContext.userId.substring(0, 8)}-004`,
+          title: 'Batch Processing Opportunity',
+          description: 'Convert real-time to batch processing for non-urgent tasks.',
+          category: 'compute',
+          savingAmount: Math.round(compute * 0.1 * 100) / 100,
+          implementationDifficulty: 'medium',
+          status: 'not_started',
+          createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+          impact: 'low'
+        });
+
+        recommendations.push({
+          id: `rec-${userContext.userId.substring(0, 8)}-005`,
+          title: 'Optimize Data Transfer',
+          description: 'Implement compression for API responses to reduce data transfer costs.',
+          category: 'transfer',
+          savingAmount: Math.round(transfer * 0.4 * 100) / 100,
+          implementationDifficulty: 'medium',
+          status: 'not_started',
+          createdAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
+          impact: 'low'
+        });
+      }
+
+      // Add enterprise-specific recommendations
+      if (recommendationCount > 5) {
+        recommendations.push({
+          id: `rec-${userContext.userId.substring(0, 8)}-006`,
+          title: 'Consolidated API Calls',
+          description: 'Reduce the number of API calls by batching requests.',
+          category: 'api',
+          savingAmount: Math.round(baseSpending * 0.05 * 100) / 100,
+          implementationDifficulty: 'medium',
+          status: 'in_progress',
+          createdAt: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(),
+          impact: 'medium'
+        });
+
+        recommendations.push({
+          id: `rec-${userContext.userId.substring(0, 8)}-007`,
+          title: 'Reserved Instance Opportunity',
+          description: 'Convert on-demand instances to reserved instances for steady workloads.',
+          category: 'compute',
+          savingAmount: Math.round(compute * 0.4 * 100) / 100,
+          implementationDifficulty: 'easy',
+          status: 'implemented',
+          createdAt: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000).toISOString(),
+          implementedAt: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000).toISOString(),
+          resourceIds: [`res-compute-${userContext.userId.substring(0, 8)}-23`, `res-compute-${userContext.userId.substring(0, 8)}-24`],
+          impact: 'high'
+        });
+      }
+
+      return recommendations;
+    }
+
+    // Fall back to mock data if no user context
     return [...mockRecommendations];
   },
 
@@ -460,7 +731,7 @@ export const costOptimizationApi = {
   getSavingRecommendation: async (id: string): Promise<SavingRecommendation | null> => {
     // Simulate API call delay
     await new Promise(resolve => setTimeout(resolve, 500));
-    
+
     const recommendation = mockRecommendations.find(r => r.id === id);
     return recommendation ? { ...recommendation } : null;
   },
@@ -471,17 +742,17 @@ export const costOptimizationApi = {
   implementRecommendation: async (id: string): Promise<SavingRecommendation | null> => {
     // Simulate API call delay
     await new Promise(resolve => setTimeout(resolve, 1200));
-    
+
     const index = mockRecommendations.findIndex(r => r.id === id);
     if (index === -1) return null;
-    
+
     const updatedRecommendation = {
       ...mockRecommendations[index],
       status: 'in_progress' as const
     };
-    
+
     mockRecommendations[index] = updatedRecommendation;
-    
+
     // Simulate an implementation plan being created
     if (!mockImplementationPlans.some(p => p.recommendationId === id)) {
       mockImplementationPlans.push({
@@ -510,7 +781,7 @@ export const costOptimizationApi = {
         status: 'in_progress'
       });
     }
-    
+
     return { ...updatedRecommendation };
   },
 
@@ -520,18 +791,18 @@ export const costOptimizationApi = {
   markAsImplemented: async (id: string): Promise<SavingRecommendation | null> => {
     // Simulate API call delay
     await new Promise(resolve => setTimeout(resolve, 1000));
-    
+
     const index = mockRecommendations.findIndex(r => r.id === id);
     if (index === -1) return null;
-    
+
     const updatedRecommendation = {
       ...mockRecommendations[index],
       status: 'implemented' as const,
       implementedAt: new Date().toISOString()
     };
-    
+
     mockRecommendations[index] = updatedRecommendation;
-    
+
     // Update the implementation plan if it exists
     const planIndex = mockImplementationPlans.findIndex(p => p.recommendationId === id);
     if (planIndex !== -1) {
@@ -545,7 +816,7 @@ export const costOptimizationApi = {
         }))
       };
     }
-    
+
     return { ...updatedRecommendation };
   },
 
@@ -555,10 +826,10 @@ export const costOptimizationApi = {
   declineRecommendation: async (id: string, reason?: string): Promise<SavingRecommendation | null> => {
     // Simulate API call delay
     await new Promise(resolve => setTimeout(resolve, 800));
-    
+
     const index = mockRecommendations.findIndex(r => r.id === id);
     if (index === -1) return null;
-    
+
     const updatedRecommendation = {
       ...mockRecommendations[index],
       status: 'declined' as const,
@@ -567,7 +838,7 @@ export const costOptimizationApi = {
         declineReason: reason || 'No reason provided'
       }
     };
-    
+
     mockRecommendations[index] = updatedRecommendation;
     return { ...updatedRecommendation };
   },
@@ -587,17 +858,17 @@ export const costOptimizationApi = {
   createBudgetAlert: async (alert: Omit<BudgetAlert, 'id' | 'createdAt' | 'status' | 'currentSpending'>): Promise<BudgetAlert> => {
     // Simulate API call delay
     await new Promise(resolve => setTimeout(resolve, 1000));
-    
+
     const newAlert: BudgetAlert = {
       ...alert,
       id: `alert-${mockBudgetAlerts.length + 1}`,
       createdAt: new Date().toISOString(),
       status: 'ok',
-      currentSpending: alert.category 
+      currentSpending: alert.category
         ? mockCostMetrics.breakdown[alert.category as keyof typeof mockCostMetrics.breakdown] || 0
         : mockCostMetrics.currentSpending
     };
-    
+
     mockBudgetAlerts.push(newAlert);
     return { ...newAlert };
   },
@@ -608,15 +879,15 @@ export const costOptimizationApi = {
   updateBudgetAlert: async (id: string, updates: Partial<BudgetAlert>): Promise<BudgetAlert | null> => {
     // Simulate API call delay
     await new Promise(resolve => setTimeout(resolve, 800));
-    
+
     const index = mockBudgetAlerts.findIndex(a => a.id === id);
     if (index === -1) return null;
-    
+
     const updatedAlert = {
       ...mockBudgetAlerts[index],
       ...updates
     };
-    
+
     mockBudgetAlerts[index] = updatedAlert;
     return { ...updatedAlert };
   },
@@ -627,10 +898,10 @@ export const costOptimizationApi = {
   deleteBudgetAlert: async (id: string): Promise<boolean> => {
     // Simulate API call delay
     await new Promise(resolve => setTimeout(resolve, 700));
-    
+
     const index = mockBudgetAlerts.findIndex(a => a.id === id);
     if (index === -1) return false;
-    
+
     mockBudgetAlerts.splice(index, 1);
     return true;
   },
@@ -641,6 +912,111 @@ export const costOptimizationApi = {
   getResourceUsage: async (): Promise<ResourceUsage[]> => {
     // Simulate API call delay
     await new Promise(resolve => setTimeout(resolve, 900));
+
+    // Get user context for user-specific data
+    const userContext = getUserContext();
+
+    if (userContext) {
+      // Number of resources based on user tier
+      const resourceCount = userContext.tier === 'free'
+        ? 3
+        : userContext.tier === 'pro'
+          ? 5
+          : 7;
+
+      // Generate user-specific resources
+      const resources: ResourceUsage[] = [];
+
+      // Add GPU resources
+      resources.push({
+        resourceId: `res-gpu-${userContext.userId.substring(0, 8)}-01`,
+        resourceType: 'deployment',
+        name: 'LLM-Inference-Cluster-1',
+        usageAmount: 720, // Hours
+        costAmount: seededRandomFloat(userContext.userId + 'gpu-cost-1', 70, 100, 2),
+        lastUsed: new Date(Date.now() - seededRandomInt(userContext.userId + 'gpu-last-1', 1, 10) * 24 * 60 * 60 * 1000).toISOString(),
+        utilization: seededRandomInt(userContext.userId + 'gpu-util-1', 10, 30)
+      });
+
+      if (resourceCount > 1) {
+        resources.push({
+          resourceId: `res-gpu-${userContext.userId.substring(0, 8)}-03`,
+          resourceType: 'deployment',
+          name: 'Vision-Model-Endpoint',
+          usageAmount: 720, // Hours
+          costAmount: seededRandomFloat(userContext.userId + 'gpu-cost-3', 90, 120, 2),
+          lastUsed: new Date(Date.now() - seededRandomInt(userContext.userId + 'gpu-last-3', 5, 15) * 24 * 60 * 60 * 1000).toISOString(),
+          utilization: seededRandomInt(userContext.userId + 'gpu-util-3', 5, 15)
+        });
+      }
+
+      // Add storage resources
+      if (resourceCount > 2) {
+        resources.push({
+          resourceId: `res-storage-${userContext.userId.substring(0, 8)}-cluster-a`,
+          resourceType: 'storage',
+          name: 'Primary Dataset Storage',
+          usageAmount: seededRandomInt(userContext.userId + 'storage-amount', 1000, 3000), // GB
+          costAmount: seededRandomFloat(userContext.userId + 'storage-cost', 50, 150, 2),
+          lastUsed: new Date().toISOString(),
+          utilization: seededRandomInt(userContext.userId + 'storage-util', 30, 50)
+        });
+      }
+
+      // Add model resources
+      if (resourceCount > 3) {
+        resources.push({
+          resourceId: `model-deployment-${userContext.userId.substring(0, 8)}-12`,
+          resourceType: 'model',
+          name: 'BERT-Large-Production',
+          usageAmount: seededRandomInt(userContext.userId + 'model-usage-12', 1000000, 2000000), // Inferences
+          costAmount: seededRandomFloat(userContext.userId + 'model-cost-12', 30, 60, 2),
+          lastUsed: new Date().toISOString(),
+          utilization: seededRandomInt(userContext.userId + 'model-util-12', 50, 70)
+        });
+      }
+
+      if (resourceCount > 4) {
+        resources.push({
+          resourceId: `model-deployment-${userContext.userId.substring(0, 8)}-15`,
+          resourceType: 'model',
+          name: 'RoBERTa-Large-Sentiment',
+          usageAmount: seededRandomInt(userContext.userId + 'model-usage-15', 500000, 1000000), // Inferences
+          costAmount: seededRandomFloat(userContext.userId + 'model-cost-15', 15, 30, 2),
+          lastUsed: new Date().toISOString(),
+          utilization: seededRandomInt(userContext.userId + 'model-util-15', 60, 80)
+        });
+      }
+
+      // Add dataset resources for enterprise users
+      if (resourceCount > 5) {
+        resources.push({
+          resourceId: `dataset-${userContext.userId.substring(0, 8)}-01`,
+          resourceType: 'dataset',
+          name: 'Enterprise Training Dataset',
+          usageAmount: seededRandomInt(userContext.userId + 'dataset-usage-01', 500, 1500), // GB
+          costAmount: seededRandomFloat(userContext.userId + 'dataset-cost-01', 25, 75, 2),
+          lastUsed: new Date(Date.now() - seededRandomInt(userContext.userId + 'dataset-last-01', 1, 5) * 24 * 60 * 60 * 1000).toISOString(),
+          utilization: seededRandomInt(userContext.userId + 'dataset-util-01', 40, 60)
+        });
+      }
+
+      if (resourceCount > 6) {
+        resources.push({
+          resourceId: `dataset-${userContext.userId.substring(0, 8)}-02`,
+          resourceType: 'dataset',
+          name: 'Enterprise Validation Dataset',
+          usageAmount: seededRandomInt(userContext.userId + 'dataset-usage-02', 100, 300), // GB
+          costAmount: seededRandomFloat(userContext.userId + 'dataset-cost-02', 5, 15, 2),
+          lastUsed: new Date(Date.now() - seededRandomInt(userContext.userId + 'dataset-last-02', 1, 5) * 24 * 60 * 60 * 1000).toISOString(),
+          utilization: seededRandomInt(userContext.userId + 'dataset-util-02', 30, 50)
+        });
+      }
+
+      return resources;
+    }
+
+    // Fall back to mock data if no user context
     return [...mockResourceUsage];
   },
 
@@ -659,7 +1035,7 @@ export const costOptimizationApi = {
   getImplementationPlan: async (id: string): Promise<ImplementationPlan | null> => {
     // Simulate API call delay
     await new Promise(resolve => setTimeout(resolve, 500));
-    
+
     const plan = mockImplementationPlans.find(p => p.id === id);
     return plan ? { ...plan } : null;
   },
@@ -670,16 +1046,16 @@ export const costOptimizationApi = {
   updateImplementationPlan: async (id: string, updates: Partial<ImplementationPlan>): Promise<ImplementationPlan | null> => {
     // Simulate API call delay
     await new Promise(resolve => setTimeout(resolve, 900));
-    
+
     const index = mockImplementationPlans.findIndex(p => p.id === id);
     if (index === -1) return null;
-    
+
     const updatedPlan = {
       ...mockImplementationPlans[index],
       ...updates
     };
-    
+
     mockImplementationPlans[index] = updatedPlan;
     return { ...updatedPlan };
   }
-}; 
+};

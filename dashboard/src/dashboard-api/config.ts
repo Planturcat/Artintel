@@ -1,39 +1,30 @@
 /**
  * ArtIntel LLMs Dashboard API Configuration
+ *
+ * This file provides configuration for the dashboard API client.
+ * It handles API base URL, mock API mode, and authentication.
  */
 
 // API Base URL
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000/api/v1';
 
-// Mock API flag - disabled
-export let USE_MOCK_API = false;
-
-// Get the stored flag value on component mount if running in browser
-if (typeof window !== 'undefined') {
-  const storedValue = localStorage.getItem('USE_MOCK_API');
-  if (storedValue !== null) {
-    USE_MOCK_API = storedValue === 'true';
-  }
-}
+// Mock API flag - from environment variables only
+// Default to true in development, false in production
+export const USE_MOCK_API =
+  process.env.NEXT_PUBLIC_USE_MOCK_API === 'true' ||
+  (process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_USE_MOCK_API !== 'false');
 
 // Check if mock API is enabled
 export const isMockApiEnabled = (): boolean => {
   return USE_MOCK_API;
 };
 
-// Toggle mock API usage
-export const toggleMockApi = (useMock?: boolean): boolean => {
-  if (typeof useMock === 'boolean') {
-    USE_MOCK_API = useMock;
-  } else {
-    USE_MOCK_API = !USE_MOCK_API;
-  }
-
-  // Store the setting if in browser
-  if (typeof window !== 'undefined') {
-    localStorage.setItem('USE_MOCK_API', USE_MOCK_API.toString());
-  }
-
+// For backward compatibility - this function now only reads from environment variables
+// and no longer allows runtime toggling
+export const toggleMockApi = (): boolean => {
+  console.warn(
+    'toggleMockApi is deprecated. Mock API mode is now controlled exclusively via the NEXT_PUBLIC_USE_MOCK_API environment variable.'
+  );
   return USE_MOCK_API;
 };
 

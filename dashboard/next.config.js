@@ -17,6 +17,16 @@ const nextConfig = {
   experimental: {
     // Disable static generation for not-found page
     appDocumentPreloading: false
+  },
+  // Redirect from root to login page
+  async redirects() {
+    return [
+      {
+        source: '/',
+        destination: '/login',
+        permanent: true,
+      },
+    ];
   }
 };
 

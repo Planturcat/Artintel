@@ -1,8 +1,11 @@
 // API helper functions for making requests to the backend
 import { mockAuth } from './mockAuth';
 
-// Mock API is disabled
-const ENABLE_MOCK_API = false;
+// API mode configuration from environment variables
+// Default to true in development, false in production
+const ENABLE_MOCK_API =
+  process.env.NEXT_PUBLIC_USE_MOCK_API === 'true' ||
+  (process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_USE_MOCK_API !== 'false');
 
 // API base URL from environment variables, with fallback value
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
@@ -184,7 +187,10 @@ export const authAPI = {
       mockAuth.logout();
     }
 
+    // Clear all auth-related tokens
     localStorage.removeItem('token');
+    localStorage.removeItem('AUTH_TOKEN');
+    localStorage.removeItem('mockUserId');
   },
 };
 

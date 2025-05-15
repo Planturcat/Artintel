@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { 
+import {
   getSystemStatus,
   getResourceUtilization,
   getModelPerformance,
@@ -19,6 +19,15 @@ import {
   USE_MOCK_API
 } from '@/dashboard-api/dashboard-api';
 import { getDashboardData, getUpdatedDashboardData } from '@/lib/mockDashboardData';
+import { getUserContext } from '@/dashboard-api/mock-user-context';
+import {
+  generateUserSystemStatus,
+  generateUserModelPerformance,
+  generateUserTokenUsage,
+  generateUserDeploymentMetrics,
+  generateUserFineTuningData,
+  generateUserAlerts
+} from '@/dashboard-api/mock-data-generator';
 
 // Define type for dashboard mock data
 interface MockDashboardData {
@@ -46,7 +55,7 @@ export function useDashboardData(refreshInterval = 30000) {
   const fetchApiData = async () => {
     setLoading(true);
     setError(null);
-    
+
     try {
       // Fetch all dashboard data in parallel
       const [
@@ -68,7 +77,7 @@ export function useDashboardData(refreshInterval = 30000) {
         getAlerts().catch(() => undefined),
         getActivityFeed(undefined, 10).catch(() => undefined)
       ]);
-      
+
       setApiData({
         systemStatus: systemStatusData,
         resourceUtilization: resourceUtilizationData,
@@ -90,7 +99,33 @@ export function useDashboardData(refreshInterval = 30000) {
   useEffect(() => {
     // Initial data load - use mock data if API is disabled
     if (USE_MOCK_API) {
-      setDashboardData(getDashboardData());
+      // Get user context for user-specific data
+      const userContext = getUserContext();
+
+      if (userContext) {
+        // Generate user-specific data if we have a user context
+        try {
+          const userData = {
+            // Only use base data for things we don't have user-specific generators for
+            ...getDashboardData(),
+            // Use user-specific data generators for everything else
+            systemStatus: generateUserSystemStatus(),
+            modelPerformance: generateUserModelPerformance(),
+            tokenUsage: generateUserTokenUsage(),
+            deploymentMetrics: generateUserDeploymentMetrics(),
+            finetuningData: generateUserFineTuningData(),
+            alerts: generateUserAlerts()
+          };
+          setDashboardData(userData);
+        } catch (err) {
+          console.error('Error generating user-specific dashboard data:', err);
+          // Fall back to generic data if user-specific generation fails
+          setDashboardData(getDashboardData());
+        }
+      } else {
+        // Use generic data if no user context is available
+        setDashboardData(getDashboardData());
+      }
     } else {
       fetchApiData();
     }
@@ -98,11 +133,35 @@ export function useDashboardData(refreshInterval = 30000) {
     // Set up periodic refresh
     const intervalId = setInterval(() => {
       setLoading(true);
-      
+
       if (USE_MOCK_API) {
         // Simulate a short loading time with mock data
         setTimeout(() => {
-          setDashboardData((prevData: MockDashboardData) => getUpdatedDashboardData(prevData));
+          // Get user context for user-specific data
+          const userContext = getUserContext();
+
+          if (userContext) {
+            // Update with user-specific data
+            setDashboardData((prevData: MockDashboardData) => {
+              try {
+                return {
+                  ...getUpdatedDashboardData(prevData),
+                  systemStatus: generateUserSystemStatus(),
+                  modelPerformance: generateUserModelPerformance(),
+                  tokenUsage: generateUserTokenUsage(),
+                  deploymentMetrics: generateUserDeploymentMetrics(),
+                  finetuningData: generateUserFineTuningData(),
+                  alerts: generateUserAlerts()
+                };
+              } catch (err) {
+                console.error('Error updating user-specific dashboard data:', err);
+                return getUpdatedDashboardData(prevData);
+              }
+            });
+          } else {
+            // Update with generic data
+            setDashboardData((prevData: MockDashboardData) => getUpdatedDashboardData(prevData));
+          }
           setLoading(false);
         }, 300);
       } else {
@@ -124,7 +183,31 @@ export function useDashboardData(refreshInterval = 30000) {
       if (USE_MOCK_API) {
         setLoading(true);
         setTimeout(() => {
-          setDashboardData((prevData: MockDashboardData) => getUpdatedDashboardData(prevData));
+          // Get user context for user-specific data
+          const userContext = getUserContext();
+
+          if (userContext) {
+            // Update with user-specific data
+            setDashboardData((prevData: MockDashboardData) => {
+              try {
+                return {
+                  ...getUpdatedDashboardData(prevData),
+                  systemStatus: generateUserSystemStatus(),
+                  modelPerformance: generateUserModelPerformance(),
+                  tokenUsage: generateUserTokenUsage(),
+                  deploymentMetrics: generateUserDeploymentMetrics(),
+                  finetuningData: generateUserFineTuningData(),
+                  alerts: generateUserAlerts()
+                };
+              } catch (err) {
+                console.error('Error refreshing user-specific dashboard data:', err);
+                return getUpdatedDashboardData(prevData);
+              }
+            });
+          } else {
+            // Update with generic data
+            setDashboardData((prevData: MockDashboardData) => getUpdatedDashboardData(prevData));
+          }
           setLoading(false);
         }, 300);
       } else {
@@ -132,4 +215,4 @@ export function useDashboardData(refreshInterval = 30000) {
       }
     }
   };
-} 
+}

@@ -6,7 +6,9 @@
 import axios from 'axios';
 
 // Flag to determine whether to use mock data or real API endpoints
-export const USE_MOCK_API = process.env.NODE_ENV === 'development';
+// Import from config to ensure consistency
+import { USE_MOCK_API as MOCK_API_ENABLED } from './config';
+export const USE_MOCK_API = MOCK_API_ENABLED;
 
 // Base URL for API endpoints
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
@@ -82,7 +84,7 @@ export const clearAuthToken = (): void => {
 const createHeaders = () => {
   // Get the auth token from localStorage if available
   const authToken = typeof window !== 'undefined' ? localStorage.getItem('AUTH_TOKEN') : null;
-  
+
   return {
     'Content-Type': 'application/json',
     ...(authToken ? { 'Authorization': `Bearer ${authToken}` } : {})
@@ -320,9 +322,9 @@ export const getModelPerformance = (
   modelId?: string,
   timeframe?: 'day' | 'week' | 'month'
 ): Promise<ModelPerformanceResponse> => {
-  return apiRequest<ModelPerformanceResponse>('/models/performance', 'GET', { 
-    model_id: modelId, 
-    timeframe 
+  return apiRequest<ModelPerformanceResponse>('/models/performance', 'GET', {
+    model_id: modelId,
+    timeframe
   });
 };
 
@@ -331,9 +333,9 @@ export const getFineTuningProgress = (
   jobId?: string,
   status?: 'running' | 'completed' | 'failed'
 ): Promise<FineTuningResponse> => {
-  return apiRequest<FineTuningResponse>('/fine-tuning/jobs', 'GET', { 
-    job_id: jobId, 
-    status 
+  return apiRequest<FineTuningResponse>('/fine-tuning/jobs', 'GET', {
+    job_id: jobId,
+    status
   });
 };
 
@@ -341,8 +343,8 @@ export const getFineTuningProgress = (
 export const getDeploymentMetrics = (
   timeframe?: 'day' | 'week' | 'month'
 ): Promise<DeploymentMetricsResponse> => {
-  return apiRequest<DeploymentMetricsResponse>('/deployments/metrics', 'GET', { 
-    timeframe 
+  return apiRequest<DeploymentMetricsResponse>('/deployments/metrics', 'GET', {
+    timeframe
   });
 };
 
@@ -351,7 +353,7 @@ export const getTokenUsage = (
   timeframe?: 'day' | 'week' | 'month',
   granularity?: 'hour' | 'day' | 'week'
 ): Promise<TokenUsageResponse> => {
-  return apiRequest<TokenUsageResponse>('/usage/tokens', 'GET', { 
+  return apiRequest<TokenUsageResponse>('/usage/tokens', 'GET', {
     timeframe,
     granularity
   });
@@ -362,7 +364,7 @@ export const getAlerts = (
   severity?: 'info' | 'warning' | 'error' | 'critical',
   limit?: number
 ): Promise<AlertsResponse> => {
-  return apiRequest<AlertsResponse>('/alerts', 'GET', { 
+  return apiRequest<AlertsResponse>('/alerts', 'GET', {
     severity,
     limit
   });
@@ -374,7 +376,7 @@ export const getActivityFeed = (
   limit?: number,
   offset?: number
 ): Promise<ActivityResponse> => {
-  return apiRequest<ActivityResponse>('/activity', 'GET', { 
+  return apiRequest<ActivityResponse>('/activity', 'GET', {
     type,
     limit,
     offset
@@ -386,7 +388,7 @@ export const getModels = (
   status?: 'running' | 'paused' | 'error',
   type?: string
 ): Promise<ModelsResponse> => {
-  return apiRequest<ModelsResponse>('/models', 'GET', { 
+  return apiRequest<ModelsResponse>('/models', 'GET', {
     status,
     type
   });
@@ -407,4 +409,4 @@ export default {
   clearAuthToken,
   updateUserProfile,
   getUserProfile
-}; 
+};

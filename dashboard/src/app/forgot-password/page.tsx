@@ -2,15 +2,22 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Mail, ArrowLeft, Shield } from 'lucide-react';
 import AuthService from '@/lib/authService';
 
 export default function ForgotPasswordPage() {
-  const [email, setEmail] = useState('');
+  // Get email from query params if coming from wrong password modal
+  const searchParams = useSearchParams();
+  const emailFromQuery = searchParams.get('email') || '';
+
+  const [email, setEmail] = useState(emailFromQuery);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [debugToken, setDebugToken] = useState<string | null>(null);
+  const [debugResetUrl, setDebugResetUrl] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,10 +29,21 @@ export default function ForgotPasswordPage() {
 
     setIsSubmitting(true);
     setError(null);
+    setDebugToken(null);
+    setDebugResetUrl(null);
 
     try {
       const result = await AuthService.forgotPassword(email);
       setSuccess(true);
+
+      // Store debug token and URL if available (for testing only)
+      if (result._debug_token) {
+        setDebugToken(result._debug_token);
+      }
+
+      if (result._debug_reset_url) {
+        setDebugResetUrl(result._debug_reset_url);
+      }
     } catch (err: any) {
       setError(err.message || 'An error occurred. Please try again later.');
     } finally {
@@ -38,9 +56,9 @@ export default function ForgotPasswordPage() {
       {/* Header */}
       <header className="border-b border-cyan-950 bg-[#00031b]/80 backdrop-blur-lg py-4 px-6">
         <div className="max-w-6xl mx-auto flex justify-between items-center">
-          <div className="text-2xl font-bold text-white">
+          <Link href="/" className="text-2xl font-bold text-white">
             Artintel<span className="text-[#00cbdd]"> LLms</span>
-          </div>
+          </Link>
         </div>
       </header>
 
@@ -71,6 +89,29 @@ export default function ForgotPasswordPage() {
                     <p className="mt-2 text-gray-400">
                       Please check your inbox and follow the link to reset your password.
                     </p>
+
+                    {/* Debug information - only shown in development/testing */}
+                    {(debugToken || debugResetUrl) && (
+                      <div className="mt-6 p-4 bg-gray-800/50 rounded-lg border border-gray-700 text-left">
+                        <h3 className="text-sm font-medium text-yellow-400 mb-2">Debug Information (Testing Only)</h3>
+                        {debugToken && (
+                          <div className="mb-2">
+                            <p className="text-xs text-gray-400">Reset Token:</p>
+                            <code className="block mt-1 p-2 bg-gray-900 rounded text-xs text-gray-300 overflow-auto">
+                              {debugToken}
+                            </code>
+                          </div>
+                        )}
+                        {debugResetUrl && (
+                          <div>
+                            <p className="text-xs text-gray-400">Reset URL:</p>
+                            <Link href={debugResetUrl} className="block mt-1 p-2 bg-gray-900 rounded text-xs text-blue-400 hover:text-blue-300 overflow-auto">
+                              {debugResetUrl}
+                            </Link>
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
 
                   <div className="mt-8">

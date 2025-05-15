@@ -3,10 +3,13 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Eye, EyeOff, ArrowRight, Mail, X, AlertCircle } from 'lucide-react';
+import { Eye, EyeOff, ArrowRight, Apple, Globe, Mail, X, AlertCircle } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
+import AuthService from '@/lib/authService';
+import NonExistentUserModal from '@/components/auth/NonExistentUserModal';
+import WrongPasswordModal from '@/components/auth/WrongPasswordModal';
 
 // Unverified Email Modal Component
 interface UnverifiedEmailModalProps {
@@ -107,6 +110,10 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showUnverifiedModal, setShowUnverifiedModal] = useState(false);
   const [unverifiedEmail, setUnverifiedEmail] = useState('');
+  const [showNonExistentModal, setShowNonExistentModal] = useState(false);
+  const [nonExistentEmail, setNonExistentEmail] = useState('');
+  const [showWrongPasswordModal, setShowWrongPasswordModal] = useState(false);
+  const [wrongPasswordEmail, setWrongPasswordEmail] = useState('');
 
   const { login, error: authError, loading, clearError, isAuthenticated, user } = useAuth();
   const router = useRouter();
@@ -131,20 +138,51 @@ export default function LoginPage() {
 
     try {
       await login({ username, password });
-
       // Login will redirect automatically if successful
-      // If there's an error with unverified email, we need to show the modal
-      if (authError &&
-         (authError.includes('not verified') ||
-          authError.includes('verify your email') ||
-          authError.includes('email verification') ||
-          authError.includes('Email not verified'))) {
+    } catch (error: any) {
+      console.error('Login error:', error);
+
+      // Get the error message
+      const errorMessage = error.message || authError || '';
+
+      // Check if the error is related to unverified email
+      if (errorMessage.toLowerCase().includes('not verified') ||
+          errorMessage.toLowerCase().includes('verify your email') ||
+          errorMessage.toLowerCase().includes('email verification')) {
+        // Show the unverified email modal
         setUnverifiedEmail(username);
         setShowUnverifiedModal(true);
       }
-    } catch (error: any) {
-      console.error('Login error:', error);
-      toast.error(error.message || 'An error occurred during login');
+      // Check if the error is related to non-existent user
+      else if (errorMessage === 'user_not_found') {
+        // Show the non-existent user modal
+        setNonExistentEmail(username);
+        setShowNonExistentModal(true);
+      }
+      // Check if the error is related to wrong password
+      else if (errorMessage === 'wrong_password') {
+        // Show the wrong password modal
+        setWrongPasswordEmail(username);
+        setShowWrongPasswordModal(true);
+      }
+      // Fallback for other password-related errors
+      else if (errorMessage.toLowerCase().includes('invalid username or password') ||
+               errorMessage.toLowerCase().includes('incorrect password')) {
+        // Show error with forgot password suggestion
+        toast.error(
+          <div>
+            <p>Invalid username or password</p>
+            <p className="text-xs mt-1">
+              <Link href="/forgot-password" className="text-blue-400 hover:underline">
+                Forgot your password?
+              </Link>
+            </p>
+          </div>
+        );
+      } else {
+        // Show generic error message
+        toast.error(errorMessage || 'An error occurred during login');
+      }
     }
   };
 
@@ -153,13 +191,7 @@ export default function LoginPage() {
   // Handle resend verification email
   const handleResendVerification = async (email: string) => {
     try {
-      // Replace with your API call to resend verification
-      await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/resend-verification`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email })
-      });
-
+      await AuthService.resendVerificationEmail(email);
       toast.success('Verification email sent successfully');
     } catch (error: any) {
       console.error('Failed to resend verification:', error);
@@ -167,7 +199,21 @@ export default function LoginPage() {
     }
   };
 
+  // Social login handlers
+  const handleGoogleSignIn = async () => {
+    try {
+      // Implement OAuth redirect for Google here
+      toast.info('Google sign-in is not implemented yet');
+    } catch (error) {
+      console.error('Google Sign In error:', error);
+      toast.error('Failed to initiate Google sign in');
+    }
+  };
 
+  const handleAppleSignIn = () => {
+    // Implement OAuth redirect for Apple here
+    toast.info('Apple sign-in is not implemented yet');
+  };
 
   // Show message based on query params
   useEffect(() => {
@@ -200,8 +246,8 @@ export default function LoginPage() {
       {/* Content */}
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-[#00cbdd] to-[#0088ff] bg-clip-text text-transparent">ArtIntel LLMs</h1>
-          <p className="text-gray-400">Sign in to access your account</p>
+          <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-[#00cbdd] to-[#0088ff] bg-clip-text text-transparent">Welcome Back</h1>
+          <p className="text-gray-400">Sign in to continue to ArtIntel LLMs</p>
         </div>
 
         <div className="bg-gray-900 rounded-xl border border-gray-800 p-6 shadow-lg mb-6">
@@ -295,7 +341,34 @@ export default function LoginPage() {
             </button>
           </form>
 
+          <div className="mt-6">
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-700"></div>
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-2 bg-gray-900 text-gray-400">Or continue with</span>
+              </div>
+            </div>
 
+            <div className="mt-6 grid grid-cols-2 gap-3">
+              <button
+                onClick={handleGoogleSignIn}
+                className="w-full flex items-center justify-center px-4 py-2.5 border border-gray-700 rounded-md shadow-sm text-sm font-medium text-white bg-gray-800 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              >
+                <Globe className="h-5 w-5 mr-2" />
+                Google
+              </button>
+
+              <button
+                onClick={handleAppleSignIn}
+                className="w-full flex items-center justify-center px-4 py-2.5 border border-gray-700 rounded-md shadow-sm text-sm font-medium text-white bg-gray-800 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              >
+                <Apple className="h-5 w-5 mr-2" />
+                Apple
+              </button>
+            </div>
+          </div>
         </div>
 
         <div className="bg-gray-900 rounded-xl border border-gray-800 p-5">
@@ -331,6 +404,22 @@ export default function LoginPage() {
           email={unverifiedEmail}
           onClose={() => setShowUnverifiedModal(false)}
           onResendVerification={handleResendVerification}
+        />
+      )}
+
+      {/* Non-existent user modal */}
+      {showNonExistentModal && (
+        <NonExistentUserModal
+          email={nonExistentEmail}
+          onClose={() => setShowNonExistentModal(false)}
+        />
+      )}
+
+      {/* Wrong password modal */}
+      {showWrongPasswordModal && (
+        <WrongPasswordModal
+          email={wrongPasswordEmail}
+          onClose={() => setShowWrongPasswordModal(false)}
         />
       )}
     </div>

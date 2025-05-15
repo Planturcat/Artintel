@@ -1,9 +1,11 @@
 import { ReactNode } from 'react';
+import { ArrowUpRight, ArrowDownRight } from 'lucide-react';
 
 interface ResourceMonitorProps {
   title: string;
   value: number;
   icon: ReactNode;
+  trend?: number;
   isDark?: boolean;
 }
 
@@ -11,6 +13,7 @@ export default function ResourceMonitor({
   title,
   value,
   icon,
+  trend = 0,
   isDark = false
 }: ResourceMonitorProps) {
   // Determine status color based on value
@@ -36,8 +39,8 @@ export default function ResourceMonitor({
   return (
     <div
       className={`p-6 rounded-xl ${
-        isDark 
-          ? 'bg-gray-800/50 hover:bg-gray-800/70' 
+        isDark
+          ? 'bg-gray-800/50 hover:bg-gray-800/70'
           : 'bg-white hover:bg-gray-50'
       } transition-all duration-200 border ${
         isDark ? 'border-gray-700' : 'border-gray-100'
@@ -52,9 +55,25 @@ export default function ResourceMonitor({
             {title}
           </h3>
         </div>
-        <span className={`text-2xl font-semibold ${getStatusColor(value)}`}>
-          {value}%
-        </span>
+        <div className="flex items-center">
+          <span className={`text-2xl font-semibold ${getStatusColor(value)}`}>
+            {value}%
+          </span>
+          {trend !== 0 && (
+            <div className="flex items-center ml-2">
+              {trend > 0 ? (
+                <ArrowUpRight className="h-4 w-4 text-red-500 mr-1" />
+              ) : (
+                <ArrowDownRight className="h-4 w-4 text-green-500 mr-1" />
+              )}
+              <span className={`text-xs ${
+                trend > 0 ? 'text-red-500' : 'text-green-500'
+              }`}>
+                {Math.abs(trend)}%
+              </span>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Progress bar */}
@@ -88,4 +107,4 @@ export default function ResourceMonitor({
       </div>
     </div>
   );
-} 
+}

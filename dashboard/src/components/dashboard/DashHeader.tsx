@@ -19,23 +19,23 @@ export default function DashHeader() {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showMessages, setShowMessages] = useState(false);
-  
+
   const isDark = theme === 'dark';
 
   // Current time update
   useEffect(() => {
     const updateTime = () => {
       const now = new Date();
-      setCurrentTime(now.toLocaleTimeString('en-US', { 
-        hour: '2-digit', 
+      setCurrentTime(now.toLocaleTimeString('en-US', {
+        hour: '2-digit',
         minute: '2-digit',
-        hour12: true 
+        hour12: true
       }));
     };
-    
+
     updateTime();
     const interval = setInterval(updateTime, 60000);
-    
+
     return () => clearInterval(interval);
   }, []);
 
@@ -128,10 +128,10 @@ export default function DashHeader() {
   };
 
   return (
-    <motion.header 
+    <motion.header
       className={`sticky top-0 z-10 ${
-        isDark 
-          ? 'bg-[#00031b]/80 text-white border-b border-[#00cbdd]/20' 
+        isDark
+          ? 'bg-[#00031b]/80 text-white border-b border-[#00cbdd]/20'
           : 'bg-white/80 text-gray-800 border-b border-gray-100'
       } backdrop-blur-md px-6 py-3`}
       initial={{ y: -20, opacity: 0 }}
@@ -149,25 +149,25 @@ export default function DashHeader() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className={`w-full py-2 pl-10 pr-4 rounded-lg border ${
-                isDark 
+                isDark
                   ? 'bg-[#00052d]/60 border-[#00cbdd]/20 text-white placeholder:text-gray-500'
                   : 'bg-gray-50/70 border-gray-200 text-gray-800 placeholder:text-gray-400'
               } focus:outline-none focus:ring-2 focus:ring-[#00cbdd]/40 transition-all duration-200`}
             />
           </form>
         </div>
-        
+
         {/* Right section: Time, Theme Toggle, Notifications & User */}
         <div className="flex items-center space-x-6">
           {/* Current time */}
           <div className={`hidden md:block font-medium ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
             {currentTime}
           </div>
-          
+
           {/* Theme toggle - mobile only */}
           <button
             className={`md:hidden p-1.5 rounded-full ${
-              isDark 
+              isDark
                 ? 'text-gray-300 hover:text-white hover:bg-white/10'
                 : 'text-gray-600 hover:text-[#00cbdd] hover:bg-gray-100'
             } transition-colors duration-200`}
@@ -180,14 +180,14 @@ export default function DashHeader() {
               <Moon className="h-5 w-5" />
             )}
           </button>
-          
+
           {/* Notification icons */}
           <div className="flex items-center space-x-4">
             {/* Notifications */}
             <div className="relative dropdown-toggle">
-              <button 
+              <button
                 className={`relative p-1.5 rounded-full ${
-                  isDark 
+                  isDark
                     ? 'text-gray-300 hover:text-white hover:bg-white/10'
                     : 'text-gray-600 hover:text-[#00cbdd] hover:bg-gray-100'
                 } transition-colors duration-200`}
@@ -206,12 +206,12 @@ export default function DashHeader() {
                   </span>
                 )}
               </button>
-              
+
               {/* Notifications dropdown */}
               {showNotifications && (
-                <div 
+                <div
                   className={`absolute right-0 mt-2 w-80 rounded-lg shadow-lg overflow-hidden z-20 ${
-                    isDark 
+                    isDark
                       ? 'bg-[#00031b] border border-[#00cbdd]/20'
                       : 'bg-white border border-gray-200'
                   }`}
@@ -221,7 +221,7 @@ export default function DashHeader() {
                       {t('notifications')}
                     </h3>
                     {notifications > 0 && (
-                      <button 
+                      <button
                         className={`text-xs ${isDark ? 'text-[#00cbdd]' : 'text-blue-600'} hover:underline`}
                         onClick={() => setNotifications(0)}
                       >
@@ -232,8 +232,8 @@ export default function DashHeader() {
                   <div className="max-h-80 overflow-y-auto">
                     {notificationItems.length > 0 ? (
                       notificationItems.map((item) => (
-                        <div 
-                          key={item.id} 
+                        <div
+                          key={item.id}
                           className={`px-4 py-3 border-b ${
                             isDark ? 'border-[#00cbdd]/10' : 'border-gray-50'
                           } ${
@@ -262,8 +262,8 @@ export default function DashHeader() {
                     )}
                   </div>
                   <div className={`px-4 py-2 text-center ${isDark ? 'border-t border-[#00cbdd]/20' : 'border-t border-gray-100'}`}>
-                    <a 
-                      href="/dashboard/notifications" 
+                    <a
+                      href="/dashboard/notifications"
                       className={`text-xs ${isDark ? 'text-[#00cbdd]' : 'text-blue-600'} hover:underline`}
                     >
                       {t('viewAllNotifications')}
@@ -275,9 +275,9 @@ export default function DashHeader() {
 
             {/* Messages */}
             <div className="relative dropdown-toggle">
-              <button 
+              <button
                 className={`relative p-1.5 rounded-full ${
-                  isDark 
+                  isDark
                     ? 'text-gray-300 hover:text-white hover:bg-white/10'
                     : 'text-gray-600 hover:text-[#00cbdd] hover:bg-gray-100'
                 } transition-colors duration-200`}
@@ -296,12 +296,12 @@ export default function DashHeader() {
                   </span>
                 )}
               </button>
-              
+
               {/* Messages dropdown */}
               {showMessages && (
-                <div 
+                <div
                   className={`absolute right-0 mt-2 w-80 rounded-lg shadow-lg overflow-hidden z-20 ${
-                    isDark 
+                    isDark
                       ? 'bg-[#00031b] border border-[#00cbdd]/20'
                       : 'bg-white border border-gray-200'
                   }`}
@@ -314,8 +314,8 @@ export default function DashHeader() {
                   <div className="max-h-80 overflow-y-auto">
                     {messageItems.length > 0 ? (
                       messageItems.map((item) => (
-                        <div 
-                          key={item.id} 
+                        <div
+                          key={item.id}
                           className={`px-4 py-3 border-b ${
                             isDark ? 'border-[#00cbdd]/10' : 'border-gray-50'
                           } ${
@@ -344,8 +344,8 @@ export default function DashHeader() {
                     )}
                   </div>
                   <div className={`px-4 py-2 text-center ${isDark ? 'border-t border-[#00cbdd]/20' : 'border-t border-gray-100'}`}>
-                    <a 
-                      href="/dashboard/support" 
+                    <a
+                      href="/dashboard/support"
                       className={`text-xs ${isDark ? 'text-[#00cbdd]' : 'text-blue-600'} hover:underline`}
                     >
                       {t('viewAllMessages')}
@@ -354,10 +354,10 @@ export default function DashHeader() {
                 </div>
               )}
             </div>
-            
+
             {/* User profile */}
             <div className="relative dropdown-toggle">
-              <button 
+              <button
                 onClick={(e) => {
                   e.stopPropagation();
                   setShowUserMenu(!showUserMenu);
@@ -365,7 +365,7 @@ export default function DashHeader() {
                   setShowMessages(false);
                 }}
                 className={`flex items-center space-x-2 p-1 rounded-full ${
-                  isDark 
+                  isDark
                     ? 'hover:bg-white/10'
                     : 'hover:bg-gray-100'
                 } transition-colors duration-200`}
@@ -375,12 +375,12 @@ export default function DashHeader() {
                   {user?.full_name ? user.full_name.charAt(0).toUpperCase() : user?.username ? user.username.charAt(0).toUpperCase() : 'U'}
                 </div>
               </button>
-              
+
               {/* User dropdown menu */}
               {showUserMenu && (
-                <div 
+                <div
                   className={`absolute right-0 mt-2 w-64 rounded-lg shadow-lg overflow-hidden z-20 ${
-                    isDark 
+                    isDark
                       ? 'bg-[#00031b] border border-[#00cbdd]/20'
                       : 'bg-white border border-gray-200'
                   }`}
@@ -406,12 +406,12 @@ export default function DashHeader() {
                       {user?.tier || 'Free'} Tier
                     </div>
                   </div>
-                  
+
                   {/* Menu items */}
                   <div>
-                    <Link href="/dashboard/profile" 
+                    <Link href="/dashboard/profile"
                       className={`flex items-center px-4 py-2 text-sm ${
-                        isDark 
+                        isDark
                           ? 'text-gray-300 hover:bg-[#00052d] hover:text-white'
                           : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
                       }`}
@@ -420,10 +420,10 @@ export default function DashHeader() {
                       <User className="mr-3 h-4 w-4" />
                       {t('profile')}
                     </Link>
-                    
-                    <Link href="/dashboard/settings" 
+
+                    <Link href="/dashboard/settings"
                       className={`flex items-center px-4 py-2 text-sm ${
-                        isDark 
+                        isDark
                           ? 'text-gray-300 hover:bg-[#00052d] hover:text-white'
                           : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
                       }`}
@@ -432,19 +432,29 @@ export default function DashHeader() {
                       <Settings className="mr-3 h-4 w-4" />
                       {t('settings')}
                     </Link>
-                    
+
                     <button
                       className={`w-full flex items-center px-4 py-2 text-sm ${
-                        isDark 
+                        isDark
                           ? 'text-gray-300 hover:bg-[#00052d] hover:text-white'
                           : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
                       }`}
-                      onClick={() => {
+                      onClick={async () => {
                         setShowUserMenu(false);
-                        // Add a small delay to prevent UI flicker
-                        setTimeout(() => {
-                          logout();
-                        }, 150);
+                        try {
+                          // Use AuthService for logout
+                          const AuthService = (await import('@/lib/authService')).default;
+                          // Add a small delay to prevent UI flicker
+                          setTimeout(() => {
+                            AuthService.logout();
+                          }, 150);
+                        } catch (error) {
+                          console.error('Logout error:', error);
+                          // Fallback to context logout if AuthService fails
+                          setTimeout(() => {
+                            logout();
+                          }, 150);
+                        }
                       }}
                     >
                       <LogOut className="mr-3 h-4 w-4" />
@@ -459,4 +469,4 @@ export default function DashHeader() {
       </div>
     </motion.header>
   );
-} 
+}

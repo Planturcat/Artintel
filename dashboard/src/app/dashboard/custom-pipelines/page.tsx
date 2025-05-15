@@ -14,6 +14,7 @@ import PipelineTemplateCard from '@/components/pipelines/PipelineTemplateCard';
 import { getPipelines, getPipelineMetrics, getPipelineTemplates } from '@/dashboard-api/pipeline-api';
 import { getModels } from '@/dashboard-api/model-api';
 import { getFineTuningJobs } from '@/dashboard-api/fine-tuning-api';
+import { getUserContext } from '@/dashboard-api/mock-user-context';
 import { Pipeline, PipelineMetrics, PipelineTemplate } from '@/types/pipeline';
 
 export default function CustomPipelinesPage() {
@@ -29,6 +30,7 @@ export default function CustomPipelinesPage() {
   const [selectedPipeline, setSelectedPipeline] = useState<Pipeline | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [activeTab, setActiveTab] = useState<'all' | 'active' | 'draft'>('all');
+  const [user, setUser] = useState(getUserContext());
 
   const fetchData = async () => {
     try {
@@ -90,7 +92,7 @@ export default function CustomPipelinesPage() {
         <div className="text-red-500 text-center">
           <h2 className="text-xl font-semibold mb-2">Error</h2>
           <p>{error}</p>
-          <button 
+          <button
             onClick={fetchData}
             className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
           >
@@ -112,7 +114,7 @@ export default function CustomPipelinesPage() {
           </p>
         </div>
         <div className="flex gap-4">
-          <button 
+          <button
             onClick={handleRefresh}
             disabled={isRefreshing}
             className={`p-2 rounded-lg ${
@@ -121,7 +123,7 @@ export default function CustomPipelinesPage() {
           >
             <RefreshCw className={`h-5 w-5 ${isRefreshing ? 'animate-spin' : ''}`} />
           </button>
-          <button 
+          <button
             onClick={() => setIsCreateModalOpen(true)}
             className="px-4 py-2 rounded-lg bg-gradient-to-r from-[#00cbdd] to-blue-500 text-white hover:from-[#00b0c0] hover:to-blue-600 flex items-center gap-2"
           >
@@ -178,21 +180,21 @@ export default function CustomPipelinesPage() {
             <MessageSquare className={`h-8 w-8 ${isDark ? 'text-[#00cbdd]' : 'text-blue-500'}`} />
           </div>
           <h3 className={`text-lg font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
-            Communicate with your pipelines using Mash
+            {user ? `${user.firstName}, communicate with your pipelines using Mash` : 'Communicate with your pipelines using Mash'}
           </h3>
           <p className={`max-w-lg ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
             Mash provides a chat-like interface to send prompts to your active pipelines.
             Select a pipeline from the list below and click the <MessageSquare className="h-4 w-4 inline mx-1" /> icon to get started.
           </p>
-          
+
           {pipelines.filter(p => p.status === 'active').length === 0 ? (
             <div className={`p-3 rounded-lg ${
               isDark ? 'bg-gray-800 text-gray-300' : 'bg-gray-100 text-gray-700'
             } inline-block mt-2`}>
-              You need active pipelines to use Mash
+              {user ? `${user.firstName}, you need active pipelines to use Mash` : 'You need active pipelines to use Mash'}
             </div>
           ) : (
-            <Button 
+            <Button
               onClick={() => {
                 const activePipeline = pipelines.find(p => p.status === 'active');
                 if (activePipeline) {
@@ -243,7 +245,7 @@ export default function CustomPipelinesPage() {
           <div className="flex space-x-8">
             <button
               className={`py-2 px-1 relative ${
-                activeTab === 'all' 
+                activeTab === 'all'
                   ? `font-medium ${isDark ? 'text-[#00cbdd]' : 'text-blue-600'}`
                   : isDark ? 'text-gray-400' : 'text-gray-500'
               }`}
@@ -258,7 +260,7 @@ export default function CustomPipelinesPage() {
             </button>
             <button
               className={`py-2 px-1 relative ${
-                activeTab === 'active' 
+                activeTab === 'active'
                   ? `font-medium ${isDark ? 'text-[#00cbdd]' : 'text-blue-600'}`
                   : isDark ? 'text-gray-400' : 'text-gray-500'
               }`}
@@ -273,7 +275,7 @@ export default function CustomPipelinesPage() {
             </button>
             <button
               className={`py-2 px-1 relative ${
-                activeTab === 'draft' 
+                activeTab === 'draft'
                   ? `font-medium ${isDark ? 'text-[#00cbdd]' : 'text-blue-600'}`
                   : isDark ? 'text-gray-400' : 'text-gray-500'
               }`}
@@ -288,7 +290,7 @@ export default function CustomPipelinesPage() {
             </button>
           </div>
         </div>
-        
+
         <PipelinesList
           pipelines={filteredPipelines}
           isDark={isDark}
@@ -316,4 +318,4 @@ export default function CustomPipelinesPage() {
       />
     </div>
   );
-} 
+}

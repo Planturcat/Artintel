@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { setAuthToken, clearAuthToken } from '@/dashboard-api/config';
 import { apiRequest } from '@/dashboard-api/dashboard-api';
 import { isMockApiEnabled } from '@/dashboard-api/config';
+import { setUserContext, clearUserContext, UserContext } from '@/dashboard-api/mock-user-context';
 
 // Types
 type UserStats = {
@@ -64,40 +65,44 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const checkAuth = async () => {
       try {
         const token = localStorage.getItem('AUTH_TOKEN');
-        
+
         if (token) {
-          if (isMockApiEnabled()) {
-            // Mock user for development
-            const mockUser = {
-              user_id: 'user_1',
-              email: 'user@example.com',
-              username: 'testuser',
-              full_name: 'Test User',
-              is_verified: true,
-              role: 'user',
-              requires_profile_setup: false,
-              tier: 'pro' as const,
-              organization: 'Test Org',
-              stats: {
-                models_used: 5,
-                tokens_used: 10000,
-                datasets_created: 3,
-                fine_tuning_jobs: 2,
-                deployments: 1,
+          try {
+            // Use AuthService to get current user
+            const AuthService = (await import('@/lib/authService')).default;
+
+            // Check if user is authenticated
+            if (AuthService.isAuthenticated()) {
+              try {
+                // Get user data
+                const userData = await AuthService.getCurrentUser();
+                setUser(userData);
+
+                // If using mock API, set the user context for mock data generation
+                if (isMockApiEnabled() && userData) {
+                  setUserContext({
+                    userId: userData.user_id,
+                    email: userData.email,
+                    fullName: userData.full_name,
+                    role: userData.role,
+                    tier: userData.tier,
+                    organization: userData.organization
+                  });
+                }
+              } catch (error) {
+                console.error('Failed to get user data:', error);
+                clearAuthToken();
+                setUser(null);
               }
-            };
-            setUser(mockUser);
-          } else {
-            try {
-              const userData = await apiRequest<User>('/auth/me', 'GET', undefined, {
-                'Authorization': `Bearer ${token}`
-              });
-              setUser(userData);
-            } catch (err) {
-              console.error('Failed to fetch user data:', err);
+            } else {
+              // Token exists but is invalid
               clearAuthToken();
               setUser(null);
             }
+          } catch (error) {
+            console.error('Failed to import AuthService:', error);
+            clearAuthToken();
+            setUser(null);
           }
         }
       } catch (err) {
@@ -107,7 +112,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setLoading(false);
       }
     };
-    
+
     checkAuth();
   }, []);
 
@@ -115,74 +120,56 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = async (credentials: { username: string; password: string }) => {
     setLoading(true);
     setError(null);
-    
+
     try {
+      // Use AuthService for login
+      const AuthService = (await import('@/lib/authService')).default;
+      const response = await AuthService.login(credentials.username, credentials.password);
+
+      // Save token to local storage
+      setAuthToken(response.access_token);
+
+      // Get user data
+      const userData = await AuthService.getCurrentUser();
+      setUser(userData);
+
+      // If using mock API, set the user context for mock data generation
       if (isMockApiEnabled()) {
-        // Mock successful login for development
-        const mockToken = 'mock-jwt-token';
-        setAuthToken(mockToken);
-        
-        // Set mock user
-        const mockUser = {
-          user_id: 'user_1',
-          email: 'user@example.com',
-          username: credentials.username,
-          full_name: 'Test User',
-          is_verified: true,
-          role: 'user',
-          requires_profile_setup: false,
-          tier: 'pro' as const,
-          organization: 'Test Org',
-          stats: {
-            models_used: 5,
-            tokens_used: 10000,
-            datasets_created: 3,
-            fine_tuning_jobs: 2,
-            deployments: 1,
-          }
-        };
-        setUser(mockUser);
-        router.push('/dashboard');
+        setUserContext({
+          userId: userData.user_id,
+          email: userData.email,
+          fullName: userData.full_name,
+          role: userData.role,
+          tier: userData.tier,
+          organization: userData.organization
+        });
+      }
+
+      // Check if user is verified
+      if (!userData.is_verified) {
+        throw new Error('Email not verified. Please check your inbox for verification instructions.');
+      }
+
+      // Redirect based on user state
+      if (userData.requires_profile_setup) {
+        router.push('/complete-profile');
       } else {
-        // Convert credentials to form data format expected by OAuth2
-        const formData = new URLSearchParams();
-        formData.append('username', credentials.username);
-        formData.append('password', credentials.password);
-        
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/token`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-          body: formData.toString(),
-        });
-        
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.detail || 'Login failed');
-        }
-        
-        const tokenData = await response.json();
-        
-        // Save token to local storage
-        setAuthToken(tokenData.access_token);
-        
-        // Get user data
-        const userData = await apiRequest<User>('/auth/me', 'GET', undefined, {
-          'Authorization': `Bearer ${tokenData.access_token}`
-        });
-        
-        setUser(userData);
-        
-        // Redirect based on user state
-        if (userData?.requires_profile_setup) {
-          router.push('/complete-profile');
-        } else {
-          router.push('/dashboard');
-        }
+        router.push('/dashboard');
       }
     } catch (err: any) {
-      setError(err.message || 'Login failed. Please check your credentials.');
+      console.error('Login error:', err);
+
+      // Preserve the original error message for special cases
+      if (err.message === 'user_not_found') {
+        setError('user_not_found');
+        throw new Error('user_not_found');
+      } else if (err.message === 'wrong_password') {
+        setError('wrong_password');
+        throw new Error('wrong_password');
+      } else {
+        setError(err.message || 'Login failed. Please check your credentials.');
+        throw err; // Re-throw the error to be caught by the login page
+      }
     } finally {
       setLoading(false);
     }
@@ -191,15 +178,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Logout function
   const logout = async () => {
     try {
-      if (!isMockApiEnabled()) {
+      if (isMockApiEnabled()) {
+        // For mock mode, clear the mock user context
+        clearUserContext();
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('mockUserId');
+        }
+      } else {
+        // For real API, call the logout endpoint
         await apiRequest('/auth/logout', 'POST');
       }
     } catch (error) {
       console.error('Logout error:', error);
     } finally {
+      // Clear auth token and user state
       clearAuthToken();
       setUser(null);
-      router.push('/login');
+
+      // Redirect to login page with logout message
+      router.push('/login?message=logout');
     }
   };
 
@@ -207,53 +204,50 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const register = async (userData: any) => {
     setLoading(true);
     setError(null);
-    
+
     try {
       console.log('Registration attempt with data:', {
         ...userData,
         password: '******' // Mask password in logs for security
       });
-      
-      if (isMockApiEnabled()) {
-        // Mock successful registration
-        console.log('Using mock registration flow');
-        
-        // Generate a mock verification link
-        const mockToken = Math.random().toString(36).substring(2, 15);
-        console.log('\n=== MOCK VERIFICATION LINK ===');
-        console.log(`Verification URL: http://localhost:3000/verify-email?token=${mockToken}`);
-        console.log('This is a mock link and will not actually work\n');
-        
-        router.push('/registration-success');
-      } else {
-        // Real API registration
-        console.log('Sending registration request to API');
-        const response = await apiRequest('/auth/register', 'POST', userData);
-        console.log('Registration successful:', response);
-        
-        // Log that verification email would be sent (the backend will actually print the link)
-        console.log(`Verification email would be sent to: ${userData.email}`);
-        
-        router.push('/registration-success');
-      }
+
+      // Use AuthService for registration
+      const AuthService = (await import('@/lib/authService')).default;
+
+      // Call register method with appropriate parameters
+      const response = await AuthService.register(
+        userData.email,
+        userData.password,
+        userData.confirm_password || userData.password,
+        userData.full_name,
+        userData.organization,
+        userData.tier
+      );
+
+      console.log('Registration successful:', response);
+
+      // Show success message and redirect
+      router.push('/login?message=registered');
     } catch (err: any) {
       console.error('Registration error:', err);
-      
+
       // Create a more user-friendly error message
       let errorMessage = 'Registration failed. ';
-      
+
       if (err.message) {
-        if (err.message.includes('Username already registered')) {
-          errorMessage += 'This username is already taken.';
-        } else if (err.message.includes('Email already registered')) {
-          errorMessage += 'This email is already registered.';
+        if (err.message.includes('Username already registered') ||
+            err.message.includes('already registered') ||
+            err.message.includes('already exists')) {
+          errorMessage += 'This email or username is already registered.';
+        } else if (err.message.includes('Password')) {
+          errorMessage = err.message; // Use password-related errors directly
         } else {
           errorMessage += err.message;
         }
       } else {
         errorMessage += 'Please try again.';
       }
-      
+
       setError(errorMessage);
     } finally {
       setLoading(false);
@@ -264,7 +258,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const clearError = () => setError(null);
 
   return (
-    <AuthContext.Provider 
+    <AuthContext.Provider
       value={{
         user,
         loading,
@@ -284,10 +278,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 export function useAuth() {
   const context = useContext(AuthContext);
-  
+
   if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
-  
+
   return context;
-} 
+}

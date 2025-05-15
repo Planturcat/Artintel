@@ -79,9 +79,17 @@ export default function ResetPasswordPage() {
     setError(null);
 
     try {
-      const result = await AuthService.resetPassword(token, password);
+      // Call the resetPassword method with the token and password
+      const result = await AuthService.resetPassword(token, password, confirmPassword);
+
+      console.log('Password reset successful:', {
+        token,
+        result
+      });
+
       setSuccess(true);
     } catch (err: any) {
+      console.error('Password reset error:', err);
       setError(err.message || 'An error occurred while resetting your password. Please try again.');
     } finally {
       setIsSubmitting(false);
@@ -93,9 +101,9 @@ export default function ResetPasswordPage() {
       {/* Header */}
       <header className="border-b border-cyan-950 bg-[#00031b]/80 backdrop-blur-lg py-4 px-6">
         <div className="max-w-6xl mx-auto flex justify-between items-center">
-          <div className="text-2xl font-bold text-white">
+          <Link href="/" className="text-2xl font-bold text-white">
             Artintel<span className="text-[#00cbdd]"> LLms</span>
-          </div>
+          </Link>
         </div>
       </header>
 

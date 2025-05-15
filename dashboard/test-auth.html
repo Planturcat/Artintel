@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Authentication Test</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      line-height: 1.6;
+      color: #333;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    h1 {
+      color: #0066cc;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 10px;
+    }
+    h2 {
+      color: #0088ff;
+      margin-top: 30px;
+    }
+    .card {
+      background-color: #f9f9f9;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+    button {
+      background-color: #0088ff;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background-color: #0066cc;
+    }
+    .result {
+      margin-top: 15px;
+      padding: 15px;
+      background-color: #f0f0f0;
+      border-radius: 4px;
+      white-space: pre-wrap;
+      font-family: monospace;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    .success {
+      color: #28a745;
+    }
+    .error {
+      color: #dc3545;
+    }
+  </style>
+</head>
+<body>
+  <h1>Authentication Test Page</h1>
+  <p>This page helps test the authentication functionality with mock data.</p>
+  
+  <div class="card">
+    <h2>Login Test</h2>
+    <div class="form-group">
+      <label for="username">Username:</label>
+      <input type="text" id="username" value="testuser">
+    </div>
+    <div class="form-group">
+      <label for="password">Password:</label>
+      <input type="password" id="password" value="password123">
+    </div>
+    <button onclick="testLogin()">Test Login</button>
+    <div id="loginResult" class="result"></div>
+  </div>
+  
+  <div class="card">
+    <h2>Invalid Login Test</h2>
+    <button onclick="testInvalidLogin()">Test Invalid Login</button>
+    <div id="invalidLoginResult" class="result"></div>
+  </div>
+  
+  <div class="card">
+    <h2>Logout Test</h2>
+    <button onclick="testLogout()">Test Logout</button>
+    <div id="logoutResult" class="result"></div>
+  </div>
+  
+  <div class="card">
+    <h2>Registration Test</h2>
+    <div class="form-group">
+      <label for="regEmail">Email:</label>
+      <input type="email" id="regEmail" value="newuser@example.com">
+    </div>
+    <div class="form-group">
+      <label for="regPassword">Password:</label>
+      <input type="password" id="regPassword" value="Password123!">
+    </div>
+    <div class="form-group">
+      <label for="regConfirmPassword">Confirm Password:</label>
+      <input type="password" id="regConfirmPassword" value="Password123!">
+    </div>
+    <div class="form-group">
+      <label for="regFullName">Full Name:</label>
+      <input type="text" id="regFullName" value="New User">
+    </div>
+    <button onclick="testRegistration()">Test Registration</button>
+    <div id="registrationResult" class="result"></div>
+  </div>
+  
+  <div class="card">
+    <h2>Forgot Password Test</h2>
+    <div class="form-group">
+      <label for="forgotEmail">Email:</label>
+      <input type="email" id="forgotEmail" value="testuser@example.com">
+    </div>
+    <button onclick="testForgotPassword()">Test Forgot Password</button>
+    <div id="forgotPasswordResult" class="result"></div>
+  </div>
+  
+  <div class="card">
+    <h2>Reset Password Test</h2>
+    <div class="form-group">
+      <label for="resetToken">Token:</label>
+      <input type="text" id="resetToken" value="mock-token">
+    </div>
+    <div class="form-group">
+      <label for="resetPassword">New Password:</label>
+      <input type="password" id="resetPassword" value="NewPassword123!">
+    </div>
+    <div class="form-group">
+      <label for="resetConfirmPassword">Confirm New Password:</label>
+      <input type="password" id="resetConfirmPassword" value="NewPassword123!">
+    </div>
+    <button onclick="testResetPassword()">Test Reset Password</button>
+    <div id="resetPasswordResult" class="result"></div>
+  </div>
+  
+  <div class="card">
+    <h2>Resend Verification Test</h2>
+    <div class="form-group">
+      <label for="verifyEmail">Email:</label>
+      <input type="email" id="verifyEmail" value="unverified@example.com">
+    </div>
+    <button onclick="testResendVerification()">Test Resend Verification</button>
+    <div id="resendVerificationResult" class="result"></div>
+  </div>
+  
+  <div class="card">
+    <h2>Run All Tests</h2>
+    <button onclick="runAllTests()">Run All Tests</button>
+    <div id="allTestsResult" class="result"></div>
+  </div>
+
+  <script src="test-auth.js"></script>
+  <script>
+    // Helper function to display results
+    function displayResult(elementId, result) {
+      const element = document.getElementById(elementId);
+      element.textContent = JSON.stringify(result, null, 2);
+      element.className = result.success ? 'result success' : 'result error';
+    }
+    
+    // Test functions
+    async function testLogin() {
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      const result = await window.authTests.testLogin(username, password);
+      displayResult('loginResult', result);
+    }
+    
+    async function testInvalidLogin() {
+      const result = await window.authTests.testInvalidLogin();
+      displayResult('invalidLoginResult', result);
+    }
+    
+    async function testLogout() {
+      const result = await window.authTests.testLogout();
+      displayResult('logoutResult', result);
+    }
+    
+    async function testRegistration() {
+      const email = document.getElementById('regEmail').value;
+      const password = document.getElementById('regPassword').value;
+      const confirmPassword = document.getElementById('regConfirmPassword').value;
+      const fullName = document.getElementById('regFullName').value;
+      const result = await window.authTests.testRegistration(email, password, confirmPassword, fullName);
+      displayResult('registrationResult', result);
+    }
+    
+    async function testForgotPassword() {
+      const email = document.getElementById('forgotEmail').value;
+      const result = await window.authTests.testForgotPassword(email);
+      displayResult('forgotPasswordResult', result);
+    }
+    
+    async function testResetPassword() {
+      const token = document.getElementById('resetToken').value;
+      const password = document.getElementById('resetPassword').value;
+      const confirmPassword = document.getElementById('resetConfirmPassword').value;
+      const result = await window.authTests.testResetPassword(token, password, confirmPassword);
+      displayResult('resetPasswordResult', result);
+    }
+    
+    async function testResendVerification() {
+      const email = document.getElementById('verifyEmail').value;
+      const result = await window.authTests.testResendVerification(email);
+      displayResult('resendVerificationResult', result);
+    }
+    
+    async function runAllTests() {
+      document.getElementById('allTestsResult').textContent = 'Running all tests...';
+      await window.authTests.runAllTests();
+      document.getElementById('allTestsResult').textContent = 'All tests completed. Check console for details.';
+    }
+  </script>
+</body>
+</html>
