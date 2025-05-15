@@ -7,12 +7,12 @@
 
 // API Base URL
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000/api/v1';
+console.log('API_BASE_URL:', API_BASE_URL);
 
 // Mock API flag - from environment variables only
-// Default to true in development, false in production
-export const USE_MOCK_API =
-  process.env.NEXT_PUBLIC_USE_MOCK_API === 'true' ||
-  (process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_USE_MOCK_API !== 'false');
+// Always use the environment variable value, with a fallback to true
+export const USE_MOCK_API = process.env.NEXT_PUBLIC_USE_MOCK_API !== 'false';
+console.log('USE_MOCK_API:', USE_MOCK_API, 'NEXT_PUBLIC_USE_MOCK_API:', process.env.NEXT_PUBLIC_USE_MOCK_API);
 
 // Check if mock API is enabled
 export const isMockApiEnabled = (): boolean => {

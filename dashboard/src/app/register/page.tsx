@@ -257,6 +257,13 @@ function RegisterContent() {
     }
 
     try {
+      console.log('Attempting to register user with:', {
+        email: formData.email,
+        name: formData.name,
+        organization: userType === 'enterprise' ? formData.organization : undefined,
+        tier: selectedTier
+      });
+
       // Register the user using AuthService
       await AuthService.register(
         formData.email,
@@ -267,10 +274,20 @@ function RegisterContent() {
         selectedTier
       );
 
+      console.log('Registration successful');
       toast.success("Account created! Please check your email for verification instructions.");
       router.push('/login?message=registered');
     } catch (error: any) {
       console.error("Registration error:", error);
+
+      // Create a more detailed error message for debugging
+      const errorDetails = {
+        message: error.message,
+        stack: error.stack,
+        name: error.name
+      };
+      console.log('Registration error details:', errorDetails);
+
       toast.error(error.message || "Failed to create account");
       setError(error.message || "An error occurred during registration");
     } finally {

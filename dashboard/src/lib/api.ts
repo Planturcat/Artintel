@@ -2,13 +2,12 @@
 import { mockAuth } from './mockAuth';
 
 // API mode configuration from environment variables
-// Default to true in development, false in production
-const ENABLE_MOCK_API =
-  process.env.NEXT_PUBLIC_USE_MOCK_API === 'true' ||
-  (process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_USE_MOCK_API !== 'false');
+// Always use the environment variable value, with a fallback to true
+const ENABLE_MOCK_API = process.env.NEXT_PUBLIC_USE_MOCK_API !== 'false';
 
 // API base URL from environment variables, with fallback value
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
+console.log('lib/api.ts - ENABLE_MOCK_API:', ENABLE_MOCK_API, 'API_BASE_URL:', API_BASE_URL);
 
 // Default options for fetch requests
 const defaultOptions = {
@@ -54,41 +53,85 @@ export async function apiRequest(endpoint: string, options = {}) {
 export const authAPI = {
   // Login with username/email and password
   login: async (credentials: { username: string; password: string }) => {
+    console.log('authAPI.login called with username:', credentials.username);
+    console.log('ENABLE_MOCK_API:', ENABLE_MOCK_API);
+
     if (ENABLE_MOCK_API) {
-      return mockAuth.login(credentials);
+      console.log('Using mock auth for login');
+      try {
+        const result = await mockAuth.login(credentials);
+        console.log('Mock login result:', { ...result, access_token: '[REDACTED]' });
+        return result;
+      } catch (error) {
+        console.error('Mock login error:', error);
+        throw error;
+      }
     }
 
-    const formData = new URLSearchParams();
-    formData.append('username', credentials.username);
-    formData.append('password', credentials.password);
+    console.log('Using real API for login');
+    try {
+      const formData = new URLSearchParams();
+      formData.append('username', credentials.username);
+      formData.append('password', credentials.password);
 
-    const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: formData,
-    });
+      console.log('Sending login request to:', `${API_BASE_URL}/api/auth/login`);
+      const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: formData,
+      });
 
-    const data = await response.json();
+      const data = await response.json();
+      console.log('API login response status:', response.status, response.statusText);
 
-    if (!response.ok) {
-      throw new Error(data.detail || 'Login failed');
+      if (!response.ok) {
+        console.error('Login failed with status:', response.status, data);
+        throw new Error(data.detail || 'Login failed');
+      }
+
+      console.log('API login successful');
+      return data;
+    } catch (error) {
+      console.error('API login error:', error);
+      throw error;
     }
-
-    return data;
   },
 
   // Register a new user
   register: async (userData: any) => {
+    console.log('authAPI.register called with:', {
+      ...userData,
+      password: '******', // Mask password for security
+      confirm_password: '******' // Mask confirm password for security
+    });
+    console.log('ENABLE_MOCK_API:', ENABLE_MOCK_API);
+
     if (ENABLE_MOCK_API) {
-      return mockAuth.register(userData);
+      console.log('Using mock auth for registration');
+      try {
+        const result = await mockAuth.register(userData);
+        console.log('Mock registration result:', result);
+        return result;
+      } catch (error) {
+        console.error('Mock registration error:', error);
+        throw error;
+      }
     }
 
-    return apiRequest('/api/auth/register', {
-      method: 'POST',
-      body: JSON.stringify(userData),
-    });
+    console.log('Using real API for registration');
+    try {
+      const result = await apiRequest('/api/auth/register', {
+        method: 'POST',
+        body: JSON.stringify(userData),
+      });
+      console.log('API registration result:', result);
+      return result;
+    } catch (error) {
+      console.error('API registration error:', error);
+      throw error;
+    }
   },
 
   // Get current user profile

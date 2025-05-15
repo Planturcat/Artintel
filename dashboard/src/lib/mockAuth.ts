@@ -88,53 +88,88 @@ const safeStorage = {
 export const mockAuth = {
   // Login function
   login: async (credentials: { username: string; password: string }) => {
-    await simulateDelay();
+    console.log('mockAuth.login called with username:', credentials.username);
 
-    // Try to find user by username or email
-    const user = mockUsers.find(u =>
-      (u.username === credentials.username || u.email === credentials.username) &&
-      u.password === credentials.password
-    );
+    try {
+      await simulateDelay();
 
-    if (!user) {
-      // Check if the username is an email and if it exists in our database
-      const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(credentials.username);
-      const emailExists = isEmail && mockUsers.some(u => u.email.toLowerCase() === credentials.username.toLowerCase());
+      console.log('Available mock users:', mockUsers.map(u => ({
+        user_id: u.user_id,
+        username: u.username,
+        email: u.email,
+        is_verified: u.is_verified
+      })));
 
-      if (isEmail && !emailExists) {
-        // If it's an email but doesn't exist, throw a specific error
-        throw new Error('user_not_found');
-      } else {
-        // Check if the username/email exists but password is wrong
-        const userExists = mockUsers.some(u =>
-          u.username.toLowerCase() === credentials.username.toLowerCase() ||
-          u.email.toLowerCase() === credentials.username.toLowerCase()
-        );
+      // Try to find user by username or email
+      const user = mockUsers.find(u =>
+        (u.username === credentials.username || u.email === credentials.username) &&
+        u.password === credentials.password
+      );
 
-        if (userExists) {
-          // If user exists but password is wrong
-          throw new Error('wrong_password');
+      if (!user) {
+        console.log('No user found with matching username/email and password');
+
+        // Check if the username is an email and if it exists in our database
+        const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(credentials.username);
+        console.log('Is input an email?', isEmail);
+
+        const emailExists = isEmail && mockUsers.some(u => u.email.toLowerCase() === credentials.username.toLowerCase());
+        console.log('Does email exist in database?', emailExists);
+
+        if (isEmail && !emailExists) {
+          // If it's an email but doesn't exist, throw a specific error
+          console.log('Email not found in database, throwing user_not_found');
+          throw new Error('user_not_found');
         } else {
-          // Otherwise, it's an invalid username or password
-          throw new Error('Invalid username or password');
+          // Check if the username/email exists but password is wrong
+          const userExists = mockUsers.some(u =>
+            u.username.toLowerCase() === credentials.username.toLowerCase() ||
+            u.email.toLowerCase() === credentials.username.toLowerCase()
+          );
+          console.log('Does username/email exist in database?', userExists);
+
+          if (userExists) {
+            // If user exists but password is wrong
+            console.log('User exists but password is wrong, throwing wrong_password');
+            throw new Error('wrong_password');
+          } else {
+            // Otherwise, it's an invalid username or password
+            console.log('Invalid username or password');
+            throw new Error('Invalid username or password');
+          }
         }
       }
+
+      console.log('User found:', {
+        user_id: user.user_id,
+        username: user.username,
+        email: user.email,
+        is_verified: user.is_verified
+      });
+
+      // Check if user is verified
+      if (!user.is_verified) {
+        console.log('User is not verified');
+        throw new Error('Email not verified. Please check your inbox for verification instructions.');
+      }
+
+      // Store user ID in storage
+      safeStorage.setItem('mockUserId', user.user_id);
+      console.log('Stored mockUserId in storage:', user.user_id);
+
+      // Return a mock token
+      const response = {
+        access_token: `mock_token_${Date.now()}`,
+        token_type: 'bearer',
+        user_id: user.user_id
+      };
+
+      console.log('Login successful, returning token');
+      return response;
+    } catch (error) {
+      console.error('Error in mockAuth.login:', error);
+      throw error;
     }
-
-    // Check if user is verified
-    if (!user.is_verified) {
-      throw new Error('Email not verified. Please check your inbox for verification instructions.');
-    }
-
-    // Store user ID in storage
-    safeStorage.setItem('mockUserId', user.user_id);
-
-    // Return a mock token
-    return {
-      access_token: `mock_token_${Date.now()}`,
-      token_type: 'bearer',
-      user_id: user.user_id
-    };
   },
 
   // Get current user
@@ -155,60 +190,79 @@ export const mockAuth = {
 
   // Register a new user
   register: async (userData: any) => {
-    await simulateDelay();
-
-    // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(userData.email)) {
-      throw new Error('Invalid email address');
-    }
-
-    // Validate password match
-    if (userData.password !== userData.confirm_password) {
-      throw new Error('Passwords do not match');
-    }
-
-    // Validate password length
-    if (userData.password.length < 8) {
-      throw new Error('Password must be at least 8 characters long');
-    }
-
-    // Check if email already exists
-    const existingUser = mockUsers.find(u => u.email.toLowerCase() === userData.email.toLowerCase());
-    if (existingUser) {
-      throw new Error('Email address is already registered');
-    }
-
-    // Generate a username from email if not provided
-    const username = userData.username || userData.email.split('@')[0].toLowerCase().replace(/[^a-z0-9]/g, '') + Math.floor(Math.random() * 1000);
-
-    // Create a new user
-    const newUser = {
-      user_id: `user-${Date.now()}`,
-      email: userData.email,
-      username: username,
-      password: userData.password,
-      full_name: userData.full_name || '',
-      is_verified: false, // New users start unverified
-      role: 'user',
-      requires_profile_setup: false,
-      tier: userData.tier || 'free',
-      organization: userData.organization || null
-    };
-
-    // Add to mock users array
-    mockUsers.push(newUser);
-
-    console.log('New user registered:', {
-      ...newUser,
-      password: '******' // Mask password in logs
+    console.log('mockAuth.register called with:', {
+      ...userData,
+      password: '******', // Mask password for security
+      confirm_password: '******' // Mask confirm password for security
     });
 
-    return {
-      message: 'User registered successfully. Please check your email for verification.',
-      user_id: newUser.user_id,
-      email: newUser.email
-    };
+    try {
+      await simulateDelay();
+
+      // Validate email format
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(userData.email)) {
+        console.log('Invalid email format:', userData.email);
+        throw new Error('Invalid email address');
+      }
+
+      // Validate password match
+      if (userData.password !== userData.confirm_password) {
+        console.log('Passwords do not match');
+        throw new Error('Passwords do not match');
+      }
+
+      // Validate password length
+      if (userData.password.length < 8) {
+        console.log('Password too short');
+        throw new Error('Password must be at least 8 characters long');
+      }
+
+      // Check if email already exists
+      const existingUser = mockUsers.find(u => u.email.toLowerCase() === userData.email.toLowerCase());
+      if (existingUser) {
+        console.log('Email already registered:', userData.email);
+        throw new Error('Email address is already registered');
+      }
+
+      // Generate a username from email if not provided
+      const username = userData.username || userData.email.split('@')[0].toLowerCase().replace(/[^a-z0-9]/g, '') + Math.floor(Math.random() * 1000);
+      console.log('Generated username:', username);
+
+      // Create a new user
+      const newUser = {
+        user_id: `user-${Date.now()}`,
+        email: userData.email,
+        username: username,
+        password: userData.password,
+        full_name: userData.full_name || '',
+        is_verified: false, // New users start unverified
+        role: 'user',
+        requires_profile_setup: false,
+        tier: userData.tier || 'free',
+        organization: userData.organization || null
+      };
+
+      // Add to mock users array
+      mockUsers.push(newUser);
+
+      console.log('New user registered:', {
+        ...newUser,
+        password: '******' // Mask password in logs
+      });
+
+      const response = {
+        message: 'User registered successfully. Please check your email for verification.',
+        user_id: newUser.user_id,
+        email: newUser.email
+      };
+
+      console.log('Registration response:', response);
+      return response;
+    } catch (error) {
+      console.error('Error in mockAuth.register:', error);
+      throw error;
+    }
   },
 
   // Logout function

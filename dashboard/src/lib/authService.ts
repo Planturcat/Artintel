@@ -6,6 +6,10 @@
  */
 
 import { authAPI } from './api';
+import { isMockApiEnabled } from '@/dashboard-api/config';
+
+// Log the mock API status
+console.log('AuthService - Mock API enabled:', isMockApiEnabled());
 
 /**
  * AuthService provides methods for authentication operations
@@ -19,7 +23,11 @@ const AuthService = {
    */
   login: async (username: string, password: string) => {
     try {
+      console.log('AuthService.login called with username:', username);
+      console.log('Mock API enabled:', isMockApiEnabled());
+
       const response = await authAPI.login({ username, password });
+      console.log('Login response:', { ...response, access_token: '[REDACTED]' });
 
       // Store token in both locations for compatibility
       localStorage.setItem('token', response.access_token);
@@ -27,12 +35,25 @@ const AuthService = {
 
       return response;
     } catch (error: any) {
+      console.error('Login error in AuthService:', error);
+
+      // Create a more detailed error message for debugging
+      const errorDetails = {
+        message: error.message,
+        stack: error.stack,
+        name: error.name
+      };
+      console.log('Login error details in AuthService:', errorDetails);
+
       // Preserve special error messages
       if (error.message === 'user_not_found') {
+        console.log('Throwing user_not_found error');
         throw new Error('user_not_found');
       } else if (error.message === 'wrong_password') {
+        console.log('Throwing wrong_password error');
         throw new Error('wrong_password');
       } else {
+        console.log('Throwing generic error:', error.message || 'Login failed');
         throw new Error(error.message || 'Login failed');
       }
     }
@@ -57,6 +78,14 @@ const AuthService = {
     tier?: string
   ) => {
     try {
+      console.log('AuthService.register called with:', {
+        email,
+        fullName,
+        organization,
+        tier,
+        mockEnabled: isMockApiEnabled()
+      });
+
       // Validate inputs
       if (!email || !password || !confirmPassword || !fullName) {
         throw new Error('All required fields must be provided');
@@ -84,12 +113,22 @@ const AuthService = {
         email,
         full_name: fullName,
         organization,
-        tier
+        tier,
+        response
       });
 
       return response;
     } catch (error: any) {
-      console.error('Registration error:', error);
+      console.error('Registration error in AuthService:', error);
+
+      // Create a more detailed error message for debugging
+      const errorDetails = {
+        message: error.message,
+        stack: error.stack,
+        name: error.name
+      };
+      console.log('Registration error details in AuthService:', errorDetails);
+
       throw new Error(error.message || 'Registration failed');
     }
   },

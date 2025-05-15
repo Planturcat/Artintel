@@ -144,23 +144,27 @@ function LoginContent() {
 
       // Get the error message
       const errorMessage = error.message || authError || '';
+      console.log('Login error message:', errorMessage);
 
       // Check if the error is related to unverified email
       if (errorMessage.toLowerCase().includes('not verified') ||
           errorMessage.toLowerCase().includes('verify your email') ||
           errorMessage.toLowerCase().includes('email verification')) {
+        console.log('Showing unverified email modal for:', username);
         // Show the unverified email modal
         setUnverifiedEmail(username);
         setShowUnverifiedModal(true);
       }
       // Check if the error is related to non-existent user
       else if (errorMessage === 'user_not_found') {
+        console.log('Showing non-existent user modal for:', username);
         // Show the non-existent user modal
         setNonExistentEmail(username);
         setShowNonExistentModal(true);
       }
       // Check if the error is related to wrong password
       else if (errorMessage === 'wrong_password') {
+        console.log('Showing wrong password modal for:', username);
         // Show the wrong password modal
         setWrongPasswordEmail(username);
         setShowWrongPasswordModal(true);

@@ -7,11 +7,12 @@ import axios from 'axios';
 
 // Flag to determine whether to use mock data or real API endpoints
 // Import from config to ensure consistency
-import { USE_MOCK_API as MOCK_API_ENABLED } from './config';
+import { USE_MOCK_API as MOCK_API_ENABLED, API_BASE_URL as CONFIG_API_BASE_URL } from './config';
 export const USE_MOCK_API = MOCK_API_ENABLED;
 
 // Base URL for API endpoints
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
+export const API_BASE_URL = CONFIG_API_BASE_URL;
+console.log('dashboard-api.ts - USE_MOCK_API:', USE_MOCK_API, 'API_BASE_URL:', API_BASE_URL);
 
 // Common error handling for API requests
 export class APIError extends Error {
