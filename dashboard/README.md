@@ -1,4 +1,4 @@
-# Artintel LLMs Platform
+# Artintel Platform
 
 A comprehensive platform for managing, comparing, and deploying AI models with a modern, glamorphic UI.
 

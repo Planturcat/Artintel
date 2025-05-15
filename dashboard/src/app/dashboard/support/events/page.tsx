@@ -53,7 +53,7 @@ const mockEvents = [
     date: '2023-08-18T10:00:00Z',
     duration: 120, // minutes
     speakers: ['James Wilson', 'Sarah Chen'],
-    description: 'A practical, hands-on workshop where you willl learn to build and deploy conversational agents using ArtIntel LLMs.',
+    description: 'A practical, hands-on workshop where you willl learn to build and deploy conversational agents using Artintel.',
     registrationUrl: '/dashboard/support/events/register/event-2',
     thumbnail: '/images/events/conversational-agents-workshop.jpg',
     isRecorded: true,
@@ -89,12 +89,12 @@ const mockEvents = [
   // Past events
   {
     id: 'event-5',
-    title: 'Introduction to ArtIntel LLMs Platform',
+    title: 'Introduction to Artintel Platform',
     type: 'webinar',
     date: '2023-07-10T14:00:00Z',
     duration: 60, // minutes
     speakers: ['Alex Thompson'],
-    description: 'A comprehensive overview of the ArtIntel LLMs platform, its features, and capabilities.',
+    description: 'A comprehensive overview of the Artintel platform, its features, and capabilities.',
     registrationUrl: '/dashboard/support/events/register/event-5',
     thumbnail: '/images/events/intro-webinar.jpg',
     isRecorded: true,
@@ -136,7 +136,7 @@ const mockEvents = [
     date: '2023-07-01T09:00:00Z',
     duration: 480, // minutes (8 hours)
     speakers: ['Various Mentors'],
-    description: 'A one-day hackathon challenging participants to build innovative applications using ArtIntel LLMs.',
+    description: 'A one-day hackathon challenging participants to build innovative applications using Artintel.',
     registrationUrl: '/dashboard/support/events/register/event-8',
     thumbnail: '/images/events/hackathon.jpg',
     isRecorded: false,

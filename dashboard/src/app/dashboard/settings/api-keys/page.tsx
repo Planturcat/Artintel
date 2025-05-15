@@ -258,7 +258,7 @@ export default function ApiKeysSettingsPage() {
             API Keys
           </h1>
           <p className={`${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
-            Create and manage API keys for accessing ArtIntel LLMs services
+            Create and manage API keys for accessing Artintel services
           </p>
         </div>
       </div>

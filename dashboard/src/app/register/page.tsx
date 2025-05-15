@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { Eye, EyeOff, Lock, Mail, User, Check, Building, Briefcase, ChevronDown, ChevronUp, ArrowRight, Globe, Apple } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Eye, EyeOff, Lock, Mail, User, Check, Building, Briefcase, ChevronDown, ChevronUp, ArrowRight, Globe, Apple, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from 'react-hot-toast';
@@ -82,7 +82,7 @@ const tiers = [
   }
 ];
 
-export default function RegisterPage() {
+function RegisterContent() {
   const router = useRouter();
   const { register, loading: authLoading, error: authError } = useAuth();
 
@@ -850,5 +850,35 @@ export default function RegisterPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function RegisterPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex flex-col bg-[#00031b]">
+        <header className="border-b border-cyan-950 bg-[#00031b]/80 backdrop-blur-lg py-4 px-6">
+          <div className="max-w-6xl mx-auto flex justify-between items-center">
+            <div className="text-2xl font-bold text-white">
+              Artintel<span className="text-[#00cbdd]"> LLms</span>
+            </div>
+          </div>
+        </header>
+        <div className="flex-1 flex items-center justify-center px-4 py-12">
+          <div className="w-full max-w-md">
+            <div className="rounded-2xl overflow-hidden border border-cyan-950 bg-gray-900/50 backdrop-blur-lg shadow-xl p-8">
+              <div className="flex items-center justify-center mb-6">
+                <Loader2 className="h-10 w-10 text-[#00cbdd] animate-spin" />
+              </div>
+              <div className="text-center">
+                <p className="text-gray-300">Loading registration form...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    }>
+      <RegisterContent />
+    </Suspense>
   );
 }

@@ -42,7 +42,7 @@ export default function RegistrationSuccessPage() {
             Registration Successful!
           </h1>
           <p className={`mb-6 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-            Thank you for registering with ArtIntel LLMs. Your account has been created successfully.
+            Thank you for registering with Artintel. Your account has been created successfully.
           </p>
           
           {/* Email verification info */}

@@ -1,6 +1,6 @@
 # Fine-Tuning Hub
 
-The Fine-Tuning Hub is a comprehensive feature of the ArtIntel LLMs platform that allows users to create, manage, and monitor custom fine-tuned models based on ArtIntel's foundation models.
+The Fine-Tuning Hub is a comprehensive feature of the Artintel platform that allows users to create, manage, and monitor custom fine-tuned models based on ArtIntel's foundation models.
 
 ## Overview
 

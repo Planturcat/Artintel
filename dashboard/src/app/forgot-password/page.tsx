@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Mail, ArrowLeft, Shield } from 'lucide-react';
+import { Mail, ArrowLeft, Shield, Loader2 } from 'lucide-react';
 import AuthService from '@/lib/authService';
 
-export default function ForgotPasswordPage() {
+function ForgotPasswordContent() {
   // Get email from query params if coming from wrong password modal
   const searchParams = useSearchParams();
   const emailFromQuery = searchParams.get('email') || '';
@@ -196,5 +196,35 @@ export default function ForgotPasswordPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function ForgotPasswordPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex flex-col bg-[#00031b]">
+        <header className="border-b border-cyan-950 bg-[#00031b]/80 backdrop-blur-lg py-4 px-6">
+          <div className="max-w-6xl mx-auto flex justify-between items-center">
+            <div className="text-2xl font-bold text-white">
+              Artintel<span className="text-[#00cbdd]"> LLms</span>
+            </div>
+          </div>
+        </header>
+        <div className="flex-1 flex items-center justify-center px-4 py-12">
+          <div className="w-full max-w-md">
+            <div className="rounded-2xl overflow-hidden border border-cyan-950 bg-gray-900/50 backdrop-blur-lg shadow-xl p-8">
+              <div className="flex items-center justify-center mb-6">
+                <Loader2 className="h-10 w-10 text-[#00cbdd] animate-spin" />
+              </div>
+              <div className="text-center">
+                <p className="text-gray-300">Loading...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    }>
+      <ForgotPasswordContent />
+    </Suspense>
   );
 }

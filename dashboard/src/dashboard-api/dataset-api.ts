@@ -1,5 +1,5 @@
 /**
- * TypeScript API client for the ArtIntel LLMs Dataset Management
+ * TypeScript API client for the Artintel Dataset Management
  * This file provides interfaces and functions for interacting with the datasets API
  */
 

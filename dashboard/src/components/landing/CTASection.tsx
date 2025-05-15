@@ -37,7 +37,7 @@ export default function CTASection() {
             Ready to <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#00cbdd] to-blue-500">Transform</span> Your Enterprise?
           </h2>
           <p className={`text-xl max-w-3xl mx-auto ${isDark ? 'text-gray-300' : 'text-[#00031b]'}`}>
-            Choose the plan that's right for your business and start building with ArtIntel LLMs today
+            Choose the plan that's right for your business and start building with Artintel today
           </p>
         </motion.div>
 
@@ -190,7 +190,7 @@ export default function CTASection() {
             Not sure which plan is right for you?
           </h3>
           <p className={`mb-6 max-w-2xl mx-auto ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
-            Schedule a personalized demo with our team to explore how ArtIntel LLMs can meet your specific needs and requirements.
+            Schedule a personalized demo with our team to explore how Artintel can meet your specific needs and requirements.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link

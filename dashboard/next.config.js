@@ -19,7 +19,6 @@ const nextConfig = {
   output: 'standalone',
 
   // Performance optimizations
-  swcMinify: true, // Use SWC minifier for better performance
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production', // Remove console in production
   },

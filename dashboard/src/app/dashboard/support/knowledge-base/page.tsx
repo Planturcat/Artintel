@@ -61,9 +61,9 @@ const categories = [
 const articles = [
   {
     id: 'getting-started-guide',
-    title: 'Getting Started with ArtIntel LLMs',
+    title: 'Getting Started with Artintel',
     category: 'getting-started',
-    summary: 'Learn the basics of using the ArtIntel LLMs platform',
+    summary: 'Learn the basics of using the Artintel platform',
     readTime: '5 min read',
     date: '2023-10-15'
   },

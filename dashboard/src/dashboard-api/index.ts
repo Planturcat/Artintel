@@ -1,5 +1,5 @@
 /**
- * ArtIntel LLMs Dashboard API
+ * Artintel Dashboard API
  * Index file that exports all API functions and allows switching between real and mock APIs.
  */
 

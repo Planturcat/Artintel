@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Eye, EyeOff, ArrowRight, Apple, Globe, Mail, X, AlertCircle } from 'lucide-react';
+import { Eye, EyeOff, ArrowRight, Apple, Globe, Mail, X, AlertCircle, Loader2 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
@@ -103,7 +103,7 @@ const UnverifiedEmailModal: React.FC<UnverifiedEmailModalProps> = ({
   );
 };
 
-export default function LoginPage() {
+function LoginContent() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
@@ -247,7 +247,7 @@ export default function LoginPage() {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-[#00cbdd] to-[#0088ff] bg-clip-text text-transparent">Welcome Back</h1>
-          <p className="text-gray-400">Sign in to continue to ArtIntel LLMs</p>
+          <p className="text-gray-400">Sign in to continue to Artintel</p>
         </div>
 
         <div className="bg-gray-900 rounded-xl border border-gray-800 p-6 shadow-lg mb-6">
@@ -423,5 +423,25 @@ export default function LoginPage() {
         />
       )}
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-950 text-white p-4">
+        <div className="w-full max-w-md">
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-[#00cbdd] to-[#0088ff] bg-clip-text text-transparent">Welcome Back</h1>
+            <p className="text-gray-400">Loading...</p>
+          </div>
+          <div className="bg-gray-900 rounded-xl border border-gray-800 p-6 shadow-lg mb-6 flex justify-center items-center py-12">
+            <Loader2 className="h-10 w-10 text-[#00cbdd] animate-spin" />
+          </div>
+        </div>
+      </div>
+    }>
+      <LoginContent />
+    </Suspense>
   );
 }

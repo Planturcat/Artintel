@@ -7,7 +7,7 @@ import { getFineTuningJobs } from '@/dashboard-api/fine-tuning-api';
 import { getModels, Model, ModelTaskType, ModelTier } from '@/dashboard-api/model-api';
 import { DeploymentMetricsResponse, DeploymentConfig } from '@/types/deployment';
 import { FineTuningJob } from '@/dashboard-api/fine-tuning-api';
-import { Server, Cpu, Memory, Activity, Globe, GitBranch, AlertTriangle } from 'lucide-react';
+import { Server, Cpu, Activity, Globe, GitBranch, AlertTriangle, HardDrive } from 'lucide-react';
 import DashboardCard from '@/components/dashboard/DashboardCard';
 import DeploymentStatusCard from '@/components/deployment/DeploymentStatusCard';
 import RegionalMetrics from '@/components/deployment/RegionalMetrics';
@@ -60,10 +60,10 @@ export default function DeploymentPage() {
     try {
       // TODO: Implement deployment API call
       console.log('Deploying model with config:', config);
-      
+
       // Mock deployment success
       await new Promise(resolve => setTimeout(resolve, 2000));
-      
+
       // Close modal
       setIsDeployModalOpen(false);
     } catch (err) {
@@ -94,7 +94,7 @@ export default function DeploymentPage() {
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">Deployment Dashboard</h1>
-        <button 
+        <button
           onClick={() => setIsDeployModalOpen(true)}
           className="px-4 py-2 rounded-lg bg-gradient-to-r from-[#00cbdd] to-blue-500 text-white hover:from-[#00b0c0] hover:to-blue-600"
         >
@@ -146,7 +146,7 @@ export default function DeploymentPage() {
         <ResourceMonitor
           title="Memory Usage"
           value={metrics?.memoryUsage || 0}
-          icon={<Memory />}
+          icon={<HardDrive />}
           isDark={isDark}
         />
         <ResourceMonitor
@@ -187,17 +187,17 @@ export default function DeploymentPage() {
                 time: '25 minutes ago'
               }
             ].map(alert => (
-              <div 
+              <div
                 key={alert.id}
                 className={`flex items-start p-3 rounded-lg ${
-                  isDark 
-                    ? 'bg-gray-800/50' 
+                  isDark
+                    ? 'bg-gray-800/50'
                     : 'bg-gray-50'
                 }`}
               >
                 <AlertTriangle className={`h-5 w-5 mr-3 ${
-                  alert.severity === 'warning' 
-                    ? 'text-amber-500' 
+                  alert.severity === 'warning'
+                    ? 'text-amber-500'
                     : 'text-red-500'
                 }`} />
                 <div>
@@ -238,4 +238,4 @@ export default function DeploymentPage() {
       />
     </div>
   );
-} 
+}

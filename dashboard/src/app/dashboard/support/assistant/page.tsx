@@ -28,7 +28,7 @@ const initialMessages = [
   {
     id: '1',
     role: 'assistant',
-    content: "Hello! I'm your AI assistant for ArtIntel LLMs. I can help you with:\n\n• Using the platform features\n• Model selection and fine-tuning\n• Data preparation and integration\n• Deployment and monitoring\n• Troubleshooting common issues\n\nHow can I assist you today?",
+    content: "Hello! I'm your AI assistant for Artintel. I can help you with:\n\n• Using the platform features\n• Model selection and fine-tuning\n• Data preparation and integration\n• Deployment and monitoring\n• Troubleshooting common issues\n\nHow can I assist you today?",
     timestamp: new Date(Date.now() - 1000).toISOString()
   }
 ];
@@ -255,7 +255,7 @@ export default function AIAssistantPage() {
       return {
         response: `# Fine-Tuning Guide
 
-To fine-tune a model on ArtIntel LLMs:
+To fine-tune a model on Artintel:
 
 1. **Select a Base Model**: Go to Models > Fine-Tuning and choose a suitable base model. For most text tasks, we recommend starting with our medium-sized model.
 
@@ -285,9 +285,9 @@ Would you like specific guidance on any of these steps?`,
     // Subscription tiers and pricing related queries
     if (lowerQuery.includes('tier') || lowerQuery.includes('subscription') || lowerQuery.includes('pricing') || lowerQuery.includes('cost')) {
       return {
-        response: `# ArtIntel LLMs Subscription Tiers
+        response: `# Artintel Subscription Tiers
 
-ArtIntel LLMs offers three subscription tiers designed for different usage levels:
+Artintel offers three subscription tiers designed for different usage levels:
 
 ## Free Tier
 - **Models**: Access to small models (up to 1B parameters)
@@ -509,7 +509,7 @@ To provide the most helpful information, could you clarify what specific aspect 
 - Troubleshooting common issues
 - Comparing different approaches or options
 
-Feel free to rephrase your question or provide more context about what you're trying to accomplish. I'm here to help with any aspect of the ArtIntel LLMs platform.`,
+Feel free to rephrase your question or provide more context about what you're trying to accomplish. I'm here to help with any aspect of the Artintel platform.`,
       category: null
     };
   };

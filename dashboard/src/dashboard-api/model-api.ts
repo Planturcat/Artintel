@@ -1,5 +1,5 @@
 /**
- * ArtIntel LLMs Model Catalog API Client
+ * Artintel Model Catalog API Client
  * This file provides TypeScript interfaces and functions to interact with the model catalog API.
  */
 

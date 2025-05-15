@@ -8,7 +8,7 @@ import { createNewUserContext, clearTestUserContext } from './test-new-user';
 import { getMainDashboardMetrics } from './dashboard-api/main-dashboard-api';
 import { getDeployments } from './dashboard-api/deployment-api';
 import { getPipelines } from './dashboard-api/pipeline-api';
-import { getCostMetrics, getSavingRecommendations } from './dashboard-api/cost-optimization-api';
+import { costOptimizationApi } from './dashboard-api/cost-optimization-api';
 import { getDatasets } from './dashboard-api/dataset-api';
 import { getFineTuningJobs } from './dashboard-api/fine-tuning-api';
 import { getModels } from './dashboard-api/model-api';
@@ -101,8 +101,8 @@ export const testCostOptimization = async (): Promise<boolean> => {
     const user = createNewUserContext();
 
     // Get cost metrics and recommendations
-    const metrics = await getCostMetrics('last7Days');
-    const recommendations = await getSavingRecommendations();
+    const metrics = await costOptimizationApi.getCostMetrics('last7Days');
+    const recommendations = await costOptimizationApi.getSavingRecommendations();
 
     // Check that metrics are zero or empty
     const isZero =

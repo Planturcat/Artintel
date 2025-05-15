@@ -1,5 +1,5 @@
 /**
- * ArtIntel LLMs Dashboard Mock API Client
+ * Artintel Dashboard Mock API Client
  * This file provides mock implementations of the dashboard API endpoints.
  * It can be used during development and testing when the real API is not available.
  */

@@ -1,5 +1,5 @@
 /**
- * ArtIntel LLMs Dashboard API Configuration
+ * Artintel Dashboard API Configuration
  *
  * This file provides configuration for the dashboard API client.
  * It handles API base URL, mock API mode, and authentication.

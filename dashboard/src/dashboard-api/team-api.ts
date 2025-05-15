@@ -342,7 +342,7 @@ export const teamApi = {
 };
 
 /**
- * TypeScript API client for the ArtIntel LLMs Team Management
+ * TypeScript API client for the Artintel Team Management
  * This file provides interfaces and functions for interacting with the teams API
  */
 

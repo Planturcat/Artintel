@@ -23,13 +23,13 @@ import Link from 'next/link';
 const tutorials = [
   {
     id: 'intro-platform',
-    title: 'Introduction to ArtIntel LLMs Platform',
+    title: 'Introduction to Artintel Platform',
     thumbnail: '/images/tutorials/intro.jpg',
     duration: '12:45',
     date: '2023-10-15',
     category: 'Getting Started',
     instructor: 'Alex Johnson',
-    description: 'A comprehensive overview of the ArtIntel LLMs platform and its key features. This tutorial covers the dashboard layout, main functionality, and how to navigate between different sections. Perfect for new users who want to get familiar with the platform.',
+    description: 'A comprehensive overview of the Artintel platform and its key features. This tutorial covers the dashboard layout, main functionality, and how to navigate between different sections. Perfect for new users who want to get familiar with the platform.',
     videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
     views: 1245,
     likes: 89,

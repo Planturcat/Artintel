@@ -107,7 +107,7 @@ export default function AboutSection() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
           <div className="text-center mb-20">
             <span className="block text-lg font-semibold mb-3 bg-clip-text text-transparent bg-gradient-to-r from-[#00cbdd] to-blue-500">
-              About ArtIntel LLMs
+              About Artintel
             </span>
             
             <h2 className={`text-4xl md:text-5xl font-bold mb-6 ${isDark ? 'text-white' : 'text-[#00031b]'}`}>
@@ -248,7 +248,7 @@ export default function AboutSection() {
             animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
             transition={{ delay: 0.1, duration: 0.6 }}
           >
-            About ArtIntel LLMs
+            About Artintel
           </motion.span>
           
           <h2 className={`text-4xl md:text-5xl font-bold mb-6 flex flex-wrap justify-center ${isDark ? 'text-white' : 'text-[#00031b]'}`}>

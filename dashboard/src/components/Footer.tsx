@@ -122,7 +122,7 @@ export default function Footer() {
         isDark ? 'border-t border-gray-800' : 'border-t border-gray-200'
       }`}>
         <p className="text-gray-500 text-sm mb-4 md:mb-0">
-          © {new Date().getFullYear()} ArtIntel LLMs. All rights reserved.
+          © {new Date().getFullYear()} Artintel. All rights reserved.
         </p>
         <div className="flex items-center space-x-6">
           <Link href="/terms" className={`text-sm ${isDark ? 'text-gray-500 hover:text-gray-300' : 'text-gray-600 hover:text-[#00cbdd]'}`}>

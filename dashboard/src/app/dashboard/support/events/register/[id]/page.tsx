@@ -46,7 +46,7 @@ const mockEvents = [
     date: '2023-08-18T10:00:00Z',
     duration: 120, // minutes
     speakers: ['James Wilson', 'Sarah Chen'],
-    description: 'A practical, hands-on workshop where you will learn to build and deploy conversational agents using ArtIntel LLMs.',
+    description: 'A practical, hands-on workshop where you will learn to build and deploy conversational agents using Artintel.',
     longDescription: 'This intensive hands-on workshop will guide you through the entire process of building effective conversational agents using ArtIntel\'s LLM platform. From designing conversational flows to implementing context management and deployment strategies, you\'ll gain practical experience with the tools and techniques needed to create sophisticated AI assistants. Participants should come prepared with their laptops and a basic understanding of the ArtIntel platform. We\'ll provide all necessary resources and guidance throughout the session.',
     location: 'Online (Zoom)',
     maxAttendees: 100,

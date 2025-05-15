@@ -30,13 +30,13 @@ const categories = [
 const tutorials = [
   {
     id: 'intro-platform',
-    title: 'Introduction to ArtIntel LLMs Platform',
+    title: 'Introduction to Artintel Platform',
     thumbnail: '/images/tutorials/intro.jpg',
     duration: '12:45',
     date: '2023-10-15',
     category: 'Getting Started',
     instructor: 'Alex Johnson',
-    description: 'A comprehensive overview of the ArtIntel LLMs platform and its key features.'
+    description: 'A comprehensive overview of the Artintel platform and its key features.'
   },
   {
     id: 'model-selection',

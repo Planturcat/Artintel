@@ -48,9 +48,9 @@ const skillLevels = [
 const tutorials = [
   {
     id: 'tutorial-1',
-    title: 'Getting Started with ArtIntel LLMs',
+    title: 'Getting Started with Artintel',
     category: 'getting-started',
-    description: 'Learn the basics of the ArtIntel LLMs platform, set up your account, and understand the key concepts.',
+    description: 'Learn the basics of the Artintel platform, set up your account, and understand the key concepts.',
     duration: 20, // minutes
     skillLevel: 'beginner',
     steps: 5,
@@ -63,7 +63,7 @@ const tutorials = [
     id: 'tutorial-2',
     title: 'Creating Your First AI Model',
     category: 'model-basics',
-    description: 'Step-by-step guide to create, configure, and deploy your first AI model using ArtIntel LLMs.',
+    description: 'Step-by-step guide to create, configure, and deploy your first AI model using Artintel.',
     duration: 30,
     skillLevel: 'beginner',
     steps: 8,

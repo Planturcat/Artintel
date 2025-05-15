@@ -1,5 +1,5 @@
 /**
- * ArtIntel LLMs Dashboard API
+ * Artintel Dashboard API
  * This file serves as the central API client for all dashboard-related data.
  */
 

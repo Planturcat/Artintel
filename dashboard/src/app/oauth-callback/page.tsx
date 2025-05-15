@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -11,7 +11,7 @@ function Spinner({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
     md: "w-8 h-8",
     lg: "w-12 h-12"
   };
-  
+
   return (
     <div className="flex justify-center">
       <div className={`${sizeClasses[size]} border-4 border-primary border-t-transparent rounded-full animate-spin`}></div>
@@ -19,7 +19,7 @@ function Spinner({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
   );
 }
 
-export default function OAuthCallbackPage() {
+function OAuthCallbackContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [error, setError] = useState<string | null>(null);
@@ -36,16 +36,16 @@ export default function OAuthCallbackPage() {
       try {
         // Get token from URL query parameters
         const token = searchParams.get("token");
-        
+
         if (!token) {
           setError("No authentication token received");
           return;
         }
-        
+
         // Store token - Just store it in localStorage for now since we don't have
         // a setToken method directly in the useAuth hook
         localStorage.setItem("Artintel_token", token);
-        
+
         // Refresh the page or redirect to force a re-authentication using the token
         router.push("/dashboard");
       } catch (err) {
@@ -95,4 +95,21 @@ export default function OAuthCallbackPage() {
       </div>
     </div>
   );
-} 
+}
+
+export default function OAuthCallbackPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 dark:bg-gray-900">
+        <div className="text-center">
+          <h2 className="text-2xl font-semibold text-gray-800 dark:text-white mb-4">
+            Loading...
+          </h2>
+          <Spinner size="lg" />
+        </div>
+      </div>
+    }>
+      <OAuthCallbackContent />
+    </Suspense>
+  );
+}

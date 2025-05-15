@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Mail, ArrowLeft, RefreshCw } from 'lucide-react';
 import Link from 'next/link';
 import { toast } from 'react-hot-toast';
 
-export default function ConfirmationPage() {
+function ConfirmationContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const email = searchParams.get('email') || '';
@@ -17,11 +17,11 @@ export default function ConfirmationPage() {
 
   const handleResendVerification = async () => {
     if (isResending) return;
-    
+
     setIsResending(true);
     setError(null);
     setResendSuccess(false);
-    
+
     try {
       // Call the API to resend verification
       await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/resend-verification`, {
@@ -29,7 +29,7 @@ export default function ConfirmationPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email })
       });
-      
+
       setResendSuccess(true);
       toast.success('Verification email sent successfully');
     } catch (err: any) {
@@ -39,7 +39,7 @@ export default function ConfirmationPage() {
       setIsResending(false);
     }
   };
-  
+
   return (
     <div className="min-h-screen flex flex-col bg-[#00031b]">
       {/* Header */}
@@ -50,7 +50,7 @@ export default function ConfirmationPage() {
           </Link>
         </div>
       </header>
-      
+
       <div className="flex-1 flex items-center justify-center px-4 py-12">
         <div className="w-full max-w-md">
           <motion.div
@@ -65,7 +65,7 @@ export default function ConfirmationPage() {
                   <Mail className="h-10 w-10 text-[#00cbdd]" />
                 </div>
               </div>
-              
+
               <div className="text-center mb-8">
                 <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#00cbdd] to-blue-600">
                   Check Your Email
@@ -80,19 +80,19 @@ export default function ConfirmationPage() {
                   Click the link in the email to verify your account and complete the sign-up process.
                 </p>
               </div>
-              
+
               {error && (
                 <div className="bg-red-900/30 border-l-4 border-red-500 p-4 mb-6 text-red-100">
                   <p>{error}</p>
                 </div>
               )}
-              
+
               {resendSuccess && (
                 <div className="bg-green-900/30 border-l-4 border-green-500 p-4 mb-6 text-green-100">
                   <p>Verification email has been resent!</p>
                 </div>
               )}
-              
+
               <div className="space-y-4">
                 <button
                   onClick={handleResendVerification}
@@ -111,7 +111,7 @@ export default function ConfirmationPage() {
                     </>
                   )}
                 </button>
-                
+
                 <Link
                   href="/login"
                   className="flex items-center justify-center w-full px-6 py-3 border border-gray-800 bg-gray-800/50 text-white rounded-lg font-medium hover:bg-gray-800/70 transition-all duration-300"
@@ -120,7 +120,7 @@ export default function ConfirmationPage() {
                   Back to Login
                 </Link>
               </div>
-              
+
               <div className="mt-8 text-center text-sm text-gray-500">
                 <p>Don't see the email? Check your spam folder or try another email address by registering again.</p>
               </div>
@@ -130,4 +130,16 @@ export default function ConfirmationPage() {
       </div>
     </div>
   );
-} 
+}
+
+export default function ConfirmationPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex flex-col items-center justify-center bg-[#00031b]">
+        <div className="animate-pulse text-[#00cbdd]">Loading...</div>
+      </div>
+    }>
+      <ConfirmationContent />
+    </Suspense>
+  );
+}

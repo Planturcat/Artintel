@@ -1,6 +1,6 @@
 # Dashboard API
 
-This directory contains the API client for the ArtIntel LLMs dashboard. It provides a unified interface for accessing both real and mock API endpoints.
+This directory contains the API client for the Artintel dashboard. It provides a unified interface for accessing both real and mock API endpoints.
 
 ## Structure
 
