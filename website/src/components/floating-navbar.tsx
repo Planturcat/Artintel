@@ -1,19 +1,64 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import {
+    NavigationMenu,
+    NavigationMenuContent,
+    NavigationMenuItem,
+    NavigationMenuLink,
+    NavigationMenuList,
+    NavigationMenuTrigger
+} from "@/components/ui/navigation-menu";
 import { NAV_LINKS } from "@/constants";
 import { useClickOutside } from "@/hooks";
 import { cn } from "@/lib";
 import { useClerk } from "@clerk/nextjs";
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "framer-motion";
-import { MenuIcon, XIcon } from "lucide-react";
+import { BrainCircuit, ChevronDown, Cpu, LineChart, MenuIcon, Rocket, Settings, XIcon } from "lucide-react";
 import Link from "next/link";
-import { RefObject, useRef, useState } from "react";
+import React, { RefObject, useRef, useState } from "react";
 import AnimationContainer from "./global/animation-container";
 import Wrapper from "./global/wrapper";
 
-const Navbar = () => {
+// ListItem component for dropdown menus
+const ListItem = React.forwardRef<
+    React.ElementRef<typeof NavigationMenuLink>,
+    React.ComponentPropsWithoutRef<typeof NavigationMenuLink> & {
+        title: string;
+        href: string;
+        icon?: React.ComponentType<{ className?: string }>;
+        children?: React.ReactNode;
+    }
+>(({ className, title, href, icon: Icon, children, ...props }, ref) => {
+    return (
+        <li>
+            <NavigationMenuLink asChild>
+                <Link
+                    href={href}
+                    ref={ref}
+                    className={cn(
+                        "block select-none space-y-1 rounded-lg p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+                        className
+                    )}
+                    {...props}
+                >
+                    <div className="flex items-center space-x-2">
+                        {Icon && <Icon className="h-4 w-4 text-primary" />}
+                        <span className="text-sm font-medium">{title}</span>
+                    </div>
+                    {children && (
+                        <p className="line-clamp-2 text-xs text-muted-foreground mt-1">
+                            {children}
+                        </p>
+                    )}
+                </Link>
+            </NavigationMenuLink>
+        </li>
+    );
+});
+ListItem.displayName = "ListItem";
 
+const Navbar = () => {
     const { user } = useClerk();
 
     const ref = useRef<HTMLDivElement | null>(null);
@@ -70,21 +115,47 @@ const Navbar = () => {
                     </motion.div>
 
                     <div className="hidden lg:flex flex-row flex-1 absolute inset-0 items-center justify-center w-max mx-auto gap-x-2 text-sm text-muted-foreground font-medium">
-                        <AnimatePresence>
-                            {NAV_LINKS.map((link, index) => (
-                                <AnimationContainer
-                                    key={index}
-                                    animation="fadeDown"
-                                    delay={0.1 * index}
-                                >
-                                    <div className="relative">
-                                        <Link href={link.link} className="hover:text-foreground transition-all duration-500 hover:bg-accent rounded-md px-4 py-2">
-                                            {link.name}
-                                        </Link>
-                                    </div>
-                                </AnimationContainer>
-                            ))}
-                        </AnimatePresence>
+                        <NavigationMenu>
+                            <NavigationMenuList>
+                                {NAV_LINKS.map((link, index) => (
+                                    <NavigationMenuItem key={index}>
+                                        {link.submenu ? (
+                                            <>
+                                                <NavigationMenuTrigger className="hover:text-foreground transition-all duration-500 hover:bg-accent rounded-md px-4 py-2 bg-transparent">
+                                                    {link.name}
+                                                </NavigationMenuTrigger>
+                                                <NavigationMenuContent>
+                                                    <ul className="grid w-[400px] gap-3 p-4 md:grid-cols-2">
+                                                        {link.submenu.map((item, idx) => (
+                                                            <ListItem
+                                                                key={idx}
+                                                                title={item.name}
+                                                                href={item.link}
+                                                                icon={link.name === "Features" ?
+                                                                    (idx === 0 ? BrainCircuit :
+                                                                     idx === 1 ? Settings :
+                                                                     idx === 2 ? Rocket :
+                                                                     LineChart) :
+                                                                    (idx === 0 ? Cpu :
+                                                                     idx === 1 ? Cpu :
+                                                                     idx === 2 ? Cpu :
+                                                                     LineChart)}
+                                                            >
+                                                                {item.description}
+                                                            </ListItem>
+                                                        ))}
+                                                    </ul>
+                                                </NavigationMenuContent>
+                                            </>
+                                        ) : (
+                                            <Link href={link.link} className="hover:text-foreground transition-all duration-500 hover:bg-accent rounded-md px-4 py-2">
+                                                {link.name}
+                                            </Link>
+                                        )}
+                                    </NavigationMenuItem>
+                                ))}
+                            </NavigationMenuList>
+                        </NavigationMenu>
                     </div>
 
                     <AnimationContainer animation="fadeLeft" delay={0.1}>
@@ -174,13 +245,30 @@ const Navbar = () => {
                                     delay={0.1 * (idx + 1)}
                                     className="w-full"
                                 >
-                                    <Link
-                                        href={navItem.link}
-                                        onClick={() => setOpen(false)}
-                                        className="relative text-neutral-300 hover:bg-neutral-800 w-full px-4 py-2 rounded-lg"
-                                    >
-                                        <motion.span>{navItem.name}</motion.span>
-                                    </Link>
+                                    <div className="w-full">
+                                        <Link
+                                            href={navItem.link}
+                                            onClick={() => setOpen(false)}
+                                            className="relative text-neutral-300 hover:bg-neutral-800 w-full px-4 py-2 rounded-lg block"
+                                        >
+                                            <motion.span>{navItem.name}</motion.span>
+                                        </Link>
+
+                                        {navItem.submenu && (
+                                            <div className="pl-6 mt-1 space-y-1">
+                                                {navItem.submenu.map((subItem: any, subIdx: number) => (
+                                                    <Link
+                                                        key={`sublink-${subIdx}`}
+                                                        href={subItem.link}
+                                                        onClick={() => setOpen(false)}
+                                                        className="text-sm text-neutral-400 hover:text-neutral-200 hover:bg-neutral-800 w-full px-4 py-1.5 rounded-lg block"
+                                                    >
+                                                        {subItem.name}
+                                                    </Link>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
                                 </AnimationContainer>
                             ))}
                             <AnimationContainer animation="fadeUp" delay={0.5} className="w-full">
