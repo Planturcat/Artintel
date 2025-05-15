@@ -1,10 +1,16 @@
-import { clerkMiddleware } from "@clerk/nextjs/server";
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
 
-export default clerkMiddleware();
+// This function can be marked `async` if using `await` inside
+export function middleware(request: NextRequest) {
+  // Continue to the page
+  return NextResponse.next();
+}
 
+// See "Matching Paths" below to learn more
 export const config = {
-    matcher: [
-        '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
-        '/(api|trpc)(.*)',
-    ],
+  matcher: [
+    // Skip all static files
+    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)).*)',
+  ],
 };

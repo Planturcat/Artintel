@@ -1,11 +1,11 @@
 {
   "version": 2,
-  "buildCommand": "pnpm run build",
+  "buildCommand": "pnpm run vercel-build",
   "installCommand": "pnpm install --no-frozen-lockfile",
   "framework": "nextjs",
   "outputDirectory": ".next",
   "env": {
-    "NEXT_PUBLIC_APP_NAME": "Artintell",
+    "NEXT_PUBLIC_APP_NAME": "Artintel",
     "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY": "pk_test_c3VwcmVtZS1qYWd1YXItNTYuY2xlcmsuYWNjb3VudHMuZGV2JA",
     "CLERK_SECRET_KEY": "sk_test_4sBtFdFsUF7fxcXx0GHDVkE00VbYkqN0ABkunI57hV",
     "NEXT_PUBLIC_CLERK_SIGN_IN_URL": "/signin",

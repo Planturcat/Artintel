@@ -7,11 +7,18 @@ const nextConfig = {
     ignoreBuildErrors: true
   },
   reactStrictMode: true,
-  serverExternalPackages: [],
   // Disable static generation for specific pages
   experimental: {
     // Disable static generation for not-found page
-    disableStaticGeneration: true
+    appDocumentPreloading: false,
+    // Disable middleware
+    skipMiddlewareUrlNormalize: true,
+    // Disable trailing slash
+    skipTrailingSlashRedirect: true
+  },
+  // Configure images
+  images: {
+    unoptimized: true
   }
 };
 
