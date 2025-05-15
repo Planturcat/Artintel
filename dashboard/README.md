@@ -158,6 +158,63 @@ The platform includes a powerful file viewer and editor with:
 5. Use Esc to exit modes
 ```
 
+## Deployment
+
+### Deploying to Vercel
+
+The application is configured for easy deployment to Vercel. Follow these steps to deploy:
+
+#### Using the Deployment Script
+
+1. Make sure you have the Vercel CLI installed:
+```bash
+npm install -g vercel
+```
+
+2. Run the deployment script:
+```bash
+# For preview deployment
+node deploy.js
+
+# For production deployment
+node deploy.js production
+```
+
+#### Manual Deployment
+
+1. Install the Vercel CLI:
+```bash
+npm install -g vercel
+```
+
+2. Build the application:
+```bash
+npm run build
+```
+
+3. Deploy to Vercel:
+```bash
+# For preview deployment
+vercel
+
+# For production deployment
+vercel --prod
+```
+
+### Environment Variables
+
+Make sure the following environment variables are set in your Vercel project:
+
+- `NEXT_PUBLIC_APP_NAME`: The name of the application
+- `NEXT_PUBLIC_API_BASE_URL`: The base URL of the API
+- `NEXT_PUBLIC_USE_MOCK_API`: Set to "true" to use mock API data
+- `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`: Clerk publishable key
+- `CLERK_SECRET_KEY`: Clerk secret key
+- `NEXT_PUBLIC_CLERK_SIGN_IN_URL`: Clerk sign-in URL
+- `NEXT_PUBLIC_CLERK_SIGN_UP_URL`: Clerk sign-up URL
+- `NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_URL`: Clerk sign-in fallback URL
+- `NEXT_PUBLIC_CLERK_SIGN_UP_FALLBACK_URL`: Clerk sign-up fallback URL
+
 ## Contributing
 
 1. Fork the repository

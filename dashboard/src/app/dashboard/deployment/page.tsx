@@ -133,7 +133,7 @@ export default function DeploymentPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-8">
-      <h1 className={`text-2xl font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>Deployment Dashboard</h1>
+        <h1 className={`text-2xl font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>Deployment Dashboard</h1>
         <div className="flex gap-4">
           <button
             onClick={handleRefresh}
@@ -174,7 +174,7 @@ export default function DeploymentPage() {
           title="Regions"
           value={metrics?.regions.length || 0}
           icon={<Globe className="h-5 w-5" />}
-          trend={0} {/* Regions typically don't change often */}
+          trend={0} /* Regions typically don't change often */
           isDark={isDark}
         />
         <DeploymentStatusCard

@@ -122,6 +122,11 @@ export async function getDeployments(): Promise<Deployment[]> {
     // Get user context for user-specific data
     const userContext = getUserContext();
 
+    // If no user context or new user, return empty items array
+    if (!userContext || userContext.userId.startsWith('new-user')) {
+      return { items: [] };
+    }
+
     if (userContext) {
       // Generate user-specific deployments
       const deploymentCount = userContext.tier === 'free'
@@ -194,6 +199,27 @@ export async function getDeploymentMetrics(): Promise<DeploymentMetricsResponse>
   if (USE_MOCK_API) {
     // Get user context for user-specific data
     const userContext = getUserContext();
+
+    // If no user context or new user, return empty metrics
+    if (!userContext || userContext.userId.startsWith('new-user')) {
+      return {
+        totalDeployments: 0,
+        activeDeployments: 0,
+        cpuUtilization: 0,
+        memoryUsage: 0,
+        gpuUtilization: 0,
+        totalRequests: 0,
+        averageLatency: 0,
+        errorRate: 0,
+        totalDeploymentsTrend: 0,
+        activeDeploymentsTrend: 0,
+        modelVersionsTrend: 0,
+        cpuUtilizationTrend: 0,
+        memoryUsageTrend: 0,
+        gpuUtilizationTrend: 0,
+        regions: []
+      };
+    }
 
     if (userContext) {
       // Generate user-specific metrics

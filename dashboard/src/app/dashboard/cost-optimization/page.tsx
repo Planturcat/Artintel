@@ -1,15 +1,15 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { 
-  DollarSign, 
-  TrendingDown, 
-  AlertCircle, 
-  Server, 
-  HardDrive, 
-  Zap, 
+import {
+  DollarSign,
+  TrendingDown,
+  AlertCircle,
+  Server,
+  HardDrive,
+  Zap,
   Search,
   Calendar,
   BarChart3,
@@ -20,72 +20,19 @@ import {
   ChevronDown
 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import {
+  costOptimizationApi,
+  SavingRecommendation,
+  CostMetrics,
+  UsageTrends,
+  TimeRange
+} from '@/dashboard-api/cost-optimization-api';
+import { getUserContext } from '@/dashboard-api/mock-user-context';
 
-// Sample cost data
-const costData = {
-  currentSpending: 1245.87,
-  projectedSavings: 378.42,
-  savingPercentage: 30.4,
-  costBreakdown: {
-    compute: 625.45,
-    storage: 320.21,
-    models: 210.32,
-    transfer: 89.89
-  },
-  recommendedSavings: [
-    {
-      id: 1,
-      title: 'Idle GPU Instances',
-      description: 'Two GPU instances have been inactive for 7+ days',
-      savingAmount: 192.45,
-      implementation: 'medium',
-      category: 'compute'
-    },
-    {
-      id: 2,
-      title: 'Over-provisioned Storage',
-      description: 'Reduce unused storage allocation by 30%',
-      savingAmount: 96.21,
-      implementation: 'easy',
-      category: 'storage'
-    },
-    {
-      id: 3,
-      title: 'Right-size Model Deployments',
-      description: 'Use smaller models for low-complexity tasks',
-      savingAmount: 64.76,
-      implementation: 'complex',
-      category: 'models'
-    },
-    {
-      id: 4,
-      title: 'Batch Processing Opportunity',
-      description: 'Convert real-time to batch processing for non-urgent tasks',
-      savingAmount: 25.00,
-      implementation: 'medium',
-      category: 'compute'
-    }
-  ],
-  dailyCosts: [
-    { date: '2023-07-01', cost: 42.12 },
-    { date: '2023-07-02', cost: 40.87 },
-    { date: '2023-07-03', cost: 45.23 },
-    { date: '2023-07-04', cost: 39.76 },
-    { date: '2023-07-05', cost: 41.34 },
-    { date: '2023-07-06', cost: 43.56 },
-    { date: '2023-07-07', cost: 44.89 }
-  ]
-};
+// We'll use the API instead of hardcoded data
 
-// Add interfaces for type safety
-interface SavingRecommendation {
-  id: number;
-  title: string;
-  description: string;
-  savingAmount: number;
-  implementation: 'easy' | 'medium' | 'complex';
-  category: 'compute' | 'storage' | 'models' | 'transfer';
-  implemented?: boolean;
+// Add interfaces for our local state
+interface LocalSavingRecommendation extends SavingRecommendation {
   implementing?: boolean;
 }
 
@@ -94,13 +41,49 @@ export default function CostOptimizationPage() {
   const { t } = useLanguage();
   const isDark = theme === 'dark';
   const [searchQuery, setSearchQuery] = useState('');
-  const [timeRange, setTimeRange] = useState('lastSevenDays');
-  const [recommendations, setRecommendations] = useState<SavingRecommendation[]>(
-    costData.recommendedSavings as SavingRecommendation[]
-  );
+  const [timeRange, setTimeRange] = useState<TimeRange>('last7Days');
+  const [recommendations, setRecommendations] = useState<LocalSavingRecommendation[]>([]);
+  const [costMetrics, setCostMetrics] = useState<CostMetrics | null>(null);
+  const [usageTrends, setUsageTrends] = useState<UsageTrends | null>(null);
   const [implementedSavings, setImplementedSavings] = useState(0);
-  const [showImplementationModal, setShowImplementationModal] = useState<number | null>(null);
-  
+  const [showImplementationModal, setShowImplementationModal] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [user, setUser] = useState(getUserContext());
+
+  // Fetch data from API
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        // Fetch cost metrics and recommendations in parallel
+        const [metricsData, recommendationsData, trendsData] = await Promise.all([
+          costOptimizationApi.getCostMetrics(timeRange),
+          costOptimizationApi.getSavingRecommendations(),
+          costOptimizationApi.getUsageTrends(timeRange)
+        ]);
+
+        setCostMetrics(metricsData);
+        setRecommendations(recommendationsData as LocalSavingRecommendation[]);
+        setUsageTrends(trendsData);
+
+        // Calculate implemented savings
+        const implementedRecs = recommendationsData.filter(rec => rec.status === 'implemented');
+        const totalImplementedSavings = implementedRecs.reduce((sum, rec) => sum + rec.savingAmount, 0);
+        setImplementedSavings(totalImplementedSavings);
+      } catch (err) {
+        console.error('Error fetching cost optimization data:', err);
+        setError('Failed to load cost optimization data. Please try again later.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [timeRange]);
+
   // Helper function to format currency
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -109,16 +92,16 @@ export default function CostOptimizationPage() {
       minimumFractionDigits: 2
     }).format(amount);
   };
-  
+
   // Filter recommendations based on search
-  const filteredRecommendations = recommendations.filter(item => 
-    item.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+  const filteredRecommendations = recommendations.filter(item =>
+    item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     item.description.toLowerCase().includes(searchQuery.toLowerCase())
   );
-  
+
   // Get implementation style
-  const getImplementationStyle = (implementation: string) => {
-    switch(implementation) {
+  const getImplementationStyle = (difficulty: string) => {
+    switch(difficulty) {
       case 'easy':
         return isDark ? 'text-green-400' : 'text-green-600';
       case 'medium':
@@ -129,7 +112,7 @@ export default function CostOptimizationPage() {
         return '';
     }
   };
-  
+
   // Get category icon
   const getCategoryIcon = (category: string) => {
     switch(category) {
@@ -143,56 +126,71 @@ export default function CostOptimizationPage() {
         return <DollarSign className="h-4 w-4" />;
     }
   };
-  
+
   // Implement a saving recommendation
-  const implementSaving = (id: number) => {
+  const implementSaving = (id: string) => {
     setShowImplementationModal(id);
   };
-  
+
   // Confirm implementation of a saving recommendation
-  const confirmImplementation = (id: number) => {
-    setRecommendations(prevRecommendations => 
-      prevRecommendations.map(rec => 
-        rec.id === id 
-          ? { ...rec, implementing: true } 
+  const confirmImplementation = async (id: string) => {
+    // Mark as implementing in UI
+    setRecommendations(prevRecommendations =>
+      prevRecommendations.map(rec =>
+        rec.id === id
+          ? { ...rec, implementing: true }
           : rec
       )
     );
-    
-    // Simulate API call
-    setTimeout(() => {
-      setRecommendations(prevRecommendations => 
-        prevRecommendations.map(rec => 
-          rec.id === id 
-            ? { ...rec, implementing: false, implemented: true } 
+
+    try {
+      // Call API to implement recommendation
+      const updatedRecommendation = await costOptimizationApi.implementRecommendation(id);
+
+      if (updatedRecommendation) {
+        // Update recommendations list with the implemented recommendation
+        setRecommendations(prevRecommendations =>
+          prevRecommendations.map(rec =>
+            rec.id === id
+              ? { ...rec, implementing: false, status: updatedRecommendation.status }
+              : rec
+          )
+        );
+
+        // Update implemented savings amount if status is now implemented
+        if (updatedRecommendation.status === 'implemented') {
+          setImplementedSavings(prev => prev + updatedRecommendation.savingAmount);
+        }
+      }
+    } catch (err) {
+      console.error('Error implementing recommendation:', err);
+      // Revert UI state on error
+      setRecommendations(prevRecommendations =>
+        prevRecommendations.map(rec =>
+          rec.id === id
+            ? { ...rec, implementing: false }
             : rec
         )
       );
-      
-      // Update implemented savings amount
-      const recommendation = recommendations.find(rec => rec.id === id);
-      if (recommendation) {
-        setImplementedSavings(prev => prev + recommendation.savingAmount);
-      }
-      
+    } finally {
       setShowImplementationModal(null);
-    }, 1500);
+    }
   };
-  
+
   // Implementation Modal
-  const ImplementationModal = ({ id }: { id: number }) => {
+  const ImplementationModal = ({ id }: { id: string }) => {
     const recommendation = recommendations.find(rec => rec.id === id);
     if (!recommendation) return null;
-    
+
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
-        <div 
-          className="absolute inset-0 bg-black/50 backdrop-blur-sm" 
+        <div
+          className="absolute inset-0 bg-black/50 backdrop-blur-sm"
           onClick={() => setShowImplementationModal(null)}
         />
-        <motion.div 
+        <motion.div
           className={`relative w-full max-w-md p-6 rounded-xl shadow-lg ${
-            isDark 
+            isDark
               ? 'bg-[#00031b]/95 border border-[#00cbdd]/20'
               : 'bg-white border border-gray-200'
           }`}
@@ -204,7 +202,7 @@ export default function CostOptimizationPage() {
             <h3 className={`text-xl font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
               {t('implementSavings')}
             </h3>
-            <button 
+            <button
               onClick={() => setShowImplementationModal(null)}
               className={`p-1 rounded-full ${
                 isDark ? 'hover:bg-[#00cbdd]/10 text-gray-400' : 'hover:bg-gray-100 text-gray-500'
@@ -213,7 +211,7 @@ export default function CostOptimizationPage() {
               <ChevronDown className="h-5 w-5" />
             </button>
           </div>
-          
+
           <div className="mb-6">
             <div className={`flex items-center mb-2 text-lg font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
               {getCategoryIcon(recommendation.category)}
@@ -235,18 +233,34 @@ export default function CostOptimizationPage() {
                 <span className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
                   {t('difficulty')}:
                 </span>
-                <span className={`ml-2 font-medium ${getImplementationStyle(recommendation.implementation)}`}>
-                  {recommendation.implementation.charAt(0).toUpperCase() + recommendation.implementation.slice(1)}
+                <span className={`ml-2 font-medium ${getImplementationStyle(recommendation.implementationDifficulty)}`}>
+                  {recommendation.implementationDifficulty.charAt(0).toUpperCase() + recommendation.implementationDifficulty.slice(1)}
                 </span>
               </div>
             </div>
+            {recommendation.impact && (
+              <div className="mt-3">
+                <span className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                  {t('impact')}:
+                </span>
+                <span className={`ml-2 font-medium ${
+                  recommendation.impact === 'high'
+                    ? isDark ? 'text-green-400' : 'text-green-600'
+                    : recommendation.impact === 'medium'
+                      ? isDark ? 'text-yellow-400' : 'text-yellow-600'
+                      : isDark ? 'text-blue-400' : 'text-blue-600'
+                }`}>
+                  {recommendation.impact.charAt(0).toUpperCase() + recommendation.impact.slice(1)}
+                </span>
+              </div>
+            )}
           </div>
-          
+
           <div className="flex justify-end gap-3">
             <button
               onClick={() => setShowImplementationModal(null)}
               className={`px-4 py-2 rounded-lg ${
-                isDark 
+                isDark
                   ? 'bg-gray-800 text-gray-200 hover:bg-gray-700'
                   : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
               }`}
@@ -265,7 +279,7 @@ export default function CostOptimizationPage() {
       </div>
     );
   };
-  
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -278,12 +292,12 @@ export default function CostOptimizationPage() {
             {t('optimizeResourceUsage')}
           </p>
         </div>
-        
+
         <div className="flex gap-2">
           <motion.button
             className={`flex items-center px-4 py-2 rounded-lg border ${
-              isDark 
-                ? 'border-[#00cbdd]/30 text-white hover:bg-[#00cbdd]/10' 
+              isDark
+                ? 'border-[#00cbdd]/30 text-white hover:bg-[#00cbdd]/10'
                 : 'border-blue-300 text-blue-700 hover:bg-blue-50'
             } transition-all duration-200`}
             whileHover={{ scale: 1.02 }}
@@ -292,7 +306,7 @@ export default function CostOptimizationPage() {
             <Download className="h-4 w-4 mr-2" />
             {t('downloadReport')}
           </motion.button>
-          
+
           <motion.button
             className="flex items-center px-4 py-2 bg-gradient-to-r from-[#00cbdd] to-blue-500 text-white rounded-lg hover:opacity-90 transition-all duration-200"
             whileHover={{ scale: 1.02 }}
@@ -303,7 +317,7 @@ export default function CostOptimizationPage() {
           </motion.button>
         </div>
       </div>
-      
+
       {/* Overview Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* Current Spending */}
@@ -312,7 +326,7 @@ export default function CostOptimizationPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
           className={`p-5 rounded-xl ${
-            isDark 
+            isDark
               ? 'bg-[#00031b]/90 border border-[#00cbdd]/20'
               : 'bg-white border border-gray-200'
           }`}
@@ -323,10 +337,20 @@ export default function CostOptimizationPage() {
                 {t('currentSpending')}
               </p>
               <h3 className={`mt-2 text-2xl font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                {formatCurrency(costData.currentSpending)}
+                {isLoading
+                  ? "..."
+                  : costMetrics
+                    ? formatCurrency(costMetrics.currentSpending)
+                    : formatCurrency(0)
+                }
               </h3>
               <p className={`mt-1 text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
-                {t('lastThirtyDays')}
+                {timeRange === 'last7Days'
+                  ? t('lastSevenDays')
+                  : timeRange === 'last30Days'
+                    ? t('lastThirtyDays')
+                    : t('lastNinetyDays')
+                }
               </p>
             </div>
             <div className={`p-3 rounded-full ${
@@ -336,14 +360,14 @@ export default function CostOptimizationPage() {
             </div>
           </div>
         </motion.div>
-        
+
         {/* Projected Savings */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.1 }}
           className={`p-5 rounded-xl ${
-            isDark 
+            isDark
               ? 'bg-[#00031b]/90 border border-[#00cbdd]/20'
               : 'bg-white border border-gray-200'
           }`}
@@ -354,10 +378,21 @@ export default function CostOptimizationPage() {
                 {t('projectedSavings')}
               </p>
               <h3 className={`mt-2 text-2xl font-semibold ${isDark ? 'text-green-400' : 'text-green-600'}`}>
-                {formatCurrency(costData.projectedSavings)}
+                {isLoading
+                  ? "..."
+                  : recommendations.length > 0
+                    ? formatCurrency(recommendations.reduce((sum, rec) =>
+                        rec.status !== 'implemented' ? sum + rec.savingAmount : sum, 0))
+                    : formatCurrency(0)
+                }
               </h3>
               <p className={`mt-1 text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
-                {costData.savingPercentage}% {t('saving')}
+                {isLoading || !costMetrics || costMetrics.currentSpending === 0
+                  ? "0%"
+                  : `${Math.round((recommendations.reduce((sum, rec) =>
+                      rec.status !== 'implemented' ? sum + rec.savingAmount : sum, 0) /
+                      costMetrics.currentSpending) * 100)}% ${t('saving')}`
+                }
               </p>
             </div>
             <div className={`p-3 rounded-full ${
@@ -367,14 +402,14 @@ export default function CostOptimizationPage() {
             </div>
           </div>
         </motion.div>
-        
+
         {/* Implemented Savings / Budget Alert */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.2 }}
           className={`p-5 rounded-xl ${
-            isDark 
+            isDark
               ? 'bg-[#00031b]/90 border border-[#00cbdd]/20'
               : 'bg-white border border-gray-200'
           }`}
@@ -385,19 +420,28 @@ export default function CostOptimizationPage() {
                 {implementedSavings > 0 ? t('implementedSavings') : t('budgetTracking')}
               </p>
               <h3 className={`mt-2 text-2xl font-semibold ${
-                implementedSavings > 0 
+                implementedSavings > 0
                   ? (isDark ? 'text-blue-400' : 'text-blue-600')
                   : (isDark ? 'text-amber-400' : 'text-amber-600')
               }`}>
-                {implementedSavings > 0 
-                  ? formatCurrency(implementedSavings)
-                  : '83%'
+                {isLoading
+                  ? "..."
+                  : implementedSavings > 0
+                    ? formatCurrency(implementedSavings)
+                    : costMetrics && costMetrics.projectedSpending > 0
+                      ? `${Math.round((costMetrics.currentSpending / costMetrics.projectedSpending) * 100)}%`
+                      : '0%'
                 }
               </h3>
               <p className={`mt-1 text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
-                {implementedSavings > 0 
-                  ? `${Math.round((implementedSavings / costData.projectedSavings) * 100)}% ${t('of')} ${t('projectedSavings')}`
-                  : t('of') + ' ' + t('monthlyBudget')
+                {isLoading
+                  ? "..."
+                  : implementedSavings > 0
+                    ? `${recommendations.length > 0
+                        ? `${Math.round((implementedSavings / (implementedSavings + recommendations.reduce((sum, rec) =>
+                            rec.status !== 'implemented' ? sum + rec.savingAmount : sum, 0))) * 100)}%`
+                        : '100%'} ${t('of')} ${t('projectedSavings')}`
+                    : t('of') + ' ' + t('monthlyBudget')
                 }
               </p>
             </div>
@@ -406,7 +450,7 @@ export default function CostOptimizationPage() {
                 ? (isDark ? 'bg-blue-500/10' : 'bg-blue-100')
                 : (isDark ? 'bg-amber-500/10' : 'bg-amber-100')
             }`}>
-              {implementedSavings > 0 
+              {implementedSavings > 0
                 ? <Activity className={`h-5 w-5 ${isDark ? 'text-blue-400' : 'text-blue-600'}`} />
                 : <AlertCircle className={`h-5 w-5 ${isDark ? 'text-amber-400' : 'text-amber-600'}`} />
               }
@@ -414,22 +458,22 @@ export default function CostOptimizationPage() {
           </div>
         </motion.div>
       </div>
-      
+
       {/* Main Content Area */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Column: Savings Recommendations */}
         <div className="lg:col-span-2 space-y-6">
           {/* Savings Recommendations */}
           <div className={`p-6 rounded-xl ${
-            isDark 
+            isDark
               ? 'bg-[#00031b]/90 border border-[#00cbdd]/20'
               : 'bg-white border border-gray-200'
           }`}>
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
               <h2 className={`text-xl font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                {t('savingsRecommendations')}
+                {user ? `${user.firstName}'s ${t('savingsRecommendations')}` : t('savingsRecommendations')}
               </h2>
-              
+
               <div className="mt-3 sm:mt-0 relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Search className="h-4 w-4 text-gray-400" />
@@ -438,7 +482,7 @@ export default function CostOptimizationPage() {
                   type="text"
                   placeholder={t('search')}
                   className={`pl-10 pr-4 py-2 rounded-lg ${
-                    isDark 
+                    isDark
                       ? 'bg-[#000426] border border-[#00cbdd]/20 text-white placeholder-gray-500'
                       : 'bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-500'
                   } focus:outline-none focus:ring-2 focus:ring-[#00cbdd] w-full sm:w-auto`}
@@ -447,7 +491,7 @@ export default function CostOptimizationPage() {
                 />
               </div>
             </div>
-            
+
             <div className="space-y-4">
               {filteredRecommendations.length > 0 ? (
                 filteredRecommendations.map((recommendation) => (
@@ -457,13 +501,17 @@ export default function CostOptimizationPage() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.2 }}
                     className={`p-4 rounded-lg ${
-                      recommendation.implemented
-                        ? isDark 
+                      recommendation.status === 'implemented'
+                        ? isDark
                           ? 'bg-[#000426]/80 border border-blue-500/30'
                           : 'bg-blue-50 border border-blue-200'
-                        : isDark 
-                          ? 'bg-[#000426] border border-[#00cbdd]/10'
-                          : 'bg-gray-50 border border-gray-200'
+                        : recommendation.status === 'in_progress'
+                          ? isDark
+                            ? 'bg-[#000426]/80 border border-[#00cbdd]/30'
+                            : 'bg-cyan-50 border border-cyan-200'
+                          : isDark
+                            ? 'bg-[#000426] border border-[#00cbdd]/10'
+                            : 'bg-gray-50 border border-gray-200'
                     } hover:border-[#00cbdd]/30 transition-all duration-200`}
                   >
                     <div className="flex items-start justify-between">
@@ -478,40 +526,46 @@ export default function CostOptimizationPage() {
                             {recommendation.title}
                           </h3>
                         </div>
-                        
+
                         <p className={`text-sm mb-3 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
                           {recommendation.description}
                         </p>
-                        
+
                         <div className="flex items-center">
                           <span className={`text-sm font-medium ${isDark ? 'text-green-400' : 'text-green-600'}`}>
                             {formatCurrency(recommendation.savingAmount)}
                           </span>
                           <span className={`mx-2 text-xs ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>•</span>
-                          <span className={`text-xs ${getImplementationStyle(recommendation.implementation)}`}>
-                            {recommendation.implementation.charAt(0).toUpperCase() + recommendation.implementation.slice(1)} {t('implementation')}
+                          <span className={`text-xs ${getImplementationStyle(recommendation.implementationDifficulty)}`}>
+                            {recommendation.implementationDifficulty.charAt(0).toUpperCase() + recommendation.implementationDifficulty.slice(1)} {t('implementation')}
                           </span>
                         </div>
                       </div>
-                      
+
                       <div>
-                        {recommendation.implemented ? (
+                        {recommendation.status === 'implemented' ? (
                           <div className={`px-3 py-1.5 rounded-lg text-xs font-medium ${
                             isDark ? 'bg-blue-500/20 text-blue-400' : 'bg-blue-100 text-blue-700'
                           }`}>
                             {t('implemented')}
                           </div>
-                        ) : recommendation.implementing ? (
+                        ) : recommendation.status === 'in_progress' || recommendation.implementing ? (
                           <div className="flex items-center px-3 py-1.5 rounded-lg bg-[#00cbdd]/20 text-[#00cbdd] text-xs font-medium">
                             <div className="w-3 h-3 border-2 border-[#00cbdd] border-t-transparent rounded-full animate-spin mr-1"></div>
                             {t('implementing')}
+                          </div>
+                        ) : recommendation.status === 'declined' ? (
+                          <div className={`px-3 py-1.5 rounded-lg text-xs font-medium ${
+                            isDark ? 'bg-red-500/20 text-red-400' : 'bg-red-100 text-red-700'
+                          }`}>
+                            {t('declined')}
                           </div>
                         ) : (
                           <button
                             onClick={() => implementSaving(recommendation.id)}
                             className={`px-3 py-1.5 rounded-lg text-xs font-medium ${
-                              isDark 
-                                ? 'bg-[#00cbdd]/20 text-[#00cbdd] hover:bg-[#00cbdd]/30' 
+                              isDark
+                                ? 'bg-[#00cbdd]/20 text-[#00cbdd] hover:bg-[#00cbdd]/30'
                                 : 'bg-blue-100 text-blue-700 hover:bg-blue-200'
                             } transition-colors duration-200`}
                           >
@@ -524,7 +578,7 @@ export default function CostOptimizationPage() {
                 ))
               ) : (
                 <div className={`p-6 text-center rounded-lg ${
-                  isDark 
+                  isDark
                     ? 'bg-[#000426] border border-[#00cbdd]/10'
                     : 'bg-gray-50 border border-gray-200'
                 }`}>
@@ -535,25 +589,25 @@ export default function CostOptimizationPage() {
               )}
             </div>
           </div>
-          
+
           {/* Implementation Modal */}
           {showImplementationModal !== null && (
             <ImplementationModal id={showImplementationModal} />
           )}
         </div>
-        
+
         {/* Right Column: Cost Breakdown */}
         <div className="space-y-6">
           {/* Cost Breakdown */}
           <div className={`p-6 rounded-xl ${
-            isDark 
+            isDark
               ? 'bg-[#00031b]/90 border border-[#00cbdd]/20'
               : 'bg-white border border-gray-200'
           }`}>
             <h2 className={`text-xl font-semibold mb-6 ${isDark ? 'text-white' : 'text-gray-900'}`}>
               {t('costBreakdown')}
             </h2>
-            
+
             <div className="space-y-4">
               <div className={`p-4 rounded-lg ${isDark ? 'bg-[#000426]' : 'bg-gray-50'}`}>
                 <div className="flex items-center justify-between mb-2">
@@ -564,17 +618,27 @@ export default function CostOptimizationPage() {
                     </span>
                   </div>
                   <span className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                    {formatCurrency(costData.costBreakdown.compute)}
+                    {isLoading
+                      ? "..."
+                      : costMetrics && costMetrics.breakdown
+                        ? formatCurrency(costMetrics.breakdown.compute)
+                        : formatCurrency(0)
+                    }
                   </span>
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
-                  <div 
-                    className="bg-gradient-to-r from-[#00cbdd] to-blue-500 h-2.5 rounded-full" 
-                    style={{ width: `${(costData.costBreakdown.compute / costData.currentSpending) * 100}%` }}
+                  <div
+                    className="bg-gradient-to-r from-[#00cbdd] to-blue-500 h-2.5 rounded-full"
+                    style={{ width: `${isLoading || !costMetrics || !costMetrics.breakdown
+                      ? 0
+                      : costMetrics.breakdown.total > 0
+                        ? (costMetrics.breakdown.compute / costMetrics.breakdown.total) * 100
+                        : 0}%`
+                    }}
                   ></div>
                 </div>
               </div>
-              
+
               <div className={`p-4 rounded-lg ${isDark ? 'bg-[#000426]' : 'bg-gray-50'}`}>
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center">
@@ -584,17 +648,27 @@ export default function CostOptimizationPage() {
                     </span>
                   </div>
                   <span className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                    {formatCurrency(costData.costBreakdown.storage)}
+                    {isLoading
+                      ? "..."
+                      : costMetrics && costMetrics.breakdown
+                        ? formatCurrency(costMetrics.breakdown.storage)
+                        : formatCurrency(0)
+                    }
                   </span>
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
-                  <div 
-                    className="bg-gradient-to-r from-[#00cbdd] to-blue-500 h-2.5 rounded-full" 
-                    style={{ width: `${(costData.costBreakdown.storage / costData.currentSpending) * 100}%` }}
+                  <div
+                    className="bg-gradient-to-r from-[#00cbdd] to-blue-500 h-2.5 rounded-full"
+                    style={{ width: `${isLoading || !costMetrics || !costMetrics.breakdown
+                      ? 0
+                      : costMetrics.breakdown.total > 0
+                        ? (costMetrics.breakdown.storage / costMetrics.breakdown.total) * 100
+                        : 0}%`
+                    }}
                   ></div>
                 </div>
               </div>
-              
+
               <div className={`p-4 rounded-lg ${isDark ? 'bg-[#000426]' : 'bg-gray-50'}`}>
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center">
@@ -604,17 +678,27 @@ export default function CostOptimizationPage() {
                     </span>
                   </div>
                   <span className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                    {formatCurrency(costData.costBreakdown.models)}
+                    {isLoading
+                      ? "..."
+                      : costMetrics && costMetrics.breakdown
+                        ? formatCurrency(costMetrics.breakdown.models)
+                        : formatCurrency(0)
+                    }
                   </span>
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
-                  <div 
-                    className="bg-gradient-to-r from-[#00cbdd] to-blue-500 h-2.5 rounded-full" 
-                    style={{ width: `${(costData.costBreakdown.models / costData.currentSpending) * 100}%` }}
+                  <div
+                    className="bg-gradient-to-r from-[#00cbdd] to-blue-500 h-2.5 rounded-full"
+                    style={{ width: `${isLoading || !costMetrics || !costMetrics.breakdown
+                      ? 0
+                      : costMetrics.breakdown.total > 0
+                        ? (costMetrics.breakdown.models / costMetrics.breakdown.total) * 100
+                        : 0}%`
+                    }}
                   ></div>
                 </div>
               </div>
-              
+
               <div className={`p-4 rounded-lg ${isDark ? 'bg-[#000426]' : 'bg-gray-50'}`}>
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center">
@@ -624,13 +708,23 @@ export default function CostOptimizationPage() {
                     </span>
                   </div>
                   <span className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                    {formatCurrency(costData.costBreakdown.transfer)}
+                    {isLoading
+                      ? "..."
+                      : costMetrics && costMetrics.breakdown
+                        ? formatCurrency(costMetrics.breakdown.transfer)
+                        : formatCurrency(0)
+                    }
                   </span>
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
-                  <div 
-                    className="bg-gradient-to-r from-[#00cbdd] to-blue-500 h-2.5 rounded-full" 
-                    style={{ width: `${(costData.costBreakdown.transfer / costData.currentSpending) * 100}%` }}
+                  <div
+                    className="bg-gradient-to-r from-[#00cbdd] to-blue-500 h-2.5 rounded-full"
+                    style={{ width: `${isLoading || !costMetrics || !costMetrics.breakdown
+                      ? 0
+                      : costMetrics.breakdown.total > 0
+                        ? (costMetrics.breakdown.transfer / costMetrics.breakdown.total) * 100
+                        : 0}%`
+                    }}
                   ></div>
                 </div>
               </div>
@@ -640,4 +734,4 @@ export default function CostOptimizationPage() {
       </div>
     </div>
   );
-} 
+}

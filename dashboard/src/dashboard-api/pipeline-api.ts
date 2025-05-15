@@ -8,6 +8,7 @@ import {
   PipelineConnection
 } from '@/types/pipeline';
 import { mockData } from './mock-utils';
+import { getUserContext } from '@/dashboard-api/mock-user-context';
 
 // Mock Pipelines Data
 const mockPipelines: Pipeline[] = [
@@ -548,6 +549,14 @@ const mockMetrics: PipelineMetrics = {
  * Get all pipelines
  */
 export const getPipelines = async (): Promise<Pipeline[]> => {
+  // Get user context for user-specific data
+  const userContext = getUserContext();
+
+  // If no user context or new user, return empty items array
+  if (!userContext || userContext.userId.startsWith('new-user')) {
+    return { items: [] };
+  }
+
   return mockData(mockPipelines);
 };
 
@@ -573,7 +582,7 @@ export const createPipeline = async (data: {
 }): Promise<Pipeline> => {
   let components: PipelineComponent[] = [];
   let connections: PipelineConnection[] = [];
-  
+
   // If template is provided, copy components and connections from template
   if (data.templateId) {
     const template = mockTemplates.find(t => t.id === data.templateId);
@@ -582,7 +591,7 @@ export const createPipeline = async (data: {
       connections = [...template.connections];
     }
   }
-  
+
   const newPipeline: Pipeline = {
     id: `pipeline-${Date.now()}`,
     name: data.name,
@@ -596,10 +605,10 @@ export const createPipeline = async (data: {
     executionCount: 0,
     tags: data.tags || []
   };
-  
+
   // In a real app, we would save to the database here
   mockPipelines.push(newPipeline);
-  
+
   return mockData(newPipeline);
 };
 
@@ -614,15 +623,15 @@ export const updatePipeline = async (
   if (pipelineIndex === -1) {
     throw new Error(`Pipeline with ID ${id} not found`);
   }
-  
+
   const updatedPipeline = {
     ...mockPipelines[pipelineIndex],
     ...updates,
     updatedAt: new Date().toISOString()
   };
-  
+
   mockPipelines[pipelineIndex] = updatedPipeline;
-  
+
   return mockData(updatedPipeline);
 };
 
@@ -644,9 +653,9 @@ export const deletePipeline = async (id: string): Promise<void> => {
   if (pipelineIndex === -1) {
     throw new Error(`Pipeline with ID ${id} not found`);
   }
-  
+
   mockPipelines.splice(pipelineIndex, 1);
-  
+
   return mockData(undefined);
 };
 
@@ -661,17 +670,17 @@ export const executePipeline = async (
   if (!pipeline) {
     throw new Error(`Pipeline with ID ${id} not found`);
   }
-  
+
   if (pipeline.status !== 'active') {
     throw new Error(`Pipeline is not active`);
   }
-  
+
   // Simulate pipeline execution
   await new Promise(resolve => setTimeout(resolve, 1500));
-  
+
   // Generate a sample result based on the pipeline type
   let output: any;
-  
+
   if (pipeline.name.includes('Sentiment') || pipeline.name.includes('Classification')) {
     output = {
       sentiment: Math.random() > 0.5 ? 'positive' : 'negative',
@@ -691,7 +700,7 @@ export const executePipeline = async (
       processingTime: Math.floor(Math.random() * 1000) + 100
     };
   }
-  
+
   const execution: PipelineExecution = {
     id: `exec-${Date.now()}`,
     pipelineId: id,
@@ -703,13 +712,13 @@ export const executePipeline = async (
       output
     }
   };
-  
+
   // Update execution count
   const pipelineIndex = mockPipelines.findIndex(p => p.id === id);
   if (pipelineIndex !== -1) {
     mockPipelines[pipelineIndex].executionCount = (mockPipelines[pipelineIndex].executionCount || 0) + 1;
   }
-  
+
   return mockData(execution);
 };
 
@@ -717,6 +726,24 @@ export const executePipeline = async (
  * Get pipeline metrics
  */
 export const getPipelineMetrics = async (): Promise<PipelineMetrics> => {
+  // Get user context for user-specific data
+  const userContext = getUserContext();
+
+  // If no user context or new user, return empty metrics
+  if (!userContext || userContext.userId.startsWith('new-user')) {
+    return mockData({
+      totalPipelines: 0,
+      activePipelines: 0,
+      totalExecutions: 0,
+      totalModelsUsed: 0,
+      pipelineTrend: 0,
+      activeTrend: 0,
+      executionTrend: 0,
+      recentExecutions: [],
+      popularModels: []
+    });
+  }
+
   return mockData(mockMetrics);
 };
 
@@ -725,4 +752,4 @@ export const getPipelineMetrics = async (): Promise<PipelineMetrics> => {
  */
 export const getPipelineTemplates = async (): Promise<PipelineTemplate[]> => {
   return mockData(mockTemplates);
-}; 
+};

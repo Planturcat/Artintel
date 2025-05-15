@@ -408,6 +408,27 @@ export const costOptimizationApi = {
     // Get user context for user-specific data
     const userContext = getUserContext();
 
+    // If no user context or new user, return zero values
+    if (!userContext || userContext.userId.startsWith('new-user')) {
+      return {
+        currentSpending: 0,
+        projectedSpending: 0,
+        previousPeriodSpending: 0,
+        changePercentage: 0,
+        trendDirection: 'stable',
+        forecastAccuracy: 0,
+        breakdown: {
+          compute: 0,
+          storage: 0,
+          models: 0,
+          transfer: 0,
+          total: 0
+        },
+        averageDailyCost: 0,
+        peakDailyCost: 0
+      };
+    }
+
     if (userContext) {
       // Generate user-specific cost metrics based on user tier
       const baseSpending = userContext.tier === 'free'
@@ -591,6 +612,11 @@ export const costOptimizationApi = {
 
     // Get user context for user-specific data
     const userContext = getUserContext();
+
+    // If no user context or new user, return empty array
+    if (!userContext || userContext.userId.startsWith('new-user')) {
+      return [];
+    }
 
     if (userContext) {
       // Base spending amount based on user tier
@@ -915,6 +941,11 @@ export const costOptimizationApi = {
 
     // Get user context for user-specific data
     const userContext = getUserContext();
+
+    // If no user context or new user, return empty array
+    if (!userContext || userContext.userId.startsWith('new-user')) {
+      return [];
+    }
 
     if (userContext) {
       // Number of resources based on user tier

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { PlusCircle, RefreshCw } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import TrainingJobList from '@/components/fine-tuning/TrainingJobList';
@@ -15,150 +16,9 @@ import { FineTuningJob, JobStatus } from '@/types/fine-tuning';
 import { Model, ModelTaskType, ModelTier, ModelType, ModelFramework } from '@/dashboard-api/model-api';
 import { Dataset, DatasetType, DatasetFormat, DatasetSource, DatasetStatus, DatasetPrivacy } from '@/dashboard-api/dataset-api';
 import { useAuth } from '@/contexts/AuthContext';
+import { getUserContext, getUserTierMultiplier } from '@/dashboard-api/mock-user-context';
 
-// Define consistent IDs for the mock models
-const mockModels: Model[] = [
-  { 
-    id: 'gpt-4',
-    name: 'GPT-4',
-    displayName: 'GPT-4',
-    version: '1.0.0',
-    modelType: ModelType.LLM,
-    framework: ModelFramework.TRANSFORMERS,
-    taskType: ModelTaskType.TEXT_GENERATION,
-    tier: ModelTier.PRO,
-    description: 'Advanced language model for text generation',
-    parameters: '175B' as any, // Fix type
-    modelSize: '350GB' as any, // Fix type
-    license: 'proprietary',
-    author: 'OpenAI',
-    creator: 'OpenAI',
-    tags: ['language-model', 'text-generation'],
-    status: 'active' as any, // Fix ModelStatus enum issue
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    metrics: {
-      accuracy: 0.95,
-      latency: 100,
-      throughput: 1000,
-      memoryUsage: 40000,
-      gpuUsage: 80
-    },
-    pricing: {
-      pricePerRequest: 0.01,
-      pricePerToken: 0.0001,
-      freeQuota: 1000
-    },
-    architecture: {
-      framework: 'transformers',
-      layers: 96,
-      attentionHeads: 96,
-      contextWindow: 8192,
-      trainingData: 'Mixed internet data'
-    },
-    resourceRequirements: {
-      minCPU: '8 cores',
-      minMemory: '16GB',
-      recommendedGPU: 'NVIDIA A100'
-    },
-    documentation: {
-      technicalDocs: 'https://docs.example.com/gpt4',
-      examples: ['https://examples.com/gpt4/1'],
-      papers: ['https://arxiv.org/abs/example']
-    }
-  },
-  {
-    id: 'bert-base',
-    name: 'BERT Base',
-    displayName: 'BERT Base',
-    version: '1.0.0',
-    modelType: ModelType.LLM,
-    framework: ModelFramework.TRANSFORMERS,
-    taskType: ModelTaskType.CLASSIFICATION,
-    tier: ModelTier.PRO,
-    description: 'Base BERT model for classification tasks',
-    parameters: '110M' as any, // Fix type
-    modelSize: '440MB' as any, // Fix type
-    license: 'apache-2.0',
-    author: 'Google Research',
-    creator: 'Google Research',
-    tags: ['language-model', 'classification'],
-    status: 'active' as any, // Fix ModelStatus enum issue
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    metrics: {
-      accuracy: 0.89,
-      latency: 50,
-      throughput: 2000,
-      memoryUsage: 20000,
-      gpuUsage: 60
-    },
-    pricing: {
-      pricePerRequest: 0.005,
-      pricePerToken: 0.00005,
-      freeQuota: 2000
-    },
-    architecture: {
-      framework: 'transformers',
-      layers: 12,
-      attentionHeads: 12,
-      contextWindow: 512,
-      trainingData: 'Wikipedia and BookCorpus'
-    },
-    resourceRequirements: {
-      minCPU: '4 cores',
-      minMemory: '8GB',
-      recommendedGPU: 'NVIDIA V100'
-    },
-    documentation: {
-      technicalDocs: 'https://docs.example.com/bert',
-      examples: ['https://examples.com/bert/1'],
-      papers: ['https://arxiv.org/abs/1810.04805']
-    }
-  },
-];
-
-// Define consistent IDs for the mock datasets
-const mockDatasets: Dataset[] = [
-  {
-    id: 'customer-support',
-    name: 'Customer Support',
-    description: 'Customer support conversations dataset',
-    type: DatasetType.Text,
-    format: DatasetFormat.JSONL,
-    source: DatasetSource.Upload,
-    size: 1024 * 1024 * 100, // 100MB
-    itemCount: 50000,
-    privacy: DatasetPrivacy.Private,
-    status: DatasetStatus.Ready,
-    tags: ['support', 'customer-service', 'chat'],
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    metadata: {
-      language: 'en',
-      domain: 'customer-service'
-    }
-  },
-  {
-    id: 'sentiment-analysis',
-    name: 'Sentiment Analysis',
-    description: 'Sentiment analysis dataset',
-    type: DatasetType.Text,
-    format: DatasetFormat.JSONL,
-    source: DatasetSource.Upload,
-    size: 1024 * 1024 * 50, // 50MB
-    itemCount: 25000,
-    privacy: DatasetPrivacy.Private,
-    status: DatasetStatus.Ready,
-    tags: ['sentiment', 'classification'],
-    createdAt: new Date(Date.now() - 86400000).toISOString(),
-    updatedAt: new Date(Date.now() - 86400000).toISOString(),
-    metadata: {
-      language: 'en',
-      domain: 'sentiment'
-    }
-  },
-];
+// We'll use the API to get models and datasets instead of hardcoding them
 
 // Helper function to convert API job to internal job type
 const convertApiJobToInternal = (apiJob: ApiFineTuningJob): FineTuningJob => {
@@ -174,7 +34,7 @@ const convertApiJobToInternal = (apiJob: ApiFineTuningJob): FineTuningJob => {
   };
 
   const jobStatus = apiJob.status ? statusMap[apiJob.status.toLowerCase()] : JobStatus.PENDING;
-  
+
   // Ensure we have a valid status
   return {
     ...apiJob,
@@ -184,6 +44,7 @@ const convertApiJobToInternal = (apiJob: ApiFineTuningJob): FineTuningJob => {
 
 export default function FineTuningPage() {
   const { theme } = useTheme();
+  const { t } = useLanguage();
   const { user } = useAuth();
   const isDark = theme === 'dark';
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -193,24 +54,29 @@ export default function FineTuningPage() {
   const [models, setModels] = useState<Model[]>([]);
   const [datasets, setDatasets] = useState<Dataset[]>([]);
   const [refreshing, setRefreshing] = useState(false);
-  
+  const [userContext, setUserContext] = useState(getUserContext());
+
   // Auto-refresh the data every 3 seconds when there are running jobs
   useEffect(() => {
     // Only set up auto-refresh if there are running jobs
     const hasRunningJobs = jobs.some(job => job.status === JobStatus.RUNNING);
-    
+
     if (hasRunningJobs) {
       const intervalId = setInterval(() => {
         fetchData(true); // Pass true to indicate this is a background refresh
       }, 3000); // Refresh every 3 seconds instead of 10
-      
+
       return () => clearInterval(intervalId);
     }
   }, [jobs]);
 
   useEffect(() => {
+    // Update user context
+    const context = getUserContext();
+    setUserContext(context);
+
     fetchData();
-    
+
     // Clean up simulation intervals when component unmounts
     return () => {
       if (process.env.NODE_ENV === 'development') {
@@ -224,30 +90,49 @@ export default function FineTuningPage() {
     if (!isBackgroundRefresh) {
       setLoading(true);
     }
-    
+
     setError(null);
     try {
+      // Get user ID from context or auth
+      const userId = userContext?.userId || user?.user_id;
+
       if (process.env.NODE_ENV === 'development') {
         // Use mock data in development - filter by user ID if available
-        const userId = user?.user_id; // Use user_id instead of id
-        
         const filteredJobs = userId
           ? mockJobs.filter(job => job.userId === userId)
           : mockJobs;
-        
+
         // Convert API jobs to internal job type
         const internalJobs = filteredJobs.map(convertApiJobToInternal);
-        
+
+        // Get models and datasets from API
+        const [modelsResponse, datasetsResponse] = await Promise.all([
+          getModels({
+            taskType: [ModelTaskType.TEXT_GENERATION],
+            tier: userContext?.tier === 'enterprise'
+              ? [ModelTier.FREE, ModelTier.PRO, ModelTier.ENTERPRISE]
+              : userContext?.tier === 'pro'
+                ? [ModelTier.FREE, ModelTier.PRO]
+                : [ModelTier.FREE]
+          }),
+          getDatasets(),
+        ]);
+
         setJobs(internalJobs);
-        setModels(mockModels);
-        setDatasets(mockDatasets);
+        setModels(modelsResponse.items);
+        setDatasets(datasetsResponse.data || []);
       } else {
         // Fetch real data in production
-        const userId = user?.user_id; // Use user_id instead of id
-        
         const [jobsResponse, modelsResponse, datasetsResponse] = await Promise.all([
           getFineTuningJobs(userId),
-          getModels({ taskType: [ModelTaskType.TEXT_GENERATION], tier: [ModelTier.PRO] }),
+          getModels({
+            taskType: [ModelTaskType.TEXT_GENERATION],
+            tier: userContext?.tier === 'enterprise'
+              ? [ModelTier.FREE, ModelTier.PRO, ModelTier.ENTERPRISE]
+              : userContext?.tier === 'pro'
+                ? [ModelTier.FREE, ModelTier.PRO]
+                : [ModelTier.FREE]
+          }),
           getDatasets(),
         ]);
 
@@ -277,17 +162,24 @@ export default function FineTuningPage() {
   const calculateResourceStats = () => {
     // Get only running jobs
     const runningJobs = jobs.filter(job => job.status === JobStatus.RUNNING);
-    
+
     // Calculate active jobs count
     const activeJobsCount = runningJobs.length;
-    
+
+    // Get tier-specific resource limits
+    const tierMultiplier = getUserTierMultiplier();
+    const maxA100 = userContext?.tier === 'enterprise' ? 8 : userContext?.tier === 'pro' ? 4 : 2;
+    const maxV100 = userContext?.tier === 'enterprise' ? 12 : userContext?.tier === 'pro' ? 6 : 3;
+    const maxGpuHours = userContext?.tier === 'enterprise' ? 500 : userContext?.tier === 'pro' ? 200 : 50;
+    const maxJobs = userContext?.tier === 'enterprise' ? 10 : userContext?.tier === 'pro' ? 5 : 2;
+
     // Calculate allocated GPUs
     let allocatedA100 = 0;
     let allocatedV100 = 0;
-    
+
     // Calculate GPU hours used (roughly based on elapsed time)
     let totalGpuHoursUsed = 0;
-    
+
     runningJobs.forEach(job => {
       // Count GPUs by type
       if (job.resources.gpuType === 'nvidia-a100') {
@@ -295,7 +187,7 @@ export default function FineTuningPage() {
       } else if (job.resources.gpuType === 'nvidia-v100') {
         allocatedV100 += job.resources.gpuCount;
       }
-      
+
       // Calculate GPU hours based on elapsed time and GPU count
       if (job.metrics?.elapsedTime) {
         // Convert seconds to hours and multiply by GPU count
@@ -303,30 +195,32 @@ export default function FineTuningPage() {
         totalGpuHoursUsed += jobGpuHours;
       }
     });
-    
+
     // Add GPU hours from completed jobs (fixed estimate)
     const completedJobs = jobs.filter(job => job.status === JobStatus.COMPLETED);
     completedJobs.forEach(job => {
       const estimatedHours = job.config.epochs * 0.5 * job.resources.gpuCount;
       totalGpuHoursUsed += estimatedHours;
     });
-    
+
     // Return calculated statistics
     return {
       activeJobs: activeJobsCount,
       gpuHoursUsed: totalGpuHoursUsed,
+      maxGpuHours: maxGpuHours,
+      maxJobs: maxJobs,
       gpuTypes: [
-        { 
+        {
           type: 'A100',
-          available: 8 - allocatedA100, 
-          allocated: allocatedA100, 
-          total: 8 
+          available: maxA100 - allocatedA100,
+          allocated: allocatedA100,
+          total: maxA100
         },
-        { 
+        {
           type: 'V100',
-          available: 12 - allocatedV100, 
-          allocated: allocatedV100, 
-          total: 12 
+          available: maxV100 - allocatedV100,
+          allocated: allocatedV100,
+          total: maxV100
         }
       ]
     };
@@ -343,8 +237,8 @@ export default function FineTuningPage() {
   if (error) {
     return (
       <div className={`p-6 rounded-lg border text-center ${
-        isDark 
-          ? 'bg-red-500/10 border-red-500/30 text-red-400' 
+        isDark
+          ? 'bg-red-500/10 border-red-500/30 text-red-400'
           : 'bg-red-50 border-red-200 text-red-600'
       }`}>
         {error}
@@ -357,10 +251,16 @@ export default function FineTuningPage() {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
         <div>
           <h1 className={`text-2xl font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
-            Fine-tuning
+            {userContext
+              ? `${userContext.fullName.split(' ')[0]}'s ${t('fineTuning')}`
+              : t('fineTuning')}
           </h1>
           <p className={`mt-1 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
-            Train custom models on your data
+            {userContext?.tier === 'enterprise'
+              ? t('trainEnterpriseModels')
+              : userContext?.tier === 'pro'
+                ? t('trainProModels')
+                : t('trainModels')}
           </p>
         </div>
         <div className="flex items-center space-x-2">
@@ -383,9 +283,9 @@ export default function FineTuningPage() {
 
       <ResourceMonitor
         gpuHoursUsed={calculateResourceStats().gpuHoursUsed}
-        gpuHoursTotal={500}
+        gpuHoursTotal={calculateResourceStats().maxGpuHours}
         activeJobs={calculateResourceStats().activeJobs}
-        maxJobs={10}
+        maxJobs={calculateResourceStats().maxJobs}
         gpuTypes={calculateResourceStats().gpuTypes}
       />
 
@@ -406,4 +306,4 @@ export default function FineTuningPage() {
       />
     </div>
   );
-} 
+}

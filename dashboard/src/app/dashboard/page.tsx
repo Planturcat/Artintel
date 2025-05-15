@@ -40,6 +40,10 @@ import {
   UserPlus,
   Database,
   HardDrive,
+  User,
+  AlertTriangle,
+  AlertCircle,
+  Info
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
@@ -650,7 +654,7 @@ export default function Dashboard() {
       >
         {!loading && (
           <div className="space-y-4">
-            {personalizedActivity.map((activity) => (
+            {activityFeed.map((activity) => (
               <div key={activity.id} className="flex items-start space-x-3">
                 <div className={`p-2 rounded-lg flex-shrink-0 ${
                   isDark ? 'bg-[#00052d]' : 'bg-gray-100'

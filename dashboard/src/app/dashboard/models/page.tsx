@@ -63,7 +63,10 @@ import {
   PaginatedResponse
 } from '@/dashboard-api/model-api';
 
-// Replace the mock models with actual open source models
+// Import user context for user-specific data
+import { getUserContext } from '@/dashboard-api/mock-user-context';
+
+// These models will be replaced with API data, but we keep them as fallback
 const modelsData: Model[] = [
   {
     id: 'mistral-7b',
@@ -661,7 +664,7 @@ export default function ModelsPage() {
   const { theme } = useTheme();
   const { t } = useLanguage();
   const isDark = theme === 'dark';
-  
+
   // State management
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -670,20 +673,21 @@ export default function ModelsPage() {
   const [filteredModels, setFilteredModels] = useState<Model[]>([]);
   const [expandedModel, setExpandedModel] = useState<string | null>(null);
   const [bookmarkedModels, setBookmarkedModels] = useState<Model[]>([]);
-  
+  const [user, setUser] = useState(getUserContext());
+
   // Pagination state
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [totalModels, setTotalModels] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
-  
+
   // Filtering state
   const [activeFilters, setActiveFilters] = useState<ExtendedModelFilterParams>({});
   const [showFilters, setShowFilters] = useState(false);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [showBookmarksOnly, setShowBookmarksOnly] = useState(false);
   const [modelTypeFilter, setModelTypeFilter] = useState<ModelType | null>(null);
-  
+
   // Sorting state
   const [sortBy, setSortBy] = useState<'name' | 'created' | 'parameters'>('name');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
@@ -715,42 +719,58 @@ export default function ModelsPage() {
         search: searchQuery || undefined,
         modelType: activeFilters.modelType || undefined
       };
-      
+
       // Add any standard filters from activeFilters that match ModelFilterParams interface
       if (activeFilters.status) filterParams.status = activeFilters.status;
       if (activeFilters.tier) filterParams.tier = activeFilters.tier;
       if (activeFilters.taskType) filterParams.taskType = activeFilters.taskType;
       if (activeFilters.framework) filterParams.framework = activeFilters.framework;
       if (activeFilters.tags) filterParams.tags = activeFilters.tags;
-      
+
       // For now, use our predefined open source models
       // Simulate filtering, sorting, and pagination
       let filteredModelData = [...modelsData];
-      
+
+      // Filter models based on user tier
+      if (user) {
+        if (user.tier === 'free') {
+          // Free users only see free models
+          filteredModelData = filteredModelData.filter(model =>
+            model.tier === ModelTier.FREE
+          );
+        } else if (user.tier === 'pro') {
+          // Pro users see free and pro models
+          filteredModelData = filteredModelData.filter(model =>
+            model.tier === ModelTier.FREE || model.tier === ModelTier.PRO
+          );
+        }
+        // Enterprise users see all models
+      }
+
       // Apply search filter if provided
       if (searchQuery) {
         const query = searchQuery.toLowerCase();
-        filteredModelData = filteredModelData.filter(model => 
-          model.name.toLowerCase().includes(query) || 
+        filteredModelData = filteredModelData.filter(model =>
+          model.name.toLowerCase().includes(query) ||
           model.description.toLowerCase().includes(query) ||
           model.tags.some(tag => tag.toLowerCase().includes(query))
         );
       }
-      
+
       // Apply model type filter
       if (activeFilters.modelType) {
-        filteredModelData = filteredModelData.filter(model => 
+        filteredModelData = filteredModelData.filter(model =>
           model.modelType === activeFilters.modelType
         );
       }
-      
+
       // Apply bookmarked filter (our custom property)
       if (activeFilters.bookmarked) {
-        filteredModelData = filteredModelData.filter(model => 
+        filteredModelData = filteredModelData.filter(model =>
           model.isBookmarked
         );
       }
-      
+
       // Apply size filter (our custom property)
       if (activeFilters.size) {
         // Simple size categorization
@@ -762,7 +782,7 @@ export default function ModelsPage() {
           return true;
         });
       }
-      
+
       // Apply performance filter - NEW
       if (activeFilters.performance) {
         filteredModelData = filteredModelData.filter(model => {
@@ -773,7 +793,7 @@ export default function ModelsPage() {
           return true;
         });
       }
-      
+
       // Apply latency filter - NEW
       if (activeFilters.latency) {
         filteredModelData = filteredModelData.filter(model => {
@@ -784,18 +804,18 @@ export default function ModelsPage() {
           return true;
         });
       }
-      
+
       // Apply status filter
       if (activeFilters.status && activeFilters.status.length > 0) {
-        filteredModelData = filteredModelData.filter(model => 
+        filteredModelData = filteredModelData.filter(model =>
           activeFilters.status?.includes(model.status)
         );
       }
-      
+
       // Apply sorting
       filteredModelData.sort((a, b) => {
         if (sortBy === 'name') {
-          return sortOrder === 'asc' 
+          return sortOrder === 'asc'
             ? a.name.localeCompare(b.name)
             : b.name.localeCompare(a.name);
         } else if (sortBy === 'created') {
@@ -808,7 +828,7 @@ export default function ModelsPage() {
             const match = param.match(/(\d+(\.\d+)?)/);
             return match ? parseFloat(match[0]) : 0;
           };
-          
+
           return sortOrder === 'asc'
             ? getParamValue(a.parameters) - getParamValue(b.parameters)
             : getParamValue(b.parameters) - getParamValue(a.parameters);
@@ -821,21 +841,21 @@ export default function ModelsPage() {
             ? a.metrics.latency - b.metrics.latency
             : b.metrics.latency - a.metrics.latency;
         }
-        
+
         return 0;
       });
-      
+
       // Apply pagination
       const startIndex = (page - 1) * limit;
       const endIndex = startIndex + limit;
       const paginatedModels = filteredModelData.slice(startIndex, endIndex);
-      
+
       // Update state
       setModels(modelsData); // Keep the full list for reference
       setFilteredModels(filteredModelData); // Store filtered results
       setTotalModels(filteredModelData.length);
       setTotalPages(Math.ceil(filteredModelData.length / limit));
-      
+
       console.log(`Filtered models: ${filteredModelData.length}, Page ${page} of ${Math.ceil(filteredModelData.length / limit)}`);
     } catch (err: any) {
       console.error('Error fetching models:', err);
@@ -848,14 +868,30 @@ export default function ModelsPage() {
   // Fetch bookmarked models
   const fetchBookmarkedModels = useCallback(async () => {
     try {
-      const response = await modelApi.getBookmarkedModels();
-      setBookmarkedModels(response);
+      // Only fetch bookmarked models if user is logged in
+      if (user) {
+        const response = await modelApi.getBookmarkedModels();
+
+        // Filter bookmarked models based on user tier
+        let filteredBookmarks = response;
+        if (user.tier === 'free') {
+          filteredBookmarks = response.filter(model => model.tier === ModelTier.FREE);
+        } else if (user.tier === 'pro') {
+          filteredBookmarks = response.filter(model =>
+            model.tier === ModelTier.FREE || model.tier === ModelTier.PRO
+          );
+        }
+
+        setBookmarkedModels(filteredBookmarks);
+      } else {
+        setBookmarkedModels([]);
+      }
     } catch (error) {
       console.error('Error fetching bookmarked models:', error);
       // Set empty array as fallback
       setBookmarkedModels([]);
     }
-  }, []);
+  }, [user]);
 
   // Initial data fetch
   useEffect(() => {
@@ -868,7 +904,7 @@ export default function ModelsPage() {
     const timer = setTimeout(() => {
       fetchModels();
     }, 500);
-    
+
     return () => clearTimeout(timer);
   }, [searchQuery, fetchModels]);
 
@@ -880,7 +916,13 @@ export default function ModelsPage() {
   // Handle bookmark toggle
   const handleToggleBookmark = (modelId: string) => {
     console.log("Toggling bookmark for model:", modelId);
-    
+
+    // Check if user is logged in
+    if (!user) {
+      toast.error("Please log in to bookmark models");
+      return;
+    }
+
     // Find the model in our state
     const model = models.find(m => m.id === modelId);
     if (!model) {
@@ -888,36 +930,52 @@ export default function ModelsPage() {
       toast.error("Could not find model to bookmark");
       return;
     }
-    
+
+    // Check if user has access to this model based on tier
+    if (user.tier === 'free' && model.tier !== ModelTier.FREE) {
+      toast.error(`Upgrade to ${model.tier} tier to bookmark this model`);
+      return;
+    } else if (user.tier === 'pro' && model.tier === ModelTier.ENTERPRISE) {
+      toast.error("Upgrade to Enterprise tier to bookmark this model");
+      return;
+    }
+
     // Log the current bookmark status
     console.log("Current bookmark status:", model.isBookmarked);
-    
+
     // Create an updated model with the new bookmark status
     const updatedModel = {
       ...model,
       isBookmarked: !model.isBookmarked
     };
-    
+
     // Update the models state
-    setModels(prevModels => 
+    setModels(prevModels =>
       prevModels.map(m => m.id === modelId ? updatedModel : m)
     );
-    
+
     // Also update the filtered models state
-    setFilteredModels(prevModels => 
+    setFilteredModels(prevModels =>
       prevModels.map(m => m.id === modelId ? updatedModel : m)
     );
-    
-    // Show a success toast
+
+    // Show a success toast with user's name
     toast.success(
-      updatedModel.isBookmarked 
-        ? `${model.name} added to bookmarks` 
-        : `${model.name} removed from bookmarks`
+      updatedModel.isBookmarked
+        ? `${model.name} added to ${user.firstName}'s bookmarks`
+        : `${model.name} removed from ${user.firstName}'s bookmarks`
     );
-    
+
     // If we're showing bookmarks only and we're unbookmarking, we might need to refresh the view
     if (activeFilters.bookmarked && !updatedModel.isBookmarked) {
       fetchModels();
+    }
+
+    // Update bookmarked models list
+    if (updatedModel.isBookmarked) {
+      setBookmarkedModels(prev => [...prev, updatedModel]);
+    } else {
+      setBookmarkedModels(prev => prev.filter(m => m.id !== modelId));
     }
   };
 
@@ -962,47 +1020,65 @@ export default function ModelsPage() {
       setFilteredModels(models);
     }
   }, [showBookmarksOnly, models]);
-  
+
   // Group models by type
   const modelsByType = useMemo(() => {
-    const llms = filteredModels.filter(model => 
-      model.modelType === ModelType.LLM || 
+    const llms = filteredModels.filter(model =>
+      model.modelType === ModelType.LLM ||
       model.modelType === ModelType.CHAT_LLM
     );
-    const visionModels = filteredModels.filter(model => 
+    const visionModels = filteredModels.filter(model =>
       model.modelType === ModelType.VISION
     );
-    const audioModels = filteredModels.filter(model => 
+    const audioModels = filteredModels.filter(model =>
       model.modelType === ModelType.TEXT_TO_SPEECH
     );
-    
+
     return {
       llms,
       visionModels,
       audioModels
     };
   }, [filteredModels]);
-  
-  // Updated to toggle model selection for comparison
+
+  // Updated to toggle model selection for comparison with user-specific restrictions
   const handleCompareClick = (model: Model) => {
+    // Check if user is logged in
+    if (!user) {
+      toast.error("Please log in to compare models");
+      return;
+    }
+
+    // Check if user has access to this model based on tier
+    if (user.tier === 'free' && model.tier !== ModelTier.FREE) {
+      toast.error(`Upgrade to ${model.tier} tier to compare this model`);
+      return;
+    } else if (user.tier === 'pro' && model.tier === ModelTier.ENTERPRISE) {
+      toast.error("Upgrade to Enterprise tier to compare this model");
+      return;
+    }
+
     if (selectedForComparison.some(m => m.id === model.id)) {
       // If already selected, remove from comparison
-      setSelectedForComparison(prevSelected => 
+      setSelectedForComparison(prevSelected =>
         prevSelected.filter(m => m.id !== model.id)
       );
     } else {
-      // If not selected and less than 3 models are selected, add to comparison
-      if (selectedForComparison.length < 3) {
+      // Check comparison limits based on user tier
+      const maxModels = user.tier === 'enterprise' ? 3 : user.tier === 'pro' ? 2 : 2;
+
+      // If not selected and less than max allowed models are selected, add to comparison
+      if (selectedForComparison.length < maxModels) {
         setSelectedForComparison(prevSelected => [...prevSelected, model]);
       } else {
-        // Show error or notification that max 3 models can be compared
-        toast.warning("You can compare at most 3 models at once");
+        // Show error or notification about the limit
+        toast.warning(`${user.tier === 'free' ? 'Free' : user.tier === 'pro' ? 'Pro' : 'Enterprise'} tier users can compare at most ${maxModels} models at once`);
       }
     }
   };
 
   const handleRemoveFromComparison = (modelId: string) => {
-    setSelectedForComparison(prevSelected => 
+    setSelectedForComparison(prevSelected =>
       prevSelected.filter(m => m.id !== modelId)
     );
   };
@@ -1011,9 +1087,31 @@ export default function ModelsPage() {
     router.push(`/dashboard/models/${modelId}`);
   };
 
-  // New function to start the comparison
+  // New function to start the comparison with user-specific restrictions
   const startComparison = () => {
+    // Check if user is logged in
+    if (!user) {
+      toast.error("Please log in to compare models");
+      return;
+    }
+
+    // Check if user has the minimum required models selected
     if (selectedForComparison.length >= 2) {
+      // Check if user has access to all selected models
+      const hasInvalidModels = selectedForComparison.some(model => {
+        if (user.tier === 'free' && model.tier !== ModelTier.FREE) {
+          return true;
+        } else if (user.tier === 'pro' && model.tier === ModelTier.ENTERPRISE) {
+          return true;
+        }
+        return false;
+      });
+
+      if (hasInvalidModels) {
+        toast.error("You don't have access to one or more selected models. Please upgrade your plan or select different models.");
+        return;
+      }
+
       setShowComparison(true);
     } else {
       toast.warning("Please select at least two models to compare");
@@ -1028,58 +1126,71 @@ export default function ModelsPage() {
       <div className="space-y-6">
         <div className="flex flex-col space-y-1">
           <h1 className={`text-2xl font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
-            {t('aiModels')}
+            {user ? `${user.firstName}'s ${t('aiModels')}` : t('aiModels')}
           </h1>
           <p className={`${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
-            {t('exploreAndDeployModels')}
+            {user && user.tier === 'pro'
+              ? t('exploreAndDeployProModels')
+              : user && user.tier === 'enterprise'
+                ? t('exploreAndDeployEnterpriseModels')
+                : t('exploreAndDeployModels')}
           </p>
         </div>
-        
+
         {/* Action buttons */}
         <div className="flex flex-wrap gap-4">
           <button
             onClick={() => router.push('/dashboard/models/deploy')}
             className={`flex items-center px-4 py-2 rounded-lg ${
-              isDark 
-                ? 'bg-[#00cbdd] hover:bg-[#00b3c3] text-white' 
+              isDark
+                ? 'bg-[#00cbdd] hover:bg-[#00b3c3] text-white'
                 : 'bg-blue-600 hover:bg-blue-700 text-white'
             } transition-colors`}
           >
             <Server className="h-4 w-4 mr-2" />
             {t('deployModel')}
           </button>
-          
+
           <button
             onClick={() => router.push('/dashboard/fine-tuning/new')}
             className={`flex items-center px-4 py-2 rounded-lg ${
-              isDark 
-                ? 'bg-[#00031b]/60 hover:bg-[#00031b]/80 text-white border border-[#00cbdd]/30' 
+              isDark
+                ? 'bg-[#00031b]/60 hover:bg-[#00031b]/80 text-white border border-[#00cbdd]/30'
                 : 'bg-white hover:bg-gray-50 text-gray-800 border border-gray-200'
             } transition-colors`}
           >
             <Sparkles className="h-4 w-4 mr-2" />
             {t('fineTuneModel')}
           </button>
-          
+
           <button
             onClick={startComparison}
             disabled={!compareEnabled}
             className={`flex items-center px-4 py-2 rounded-lg ${
-              !compareEnabled 
-                ? isDark 
+              !compareEnabled
+                ? isDark
                   ? 'bg-gray-700/40 text-gray-500 cursor-not-allowed'
                   : 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                : isDark 
+                : isDark
                   ? 'bg-purple-900/60 hover:bg-purple-900/80 text-purple-300 border border-purple-700/50'
                   : 'bg-purple-100 hover:bg-purple-200 text-purple-700 border border-purple-200'
             } transition-colors`}
           >
             <Scale className="h-4 w-4 mr-2" />
             {t('compareModels')} {selectedForComparison.length > 0 && `(${selectedForComparison.length})`}
+            {user && (
+              <span className="ml-1 text-xs opacity-70">
+                {user.tier === 'free'
+                  ? '(Free: max 2)'
+                  : user.tier === 'pro'
+                    ? '(Pro: max 2)'
+                    : '(Enterprise: max 3)'}
+              </span>
+            )}
           </button>
         </div>
       </div>
-      
+
       {/* Show model comparison popup */}
       <AnimatePresence>
         {showComparison && (
@@ -1091,11 +1202,11 @@ export default function ModelsPage() {
           />
         )}
       </AnimatePresence>
-      
+
       {/* Search and filters */}
       <div className={`p-6 rounded-xl ${
-        isDark 
-          ? 'bg-[#00031b]/90 border border-[#00cbdd]/20' 
+        isDark
+          ? 'bg-[#00031b]/90 border border-[#00cbdd]/20'
           : 'bg-white border border-gray-200'
       }`}>
         <div className="flex flex-col md:flex-row gap-4">
@@ -1109,20 +1220,20 @@ export default function ModelsPage() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className={`w-full py-2 pl-10 pr-4 rounded-lg border ${
-                  isDark 
+                  isDark
                     ? 'bg-[#00052d]/60 border-[#00cbdd]/20 text-white placeholder:text-gray-500'
                     : 'bg-gray-50/70 border-gray-200 text-gray-800 placeholder:text-gray-400'
                 } focus:outline-none focus:ring-2 focus:ring-[#00cbdd]/40 transition-all duration-200`}
               />
             </div>
           </div>
-          
+
           {/* Filter button */}
           <button
             onClick={() => setShowFilters(!showFilters)}
             className={`flex items-center px-4 py-2 rounded-lg ${
-              isDark 
-                ? 'bg-[#00031b]/60 hover:bg-[#00031b]/80 text-white border border-[#00cbdd]/30' 
+              isDark
+                ? 'bg-[#00031b]/60 hover:bg-[#00031b]/80 text-white border border-[#00cbdd]/30'
                 : 'bg-white hover:bg-gray-50 text-gray-800 border border-gray-200'
             } transition-colors ${showFilters ? 'border-[#00cbdd]' : ''}`}
           >
@@ -1130,22 +1241,22 @@ export default function ModelsPage() {
             {t('filters')}
             <ChevronDown className={`h-4 w-4 ml-2 transition-transform ${showFilters ? 'rotate-180' : ''}`} />
           </button>
-          
+
           {/* View toggle */}
           <div className={`flex rounded-lg overflow-hidden border ${
-            isDark 
-              ? 'border-[#00cbdd]/30' 
+            isDark
+              ? 'border-[#00cbdd]/30'
               : 'border-gray-200'
           }`}>
             <button
               onClick={() => setViewMode('grid')}
               className={`flex items-center px-3 py-2 ${
                 viewMode === 'grid'
-                  ? isDark 
-                    ? 'bg-[#00cbdd]/20 text-white' 
+                  ? isDark
+                    ? 'bg-[#00cbdd]/20 text-white'
                     : 'bg-blue-50 text-blue-600'
-                  : isDark 
-                    ? 'bg-[#00031b]/60 text-gray-300 hover:text-white' 
+                  : isDark
+                    ? 'bg-[#00031b]/60 text-gray-300 hover:text-white'
                     : 'bg-white text-gray-500 hover:text-gray-700'
               } transition-colors`}
             >
@@ -1155,31 +1266,31 @@ export default function ModelsPage() {
               onClick={() => setViewMode('list')}
               className={`flex items-center px-3 py-2 ${
                 viewMode === 'list'
-                  ? isDark 
-                    ? 'bg-[#00cbdd]/20 text-white' 
+                  ? isDark
+                    ? 'bg-[#00cbdd]/20 text-white'
                     : 'bg-blue-50 text-blue-600'
-                  : isDark 
-                    ? 'bg-[#00031b]/60 text-gray-300 hover:text-white' 
+                  : isDark
+                    ? 'bg-[#00031b]/60 text-gray-300 hover:text-white'
                     : 'bg-white text-gray-500 hover:text-gray-700'
               } transition-colors`}
             >
               <List className="h-4 w-4" />
             </button>
           </div>
-          
+
           {/* Refresh button */}
           <button
             onClick={refreshData}
             className={`flex items-center px-3 py-2 rounded-lg ${
-              isDark 
-                ? 'bg-[#00031b]/60 hover:bg-[#00031b]/80 text-white border border-[#00cbdd]/30' 
+              isDark
+                ? 'bg-[#00031b]/60 hover:bg-[#00031b]/80 text-white border border-[#00cbdd]/30'
                 : 'bg-white hover:bg-gray-50 text-gray-800 border border-gray-200'
             } transition-colors`}
           >
             <RefreshCw className={`h-4 w-4`} />
           </button>
         </div>
-        
+
         {/* Filters panel */}
         <AnimatePresence>
           {showFilters && (
@@ -1190,7 +1301,7 @@ export default function ModelsPage() {
               transition={{ duration: 0.3 }}
               className="mt-4 pt-4 border-t overflow-hidden"
             >
-              <DashboardCard 
+              <DashboardCard
                 title={t('filterModels')}
                 className={`p-4 ${isDark ? 'bg-[#000c3e]/80' : 'bg-slate-50'}`}
               >
@@ -1202,7 +1313,7 @@ export default function ModelsPage() {
                         {t('modelType')}
                       </label>
                       <div className="relative group">
-                        <button 
+                        <button
                           className={`flex items-center justify-center w-5 h-5 rounded-full ${
                             isDark ? 'bg-[#00cbdd]/20 text-[#00cbdd]' : 'bg-blue-100 text-blue-600'
                           }`}
@@ -1236,13 +1347,13 @@ export default function ModelsPage() {
                       onChange={(e) => {
                         const newValue = e.target.value || undefined;
                         setActiveFilters({
-                          ...activeFilters, 
+                          ...activeFilters,
                           modelType: newValue as any // Using any as a workaround
                         });
                       }}
                       className={`w-full py-2 px-3 rounded-lg border ${
-                        isDark 
-                          ? 'bg-[#00052d]/60 border-[#00cbdd]/20 text-white' 
+                        isDark
+                          ? 'bg-[#00052d]/60 border-[#00cbdd]/20 text-white'
                           : 'bg-white border-gray-200 text-gray-800'
                       } focus:outline-none focus:ring-2 focus:ring-[#00cbdd]/40 transition-all duration-200`}
                     >
@@ -1255,7 +1366,7 @@ export default function ModelsPage() {
                       <option value={ModelType.TEXT_TO_SPEECH}>Text to Speech</option>
                     </select>
                   </div>
-                  
+
                   {/* Size filter with info popup */}
                   <div className="relative">
                     <div className="flex items-center justify-between mb-1">
@@ -1263,7 +1374,7 @@ export default function ModelsPage() {
                         {t('modelSize')}
                       </label>
                       <div className="relative group">
-                        <button 
+                        <button
                           className={`flex items-center justify-center w-5 h-5 rounded-full ${
                             isDark ? 'bg-[#00cbdd]/20 text-[#00cbdd]' : 'bg-blue-100 text-blue-600'
                           }`}
@@ -1292,8 +1403,8 @@ export default function ModelsPage() {
                         setActiveFilters(newFilters);
                       }}
                       className={`w-full py-2 px-3 rounded-lg border ${
-                        isDark 
-                          ? 'bg-[#00052d]/60 border-[#00cbdd]/20 text-white' 
+                        isDark
+                          ? 'bg-[#00052d]/60 border-[#00cbdd]/20 text-white'
                           : 'bg-white border-gray-200 text-gray-800'
                       } focus:outline-none focus:ring-2 focus:ring-[#00cbdd]/40 transition-all duration-200`}
                     >
@@ -1304,7 +1415,7 @@ export default function ModelsPage() {
                       <option value="xlarge">{t('xlarge')}</option>
                     </select>
                   </div>
-                  
+
                   {/* Status filter */}
                   <div>
                     <label className={`block text-sm font-medium mb-1 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
@@ -1319,8 +1430,8 @@ export default function ModelsPage() {
                         setActiveFilters(newFilters);
                       }}
                       className={`w-full py-2 px-3 rounded-lg border ${
-                        isDark 
-                          ? 'bg-[#00052d]/60 border-[#00cbdd]/20 text-white' 
+                        isDark
+                          ? 'bg-[#00052d]/60 border-[#00cbdd]/20 text-white'
                           : 'bg-white border-gray-200 text-gray-800'
                       } focus:outline-none focus:ring-2 focus:ring-[#00cbdd]/40 transition-all duration-200`}
                     >
@@ -1332,7 +1443,7 @@ export default function ModelsPage() {
                     </select>
                   </div>
                 </div>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                   {/* Performance filter - NEW */}
                   <div className="relative">
@@ -1341,7 +1452,7 @@ export default function ModelsPage() {
                         {t('performance')}
                       </label>
                       <div className="relative group">
-                        <button 
+                        <button
                           className={`flex items-center justify-center w-5 h-5 rounded-full ${
                             isDark ? 'bg-[#00cbdd]/20 text-[#00cbdd]' : 'bg-blue-100 text-blue-600'
                           }`}
@@ -1369,8 +1480,8 @@ export default function ModelsPage() {
                         setActiveFilters(newFilters);
                       }}
                       className={`w-full py-2 px-3 rounded-lg border ${
-                        isDark 
-                          ? 'bg-[#00052d]/60 border-[#00cbdd]/20 text-white' 
+                        isDark
+                          ? 'bg-[#00052d]/60 border-[#00cbdd]/20 text-white'
                           : 'bg-white border-gray-200 text-gray-800'
                       } focus:outline-none focus:ring-2 focus:ring-[#00cbdd]/40 transition-all duration-200`}
                     >
@@ -1380,7 +1491,7 @@ export default function ModelsPage() {
                       <option value="low">Low (&lt;70%)</option>
                     </select>
                   </div>
-                  
+
                   {/* Latency filter - NEW */}
                   <div className="relative">
                     <div className="flex items-center justify-between mb-1">
@@ -1388,7 +1499,7 @@ export default function ModelsPage() {
                         {t('latency')}
                       </label>
                       <div className="relative group">
-                        <button 
+                        <button
                           className={`flex items-center justify-center w-5 h-5 rounded-full ${
                             isDark ? 'bg-[#00cbdd]/20 text-[#00cbdd]' : 'bg-blue-100 text-blue-600'
                           }`}
@@ -1416,8 +1527,8 @@ export default function ModelsPage() {
                         setActiveFilters(newFilters);
                       }}
                       className={`w-full py-2 px-3 rounded-lg border ${
-                        isDark 
-                          ? 'bg-[#00052d]/60 border-[#00cbdd]/20 text-white' 
+                        isDark
+                          ? 'bg-[#00052d]/60 border-[#00cbdd]/20 text-white'
                         : 'bg-white border-gray-200 text-gray-800'
                       } focus:outline-none focus:ring-2 focus:ring-[#00cbdd]/40 transition-all duration-200`}
                     >
@@ -1427,7 +1538,7 @@ export default function ModelsPage() {
                       <option value="high">High (&gt;300ms)</option>
                     </select>
                   </div>
-                  
+
                   {/* Sort By - NEW */}
                   <div>
                     <label className={`block text-sm font-medium mb-1 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
@@ -1438,8 +1549,8 @@ export default function ModelsPage() {
                         value={sortBy}
                         onChange={(e) => setSortBy(e.target.value as any)}
                         className={`w-full py-2 px-3 rounded-l-lg border-y border-l ${
-                          isDark 
-                            ? 'bg-[#00052d]/60 border-[#00cbdd]/20 text-white' 
+                          isDark
+                            ? 'bg-[#00052d]/60 border-[#00cbdd]/20 text-white'
                             : 'bg-white border-gray-200 text-gray-800'
                         } focus:outline-none focus:ring-2 focus:ring-[#00cbdd]/40 transition-all duration-200`}
                       >
@@ -1452,8 +1563,8 @@ export default function ModelsPage() {
                       <button
                         onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
                         className={`flex items-center justify-center p-2 border-y border-r rounded-r-lg ${
-                          isDark 
-                            ? 'bg-[#00052d]/60 border-[#00cbdd]/20 text-white hover:bg-[#000c3e]' 
+                          isDark
+                            ? 'bg-[#00052d]/60 border-[#00cbdd]/20 text-white hover:bg-[#000c3e]'
                             : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50'
                         }`}
                       >
@@ -1464,7 +1575,7 @@ export default function ModelsPage() {
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="flex justify-between mt-4">
                   <div className="flex items-center">
                     <input
@@ -1482,12 +1593,12 @@ export default function ModelsPage() {
                       {t('showBookmarkedOnly')}
                     </label>
                   </div>
-                  
+
                   <div className="relative group">
-                    <button 
+                    <button
                       className={`flex items-center gap-1 px-3 py-1 rounded-lg text-xs ${
-                        isDark 
-                          ? 'bg-[#00cbdd]/20 text-[#00cbdd] hover:bg-[#00cbdd]/30' 
+                        isDark
+                          ? 'bg-[#00cbdd]/20 text-[#00cbdd] hover:bg-[#00cbdd]/30'
                           : 'bg-blue-100 text-blue-600 hover:bg-blue-200'
                       }`}
                     >
@@ -1536,7 +1647,7 @@ export default function ModelsPage() {
           )}
         </AnimatePresence>
       </div>
-      
+
       {/* Add margin here between the filters and model list */}
       <div className="mt-8">
         {/* Selection Bar */}
@@ -1544,7 +1655,7 @@ export default function ModelsPage() {
           <div className={`py-2 px-6 ${isDark ? 'bg-[#000c3e]' : 'bg-blue-50'} border-b ${isDark ? 'border-[#0c2580]' : 'border-blue-100'}`}>
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
-                <button 
+                <button
                   onClick={() => {
                     setSelectedForComparison([]);
                     setShowComparison(false);
@@ -1560,12 +1671,12 @@ export default function ModelsPage() {
                   </span> models selected
                 </div>
               </div>
-              
+
               <button
                 onClick={startComparison}
                 className={`px-4 py-2 rounded-lg text-sm flex items-center ${
-                  isDark 
-                    ? 'bg-[#00cbdd] text-[#000423] hover:bg-[#00b0c0]' 
+                  isDark
+                    ? 'bg-[#00cbdd] text-[#000423] hover:bg-[#00b0c0]'
                     : 'bg-blue-600 text-white hover:bg-blue-700'
                 }`}
                 disabled={selectedForComparison.length < 2}
@@ -1576,17 +1687,17 @@ export default function ModelsPage() {
             </div>
           </div>
         )}
-        
+
         {/* Models list */}
         <div className={viewMode === 'grid' ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" : "space-y-4"}>
           {isLoading ? (
             // Loading skeletons
             Array.from({ length: 6 }).map((_, index) => (
-              <div 
+              <div
                 key={index}
                 className={`animate-pulse rounded-xl ${
-                  isDark 
-                    ? 'bg-[#00031b]/90 border border-[#00cbdd]/20' 
+                  isDark
+                    ? 'bg-[#00031b]/90 border border-[#00cbdd]/20'
                     : 'bg-white border border-gray-200'
                 } p-4 ${viewMode === 'list' ? 'flex items-center' : 'h-[280px]'}`}
               >
@@ -1613,7 +1724,7 @@ export default function ModelsPage() {
               </div>
             ))
           ) : filteredModels.length === 0 ? (
-            <EmptyState 
+            <EmptyState
               title="No models found"
               description="Try adjusting your search or filters to find what you're looking for."
               icon={<SlidersHorizontal className="h-10 w-10" />}
@@ -1638,7 +1749,7 @@ export default function ModelsPage() {
           )}
         </div>
       </div>
-      
+
       {/* Pagination */}
       {!isLoading && filteredModels.length > 0 && (
         <div className="flex justify-between items-center mt-6">
@@ -1646,52 +1757,52 @@ export default function ModelsPage() {
             {t('showing')} {(page - 1) * limit + 1}-
             {Math.min(page * limit, filteredModels.length)} {t('of')} {filteredModels.length} {t('models')}
           </div>
-          
+
           <div className="flex space-x-2">
             <button
               onClick={() => goToPage(page - 1)}
               disabled={page === 1}
               className={`p-2 rounded-lg ${
                 page === 1
-                  ? isDark 
-                    ? 'bg-[#00031b]/60 text-gray-600 cursor-not-allowed' 
+                  ? isDark
+                    ? 'bg-[#00031b]/60 text-gray-600 cursor-not-allowed'
                     : 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                  : isDark 
-                    ? 'bg-[#00031b]/60 text-white hover:bg-[#00031b]/80' 
+                  : isDark
+                    ? 'bg-[#00031b]/60 text-white hover:bg-[#00031b]/80'
                     : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
               }`}
             >
               <ChevronLeft className="h-5 w-5" />
             </button>
-            
+
             {Array.from({ length: totalPages }).map((_, index) => (
               <button
                 key={index}
                 onClick={() => goToPage(index + 1)}
                 className={`w-10 h-10 rounded-lg ${
                   page === index + 1
-                    ? isDark 
-                      ? 'bg-[#00cbdd] text-white' 
+                    ? isDark
+                      ? 'bg-[#00cbdd] text-white'
                       : 'bg-blue-600 text-white'
-                    : isDark 
-                      ? 'bg-[#00031b]/60 text-white hover:bg-[#00031b]/80' 
+                    : isDark
+                      ? 'bg-[#00031b]/60 text-white hover:bg-[#00031b]/80'
                       : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
                 }`}
               >
                 {index + 1}
               </button>
             ))}
-            
+
             <button
               onClick={() => goToPage(page + 1)}
               disabled={page === totalPages}
               className={`p-2 rounded-lg ${
                 page === totalPages
-                  ? isDark 
-                    ? 'bg-[#00031b]/60 text-gray-600 cursor-not-allowed' 
+                  ? isDark
+                    ? 'bg-[#00031b]/60 text-gray-600 cursor-not-allowed'
                     : 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                  : isDark 
-                    ? 'bg-[#00031b]/60 text-white hover:bg-[#00031b]/80' 
+                  : isDark
+                    ? 'bg-[#00031b]/60 text-white hover:bg-[#00031b]/80'
                     : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
               }`}
             >
@@ -1702,4 +1813,4 @@ export default function ModelsPage() {
       )}
     </div>
   );
-} 
+}

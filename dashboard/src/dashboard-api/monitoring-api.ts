@@ -1,4 +1,5 @@
 import { ApiResponse } from '../types/api';
+import { getUserContext } from './mock-user-context';
 
 export interface SystemHealth {
   cpu: number;
@@ -256,7 +257,7 @@ const generateMetricPoints = (hours: number, baseValue: number, variance: number
 
 const generateDetailedChartData = (type: string, hours: number): DetailedChartData[] => {
   const charts: DetailedChartData[] = [];
-  
+
   switch (type) {
     case 'system':
       // Resource Usage Chart
@@ -289,7 +290,7 @@ const generateDetailedChartData = (type: string, hours: number): DetailedChartDa
         })
       });
       break;
-      
+
     case 'model':
       // Model Performance Chart
       charts.push({
@@ -321,7 +322,7 @@ const generateDetailedChartData = (type: string, hours: number): DetailedChartDa
         })
       });
       break;
-      
+
     case 'resource':
       // Resource Consumption Chart
       charts.push({
@@ -350,13 +351,60 @@ const generateDetailedChartData = (type: string, hours: number): DetailedChartDa
       });
       break;
   }
-  
+
   return charts;
 };
 
-export const getMonitoringMetrics = async (timeRange: '1h' | '24h' | '7d' | '30d' = '24h'): Promise<MonitoringMetrics> => {
+export const getMonitoringMetrics = async (timeRange: '1h' | '24h' | '7d' | '30d' = '24h', userId?: string): Promise<MonitoringMetrics> => {
   // Simulate API delay
   await new Promise(resolve => setTimeout(resolve, 500));
+
+  // Get user context for user-specific data
+  const userContext = getUserContext();
+
+  // If no user context or new user, return empty metrics
+  if (!userContext || userContext.userId.startsWith('new-user') || (userId && userId.startsWith('new-user'))) {
+    return {
+      systemHealth: {
+        cpu: 0,
+        memory: 0,
+        gpu: 0,
+        storage: 0,
+        network: 0,
+        details: {
+          cpuCores: 0,
+          cpuThreads: 0,
+          totalMemory: 0,
+          freeMemory: 0,
+          gpuModel: '',
+          gpuMemory: 0,
+          diskTotal: 0,
+          diskFree: 0,
+          networkIn: 0,
+          networkOut: 0
+        }
+      },
+      responseTime: [],
+      throughput: [],
+      errorRates: [],
+      modelMetrics: {
+        accuracy: 0,
+        latency: 0,
+        throughput: 0,
+        driftScore: 0,
+        details: {
+          precisionByClass: {},
+          recallByClass: {},
+          f1ScoreByClass: {},
+          confusionMatrix: [],
+          rocCurve: [],
+          prCurve: []
+        }
+      },
+      alerts: [],
+      resourceUsage: []
+    };
+  }
 
   const hours = timeRange === '1h' ? 1 : timeRange === '24h' ? 24 : timeRange === '7d' ? 168 : 720;
 
@@ -379,6 +427,58 @@ export const getDetailedMetrics = async (
 ): Promise<any> => {
   await new Promise(resolve => setTimeout(resolve, 500));
 
+  // Get user context for user-specific data
+  const userContext = getUserContext();
+
+  // If no user context or new user, return empty metrics
+  if (!userContext || userContext.userId.startsWith('new-user') || (id && id.startsWith('new-user'))) {
+    return {
+      title: getDetailedTitle(metricType, id),
+      subtitle: getDetailedSubtitle(metricType, id),
+      charts: [],
+      metrics: {},
+      systemHealth: {
+        cpu: 0,
+        memory: 0,
+        gpu: 0,
+        storage: 0,
+        network: 0,
+        details: {
+          cpuCores: 0,
+          cpuThreads: 0,
+          totalMemory: 0,
+          freeMemory: 0,
+          gpuModel: '',
+          gpuMemory: 0,
+          diskTotal: 0,
+          diskFree: 0,
+          networkIn: 0,
+          networkOut: 0
+        }
+      },
+      modelMetrics: {
+        accuracy: 0,
+        latency: 0,
+        throughput: 0,
+        driftScore: 0,
+        details: {
+          precisionByClass: {},
+          recallByClass: {},
+          f1ScoreByClass: {},
+          confusionMatrix: [],
+          rocCurve: [],
+          prCurve: []
+        }
+      },
+      resourceUsage: [],
+      alerts: [],
+      responseTime: [],
+      throughput: [],
+      selectedModelId: id,
+      errorRates: []
+    };
+  }
+
   const hours = timeRange === '1h' ? 1 : timeRange === '24h' ? 24 : timeRange === '7d' ? 168 : 720;
   const charts = generateDetailedChartData(metricType, hours);
 
@@ -386,7 +486,7 @@ export const getDetailedMetrics = async (
   let responseTime = generateMetricPoints(hours, 150, 100);
   let throughput = generateMetricPoints(hours, 1000, 500);
   let selectedModelId = id;
-  
+
   switch (metricType) {
     case 'system':
       metrics = {
@@ -396,7 +496,7 @@ export const getDetailedMetrics = async (
         network: { value: mockSystemHealth.network, unit: 'MB/s', change: 1.5 }
       };
       break;
-      
+
     case 'model':
       metrics = {
         accuracy: { value: mockModelMetrics.accuracy * 100, unit: '%', change: 2.3 },
@@ -405,16 +505,16 @@ export const getDetailedMetrics = async (
         driftScore: { value: mockModelMetrics.driftScore * 100, unit: '%', change: 0.5 }
       };
       break;
-      
+
     case 'resource':
       const resource = mockResourceUsage.find(r => r.modelId === id);
       if (!resource) throw new Error('Resource not found');
-      
+
       metrics = {
         cpuUsage: { value: resource.cpuUsage, unit: '%', change: 3.2 },
         memoryUsage: { value: resource.memoryUsage, unit: '%', change: -1.8 },
         gpuUsage: { value: resource.gpuUsage, unit: '%', change: 5.4 },
-        errorRate: { 
+        errorRate: {
           value: (resource.errorCount / resource.requestCount) * 100,
           unit: '%',
           change: -0.8

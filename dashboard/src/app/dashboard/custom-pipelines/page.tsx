@@ -214,30 +214,41 @@ export default function CustomPipelinesPage() {
       {/* Templates Section */}
       <DashboardCard
         title="Pipeline Templates"
-        subtitle="Start with pre-built pipeline templates"
+        subtitle={user && user.tier === 'pro' ? 'Pro templates available for your account' : 'Start with pre-built pipeline templates'}
         isLoading={isLoading}
         className="mb-8"
       >
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {templates.slice(0, 3).map((template) => (
-            <PipelineTemplateCard
-              key={template.id}
-              template={template}
-              isDark={isDark}
-              onClick={() => {
-                setIsCreateModalOpen(true);
-                // Logic to pre-select template would go here
-                toast.success(`Template "${template.name}" selected`);
-              }}
-            />
-          ))}
+          {templates
+            .filter(template => {
+              // Filter templates based on user tier
+              if (!user || user.tier === 'free') {
+                return !template.tags.includes('pro') && !template.tags.includes('enterprise');
+              } else if (user.tier === 'pro') {
+                return !template.tags.includes('enterprise');
+              }
+              return true; // Enterprise users see all templates
+            })
+            .slice(0, 3)
+            .map((template) => (
+              <PipelineTemplateCard
+                key={template.id}
+                template={template}
+                isDark={isDark}
+                onClick={() => {
+                  setIsCreateModalOpen(true);
+                  // Logic to pre-select template would go here
+                  toast.success(`Template "${template.name}" selected`);
+                }}
+              />
+            ))}
         </div>
       </DashboardCard>
 
       {/* Pipelines List */}
       <DashboardCard
-        title="Your Pipelines"
-        subtitle="Manage your custom pipelines"
+        title={user ? `${user.firstName}'s Pipelines` : "Your Pipelines"}
+        subtitle={user ? `Manage your custom pipelines (${pipelines.length} total)` : "Manage your custom pipelines"}
         isLoading={isLoading}
       >
         {/* Tabs for filtering */}

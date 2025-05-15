@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import {
   Activity,
   Clock,
@@ -33,9 +34,11 @@ import {
 } from 'recharts';
 import { getMonitoringMetrics, getDetailedMetrics } from '@/dashboard-api/monitoring-api';
 import DetailedMetricsModal from '@/components/monitoring/DetailedMetricsModal';
+import { getUserContext, getUserTierMultiplier, seededRandomInt } from '@/dashboard-api/mock-user-context';
 
 export default function MonitoringPage() {
   const { theme } = useTheme();
+  const { t } = useLanguage();
   const isDark = theme === 'dark';
   const [timeRange, setTimeRange] = useState<'1h' | '24h' | '7d' | '30d'>('24h');
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -47,15 +50,19 @@ export default function MonitoringPage() {
   const [detailedMetricsType, setDetailedMetricsType] = useState<'system' | 'model' | 'resource'>('system');
   const [detailedMetricsTitle, setDetailedMetricsTitle] = useState('');
   const [showDetailedMetrics, setShowDetailedMetrics] = useState(false);
+  const [userContext, setUserContext] = useState(getUserContext());
 
   const fetchMetrics = async () => {
     setLoading(true);
     setIsRefreshing(true);
     setError(null);
-    
+
     try {
-      const data = await getMonitoringMetrics(timeRange);
-      console.log("Received metrics data:", data);
+      // Get user ID from context
+      const userId = userContext?.userId || 'anonymous';
+
+      const data = await getMonitoringMetrics(timeRange, userId);
+      console.log("Received metrics data for user:", userId);
       console.log("systemHealth:", data.systemHealth);
       console.log("responseTime:", data.responseTime ? data.responseTime.length : 0, "items");
       console.log("throughput:", data.throughput ? data.throughput.length : 0, "items");
@@ -117,7 +124,10 @@ export default function MonitoringPage() {
 
   const showDetails = async (type: 'system' | 'model' | 'resource', title: string, id?: string) => {
     try {
-      const data = await getDetailedMetrics(type, id, timeRange);
+      // Get user ID from context
+      const userId = userContext?.userId || 'anonymous';
+
+      const data = await getDetailedMetrics(type, id, timeRange, userId);
       setDetailedMetrics(data);
       setDetailedMetricsType(type);
       setDetailedMetricsTitle(title);
@@ -128,6 +138,10 @@ export default function MonitoringPage() {
   };
 
   useEffect(() => {
+    // Update user context
+    const context = getUserContext();
+    setUserContext(context);
+
     fetchMetrics();
   }, [timeRange]);
 
@@ -191,10 +205,16 @@ export default function MonitoringPage() {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
         <div>
           <h1 className={`text-2xl font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
-            Monitoring
+            {userContext
+              ? `${userContext.fullName.split(' ')[0]}'s ${t('monitoring')}`
+              : t('monitoring')}
           </h1>
           <p className={`mt-1 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
-            Track system performance and model health
+            {userContext?.tier === 'enterprise'
+              ? t('trackEnterprisePerformance')
+              : userContext?.tier === 'pro'
+                ? t('trackProPerformance')
+                : t('trackPerformance')}
           </p>
         </div>
         <div className="flex items-center space-x-2">
@@ -496,8 +516,8 @@ export default function MonitoringPage() {
                 <div className="flex items-center justify-between">
                   <span className={isDark ? 'text-gray-400' : 'text-gray-500'}>Drift Score</span>
                   <span className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                    {typeof metrics.modelMetrics.driftScore === 'number' 
-                      ? metrics.modelMetrics.driftScore.toFixed(3) 
+                    {typeof metrics.modelMetrics.driftScore === 'number'
+                      ? metrics.modelMetrics.driftScore.toFixed(3)
                       : '0.000'}
                   </span>
                 </div>
