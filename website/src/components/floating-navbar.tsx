@@ -1,194 +1,227 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
+import { NAV_LINKS } from "@/constants";
+import { useClickOutside } from "@/hooks";
 import { cn } from "@/lib";
 import { useClerk } from "@clerk/nextjs";
-import { ArrowRightIcon, XIcon } from "lucide-react";
+import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "framer-motion";
+import { MenuIcon, XIcon } from "lucide-react";
 import Link from "next/link";
-import Image from "next/image";
-import { useEffect, useState } from 'react';
+import { RefObject, useRef, useState } from "react";
+import AnimationContainer from "./global/animation-container";
 import Wrapper from "./global/wrapper";
-import { Button } from "./ui/button";
-import { NavigationMenu, NavigationMenuList, NavigationMenuItem, NavigationMenuTrigger, NavigationMenuContent, NavigationMenuLink, navigationMenuTriggerStyle } from "./ui/navigation-menu";
-import { NAV_LINKS } from "@/constants";
-
-// Simple Menu component
-const Menu = () => {
-  const handleAnchorClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    if (href.startsWith("/#")) {
-      e.preventDefault();
-      const id = href.replace("/#", "");
-      const element = document.getElementById(id);
-      if (element) {
-        element.scrollIntoView({ behavior: "smooth" });
-      }
-    }
-  };
-
-  return (
-    <NavigationMenu>
-      <NavigationMenuList>
-        {NAV_LINKS.map((link, index) => (
-          <NavigationMenuItem key={index}>
-            {link.submenu ? (
-              <>
-                <NavigationMenuTrigger className="text-foreground">
-                  {link.name}
-                </NavigationMenuTrigger>
-                <NavigationMenuContent>
-                  <ul className="grid w-[400px] gap-3 p-4 md:grid-cols-2">
-                    {link.submenu.map((item, idx) => (
-                      <li key={idx} className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#00CBDD]/10 hover:text-[#00CBDD] focus:bg-accent focus:text-accent-foreground">
-                        <Link 
-                          href={item.link}
-                          onClick={(e) => handleAnchorClick(e, item.link)}
-                          className="text-sm font-medium leading-none"
-                        >
-                          {item.name}
-                        </Link>
-                        <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                          {item.description || ""}
-                        </p>
-                      </li>
-                    ))}
-                  </ul>
-                </NavigationMenuContent>
-              </>
-            ) : (
-              <Link
-                href={link.link}
-                legacyBehavior
-                passHref
-                onClick={(e) => handleAnchorClick(e, link.link)}
-              >
-                <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), "text-foreground hover:text-[#00CBDD]")}>
-                  {link.name}
-                </NavigationMenuLink>
-              </Link>
-            )}
-          </NavigationMenuItem>
-        ))}
-      </NavigationMenuList>
-    </NavigationMenu>
-  );
-};
-
-// Simple MobileMenu component
-const MobileMenu = ({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen: (isOpen: boolean) => void }) => {
-  if (!isOpen) return null;
-  
-  return (
-    <div className="absolute top-full mt-2 inset-x-0 bg-background/95 backdrop-blur-sm p-4 rounded-lg border border-[#00CBDD]/20 shadow-lg shadow-[#00CBDD]/5">
-      <nav className="flex flex-col space-y-4">
-        {NAV_LINKS.map((link, index) => (
-          <Link 
-            key={index} 
-            href={link.link}
-            className="px-4 py-2 text-foreground hover:bg-[#00CBDD]/10 hover:text-[#00CBDD] rounded-md transition-colors"
-            onClick={() => setIsOpen(false)}
-          >
-            {link.name}
-          </Link>
-        ))}
-      </nav>
-    </div>
-  );
-};
-
-// Icons component for menu icon
-const Icons = {
-  menu: ({ className }: { className?: string }) => (
-    <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M3 12H21" stroke="#00CBDD" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-      <path d="M3 6H21" stroke="#00CBDD" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-      <path d="M3 18H21" stroke="#00CBDD" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-    </svg>
-  )
-};
 
 const Navbar = () => {
 
     const { user } = useClerk();
 
-    const [isOpen, setIsOpen] = useState<boolean>(false);
+    const ref = useRef<HTMLDivElement | null>(null);
+    const [open, setOpen] = useState(false);
+    const [visible, setVisible] = useState<boolean>(false);
 
-    useEffect(() => {
-        if (isOpen) {
-            document.body.style.overflow = 'hidden';
+    const mobileMenuRef = useClickOutside(() => {
+        if (open) setOpen(false);
+    });
+
+    const { scrollY } = useScroll({
+        target: ref as RefObject<HTMLDivElement>,
+        offset: ["start start", "end start"],
+    });
+
+    useMotionValueEvent(scrollY, "change", (latest) => {
+        if (latest > 100) {
+            setVisible(true);
         } else {
-            document.body.style.overflow = '';
+            setVisible(false);
         }
-
-        return () => {
-            document.body.style.overflow = '';
-        };
-    }, [isOpen]);
-
+    });
 
     return (
-        <div className="relative w-full h-full">
-            <div className="z-[99] fixed pointer-events-none inset-x-0 h-[88px] bg-[rgba(10,10,10,0.8)] backdrop-blur-sm [mask:linear-gradient(to_bottom,#000_20%,transparent_calc(100%-20%))]"></div>
-
-            <header
+        <header className="fixed w-full top-0 inset-x-0 z-50">
+            {/* Desktop */}
+            <motion.div
+                animate={{
+                    width: visible ? "40%" : "100%",
+                    y: visible ? 20 : 0,
+                }}
+                transition={{
+                    type: "spring",
+                    stiffness: 200,
+                    damping: 40,
+                }}
+                style={{
+                    minWidth: "800px",
+                }}
                 className={cn(
-                    "fixed top-4 inset-x-0 mx-auto max-w-6xl px-2 md:px-12 z-[100] transform th",
-                    isOpen ? "h-[calc(100%-24px)]" : "h-12"
+                    "hidden lg:flex bg-transparent self-start items-center justify-between py-4 rounded-full relative z-[50] mx-auto w-full backdrop-blur",
+                    visible && "bg-background/60 py-2 border border-t-foreground/20 border-b-foreground/10 border-x-foreground/15 w-full"
                 )}
             >
-                <Wrapper className="backdrop-blur-lg rounded-xl lg:rounded-2xl border border-[#00CBDD]/20 bg-black/50 px- md:px-2 flex items-center justify-start shadow-lg shadow-[#00CBDD]/5">
-                    <div className="flex items-center justify-between w-full sticky mt-[7px] lg:mt-auto mb-auto inset-x-0">
-                        <div className=" pl-1">
-                            <Link href="/" className="text-lg font-semibold text-foreground">
-                                <Image
-                                    src="/logo/Logo - PNG (2).png"
-                                    alt="Artintel Logo"
-                                    width={250}
-                                    height={84}
-                                    className="h-5 w-auto"
-                                />
-                            </Link>
-                        </div>
-                        
-                        <div className="hidden lg:flex flex-1 justify-center">
-                            <Menu />
-                        </div>
-                        
-                        <div className="items-center flex gap-2 lg:gap-4 flex-shrink-0">
-                            {user ? (
-                                <Button size="sm" variant="default" asChild className="hidden sm:flex bg-[#00CBDD] hover:bg-[#00CBDD]/90 text-black">
-                                    <Link href="/app">
-                                        Dashboard
-                                    </Link>
-                                </Button>
-                            ) : (
-                                <>
-                                    <Button size="sm" variant="outline" asChild className="hover:translate-y-0 hover:scale-100 border-[#00CBDD]/50 hover:border-[#00CBDD] hover:text-[#00CBDD]">
-                                        <Link href="/auth/signin">
-                                            Login
-                                        </Link>
-                                    </Button>
-                                    <Button size="sm" variant="default" asChild className="hidden sm:flex bg-[#00CBDD] hover:bg-[#00CBDD]/90 text-black">
-                                        <Link href="/auth/signup">
-                                            Sign up
-                                        </Link>
-                                    </Button>
-                                </>
-                            )}
-                            <Button
-                                size="icon"
-                                variant="ghost"
-                                onClick={() => setIsOpen((prev) => !prev)}
-                                className="lg:hidden p-2 w-8 h-8 hover:bg-[#00CBDD]/10 hover:text-[#00CBDD]"
-                            >
-                                {isOpen ? <XIcon className="w-4 h-4 duration-300 text-[#00CBDD]" /> : <Icons.menu className="w-3.5 h-3.5 duration-300" />}
-                            </Button>
-                        </div>
-                    </div>
-                    <MobileMenu isOpen={isOpen} setIsOpen={setIsOpen} />
-                </Wrapper>
-            </header>
+                <Wrapper className="flex items-center justify-between lg:px-4">
+                    <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.2 }}
+                    >
+                        <Link href="/" className="flex items-center gap-2">
+                            <img src="/logo/Logo - PNG (2).png" alt="Artintel Logo" className="h-12" />
+                        </Link>
+                    </motion.div>
 
-        </div>
-    )
+                    <div className="hidden lg:flex flex-row flex-1 absolute inset-0 items-center justify-center w-max mx-auto gap-x-2 text-sm text-muted-foreground font-medium">
+                        <AnimatePresence>
+                            {NAV_LINKS.map((link, index) => (
+                                <AnimationContainer
+                                    key={index}
+                                    animation="fadeDown"
+                                    delay={0.1 * index}
+                                >
+                                    <div className="relative">
+                                        <Link href={link.link} className="hover:text-foreground transition-all duration-500 hover:bg-accent rounded-md px-4 py-2">
+                                            {link.name}
+                                        </Link>
+                                    </div>
+                                </AnimationContainer>
+                            ))}
+                        </AnimatePresence>
+                    </div>
+
+                    <AnimationContainer animation="fadeLeft" delay={0.1}>
+                        <div className="flex items-center gap-x-4">
+                            {user ? (
+                                <Link href="/dashboard">
+                                    <Button>
+                                        Dashboard
+                                    </Button>
+                                </Link>
+                            ) : (
+                                <Link href="/waiting-list">
+                                    <Button size="sm" className="bg-gradient-to-r from-[#00cbdd] to-[#00cbdd]/70 hover:from-[#00cbdd]/90 hover:to-[#00cbdd]/60 text-white border-none">
+                                        Join Waiting List
+                                    </Button>
+                                </Link>
+                            )}
+                        </div>
+                    </AnimationContainer>
+                </Wrapper>
+            </motion.div>
+
+            {/* Mobile */}
+            <motion.div
+                animate={{
+                    y: visible ? 20 : 0,
+                    borderTopLeftRadius: open ? "0.75rem" : "2rem",
+                    borderTopRightRadius: open ? "0.75rem" : "2rem",
+                    borderBottomLeftRadius: open ? "0" : "2rem",
+                    borderBottomRightRadius: open ? "0" : "2rem",
+                }}
+                transition={{
+                    type: "spring",
+                    stiffness: 200,
+                    damping: 50,
+                }}
+                className={cn(
+                    "flex relative flex-col lg:hidden w-full justify-between items-center mx-auto py-4 z-50",
+                    visible && "bg-neutral-950 w-11/12 border",
+                    open && "border-transparent"
+                )}
+            >
+                <Wrapper className="flex items-center justify-between lg:px-4">
+                    <div className="flex items-center justify-between gap-x-4 w-full">
+                        <AnimationContainer animation="fadeRight" delay={0.1}>
+                            <Link href="/">
+                                <img src="/logo/Logo - PNG (2).png" alt="Artintel Logo" className="h-10" />
+                            </Link>
+                        </AnimationContainer>
+
+                        <AnimationContainer animation="fadeLeft" delay={0.1}>
+                            <div className="flex items-center justify-center gap-x-4">
+                                <Link href="/waiting-list">
+                                    <Button size="sm" className="bg-gradient-to-r from-[#00cbdd] to-[#00cbdd]/70 hover:from-[#00cbdd]/90 hover:to-[#00cbdd]/60 text-white border-none">
+                                        Join Waiting List
+                                    </Button>
+                                </Link>
+                                {open ? (
+                                    <XIcon
+                                        className="text-black dark:text-white"
+                                        onClick={() => setOpen(!open)}
+                                    />
+                                ) : (
+                                    <MenuIcon
+                                        className="text-black dark:text-white"
+                                        onClick={() => setOpen(!open)}
+                                    />
+                                )}
+                            </div>
+                        </AnimationContainer>
+                    </div>
+                </Wrapper>
+
+                <AnimatePresence>
+                    {open && (
+                        <motion.div
+                            ref={mobileMenuRef}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="flex rounded-b-xl absolute top-16 bg-neutral-950 inset-x-0 z-50 flex-col items-start justify-start gap-2 w-full px-4 py-8 shadow-xl shadow-neutral-950"
+                        >
+                            {NAV_LINKS.map((navItem: any, idx: number) => (
+                                <AnimationContainer
+                                    key={`link=${idx}`}
+                                    animation="fadeRight"
+                                    delay={0.1 * (idx + 1)}
+                                    className="w-full"
+                                >
+                                    <Link
+                                        href={navItem.link}
+                                        onClick={() => setOpen(false)}
+                                        className="relative text-neutral-300 hover:bg-neutral-800 w-full px-4 py-2 rounded-lg"
+                                    >
+                                        <motion.span>{navItem.name}</motion.span>
+                                    </Link>
+                                </AnimationContainer>
+                            ))}
+                            <AnimationContainer animation="fadeUp" delay={0.5} className="w-full">
+                                {user ? (
+                                    <Link href="/dashboard" className="w-full">
+                                        <Button
+                                            onClick={() => setOpen(false)}
+                                            variant="default"
+                                            className="block md:hidden w-full"
+                                        >
+                                            Dashboard
+                                        </Button>
+                                    </Link>
+                                ) : (
+                                    <>
+                                        <Link href="/waiting-list" className="w-full">
+                                            <Button
+                                                onClick={() => setOpen(false)}
+                                                className="block md:hidden w-full mb-2 bg-gradient-to-r from-[#00cbdd] to-[#00cbdd]/70 hover:from-[#00cbdd]/90 hover:to-[#00cbdd]/60 text-white border-none"
+                                            >
+                                                Join Waiting List
+                                            </Button>
+                                        </Link>
+                                        <Link href="/signin" className="w-full">
+                                            <Button
+                                                onClick={() => setOpen(false)}
+                                                variant="secondary"
+                                                className="block md:hidden w-full"
+                                            >
+                                                Login
+                                            </Button>
+                                        </Link>
+                                    </>
+                                )}
+                            </AnimationContainer>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+            </motion.div>
+        </header>
+    );
 };
 
-export default Navbar
+export default Navbar;
