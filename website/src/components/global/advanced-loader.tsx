@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useEffect } from 'react';
 import { cn, createCssVars, prefersReducedMotion } from '@/lib';
 
@@ -33,7 +35,7 @@ const AdvancedLoader: React.FC<AdvancedLoaderProps> = ({
   const [internalProgress, setInternalProgress] = useState<number>(progress);
   const [isCompleted, setIsCompleted] = useState<boolean>(false);
   const [isHovered, setIsHovered] = useState<boolean>(false);
-  
+
   // Map size to pixel values
   const sizeMap = {
     sm: '100px',
@@ -41,14 +43,14 @@ const AdvancedLoader: React.FC<AdvancedLoaderProps> = ({
     lg: '200px',
     xl: '300px',
   };
-  
+
   // Map speed to duration values
   const speedMap = {
     slow: '3s',
     normal: '2s',
     fast: '1s',
   };
-  
+
   // Update progress state when prop changes
   useEffect(() => {
     setInternalProgress(progress);
@@ -57,7 +59,7 @@ const AdvancedLoader: React.FC<AdvancedLoaderProps> = ({
       onComplete();
     }
   }, [progress, onComplete, isCompleted]);
-  
+
   // Handle ESC key to cancel animation
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (interactive && e.key === 'Escape') {
@@ -67,7 +69,7 @@ const AdvancedLoader: React.FC<AdvancedLoaderProps> = ({
       }
     }
   };
-  
+
   // CSS variables for the loader
   const loaderVars = createCssVars({
     size: sizeMap[size],
@@ -76,10 +78,10 @@ const AdvancedLoader: React.FC<AdvancedLoaderProps> = ({
     duration: speedMap[speed],
     progress: `${internalProgress}%`,
   });
-  
+
   // Check if reduced motion is preferred
   const reducedMotion = prefersReducedMotion();
-  
+
   // Create a text wrapper around the loader if text is provided
   const renderLoader = () => {
     // Common props for all loaders
@@ -108,7 +110,7 @@ const AdvancedLoader: React.FC<AdvancedLoaderProps> = ({
       'aria-valuemax': showProgress ? 100 : undefined,
       'aria-valuenow': showProgress ? internalProgress : undefined,
     };
-    
+
     switch (type) {
       case 'pulse':
         return (
@@ -121,7 +123,7 @@ const AdvancedLoader: React.FC<AdvancedLoaderProps> = ({
             )}
           </div>
         );
-      
+
       case 'spin':
         return (
           <div {...commonProps}>
@@ -131,7 +133,7 @@ const AdvancedLoader: React.FC<AdvancedLoaderProps> = ({
             )}
           </div>
         );
-      
+
       case 'bounce':
         return (
           <div {...commonProps}>
@@ -145,16 +147,16 @@ const AdvancedLoader: React.FC<AdvancedLoaderProps> = ({
             )}
           </div>
         );
-      
+
       case 'wave':
         return (
           <div {...commonProps}>
             <div className="wave">
               {[...Array(5)].map((_, i) => (
-                <div 
-                  key={i} 
-                  className="wave-bar" 
-                  style={{ animationDelay: `${i * 0.1}s` }} 
+                <div
+                  key={i}
+                  className="wave-bar"
+                  style={{ animationDelay: `${i * 0.1}s` }}
                 />
               ))}
             </div>
@@ -163,7 +165,7 @@ const AdvancedLoader: React.FC<AdvancedLoaderProps> = ({
             )}
           </div>
         );
-      
+
       case 'server':
         return (
           <div {...commonProps}>
@@ -177,7 +179,7 @@ const AdvancedLoader: React.FC<AdvancedLoaderProps> = ({
             )}
           </div>
         );
-      
+
       default:
         return (
           <div {...commonProps}>
@@ -189,7 +191,7 @@ const AdvancedLoader: React.FC<AdvancedLoaderProps> = ({
         );
     }
   };
-  
+
   return (
     <div className="advanced-loader-wrapper">
       {renderLoader()}
@@ -201,7 +203,7 @@ const AdvancedLoader: React.FC<AdvancedLoaderProps> = ({
           align-items: center;
           justify-content: center;
         }
-        
+
         .advanced-loader {
           position: relative;
           width: var(--size);
@@ -210,13 +212,13 @@ const AdvancedLoader: React.FC<AdvancedLoaderProps> = ({
           align-items: center;
           justify-content: center;
         }
-        
+
         .progress-text {
           position: absolute;
           font-weight: bold;
           color: var(--color);
         }
-        
+
         /* Pulse animation */
         .pulse-circle {
           position: absolute;
@@ -227,7 +229,7 @@ const AdvancedLoader: React.FC<AdvancedLoaderProps> = ({
           opacity: 0.7;
           animation: ${reducedMotion ? 'none' : `pulse var(--duration) infinite ease-in-out`};
         }
-        
+
         @keyframes pulse {
           0%, 100% {
             transform: scale(0.5);
@@ -238,7 +240,7 @@ const AdvancedLoader: React.FC<AdvancedLoaderProps> = ({
             opacity: 0.7;
           }
         }
-        
+
         /* Spinner animation */
         .spinner {
           width: calc(var(--size) * 0.8);
@@ -248,7 +250,7 @@ const AdvancedLoader: React.FC<AdvancedLoaderProps> = ({
           border-radius: 50%;
           animation: ${reducedMotion ? 'none' : `spin var(--duration) infinite linear`};
         }
-        
+
         @keyframes spin {
           0% {
             transform: rotate(0deg);
@@ -257,7 +259,7 @@ const AdvancedLoader: React.FC<AdvancedLoaderProps> = ({
             transform: rotate(360deg);
           }
         }
-        
+
         /* Bounce animation */
         .bouncer {
           display: flex;
@@ -265,7 +267,7 @@ const AdvancedLoader: React.FC<AdvancedLoaderProps> = ({
           justify-content: center;
           gap: calc(var(--size) * 0.05);
         }
-        
+
         .bounce-dot {
           width: calc(var(--size) * 0.15);
           height: calc(var(--size) * 0.15);
@@ -273,7 +275,7 @@ const AdvancedLoader: React.FC<AdvancedLoaderProps> = ({
           border-radius: 50%;
           animation: ${reducedMotion ? 'none' : `bounce var(--duration) infinite ease-in-out`};
         }
-        
+
         @keyframes bounce {
           0%, 100% {
             transform: translateY(0);
@@ -282,7 +284,7 @@ const AdvancedLoader: React.FC<AdvancedLoaderProps> = ({
             transform: translateY(calc(var(--size) * -0.2));
           }
         }
-        
+
         /* Wave animation */
         .wave {
           display: flex;
@@ -291,7 +293,7 @@ const AdvancedLoader: React.FC<AdvancedLoaderProps> = ({
           gap: calc(var(--size) * 0.05);
           height: calc(var(--size) * 0.6);
         }
-        
+
         .wave-bar {
           width: calc(var(--size) * 0.06);
           height: calc(var(--size) * 0.4);
@@ -299,7 +301,7 @@ const AdvancedLoader: React.FC<AdvancedLoaderProps> = ({
           border-radius: calc(var(--size) * 0.03);
           animation: ${reducedMotion ? 'none' : `wave var(--duration) infinite ease-in-out`};
         }
-        
+
         @keyframes wave {
           0%, 100% {
             height: calc(var(--size) * 0.1);
@@ -308,7 +310,7 @@ const AdvancedLoader: React.FC<AdvancedLoaderProps> = ({
             height: calc(var(--size) * 0.5);
           }
         }
-        
+
         /* Server animation */
         .server-rack {
           display: flex;
@@ -320,7 +322,7 @@ const AdvancedLoader: React.FC<AdvancedLoaderProps> = ({
           border-radius: calc(var(--size) * 0.05);
           box-shadow: inset 0 0 calc(var(--size) * 0.05) rgba(0, 0, 0, 0.2);
         }
-        
+
         .server-unit {
           height: calc(var(--size) * 0.15);
           background-color: var(--color);
@@ -328,7 +330,7 @@ const AdvancedLoader: React.FC<AdvancedLoaderProps> = ({
           position: relative;
           animation: ${reducedMotion ? 'none' : `floatAndBounce 4s infinite ease-in-out`};
         }
-        
+
         .server-unit::after {
           content: '';
           position: absolute;
@@ -341,7 +343,7 @@ const AdvancedLoader: React.FC<AdvancedLoaderProps> = ({
           background-color: ${secondaryColor};
           animation: ${reducedMotion ? 'none' : `blink var(--duration) infinite`};
         }
-        
+
         @keyframes floatAndBounce {
           0%, 100% {
             transform: translateX(0);
@@ -350,7 +352,7 @@ const AdvancedLoader: React.FC<AdvancedLoaderProps> = ({
             transform: translateX(calc(var(--size) * 0.1));
           }
         }
-        
+
         @keyframes blink {
           0%, 100% {
             opacity: 0.2;
@@ -359,7 +361,7 @@ const AdvancedLoader: React.FC<AdvancedLoaderProps> = ({
             opacity: 1;
           }
         }
-        
+
         /* Default loader */
         .default-loader {
           width: calc(var(--size) * 0.6);
@@ -374,4 +376,4 @@ const AdvancedLoader: React.FC<AdvancedLoaderProps> = ({
   );
 };
 
-export default AdvancedLoader; 
+export default AdvancedLoader;

@@ -1,0 +1,93 @@
+/* Legal Hero Animations */
+
+/* Background elements */
+.parallaxBg {
+  position: absolute;
+  inset: 0;
+  transition: transform 0.2s ease-out;
+}
+
+.gradientBg {
+  background: radial-gradient(circle at 50% 50%, rgba(79, 70, 229, 0.1) 0%, transparent 70%);
+}
+
+.glow {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, rgba(79, 70, 229, 0.2) 0%, transparent 70%);
+  filter: blur(20px);
+  opacity: 0.6;
+  transition: transform 0.2s ease-out;
+}
+
+/* Floating icons */
+.iconContainer {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-out;
+}
+
+.iconFloat1 {
+  animation: float1 8s infinite ease-in-out;
+}
+
+.iconFloat2 {
+  animation: float2 10s infinite ease-in-out;
+}
+
+.iconFloat3 {
+  animation: float3 9s infinite ease-in-out;
+}
+
+.iconPulse {
+  animation: pulse 6s infinite ease-in-out;
+}
+
+/* Keyframes */
+@keyframes float1 {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-15px);
+  }
+}
+
+@keyframes float2 {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(5deg);
+  }
+}
+
+@keyframes float3 {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-12px) rotate(-5deg);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+}

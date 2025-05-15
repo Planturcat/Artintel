@@ -1,14 +1,7 @@
 "use client";
-import { Metadata } from "next";
 import { ShieldCheck } from "lucide-react";
 import MaxWidthWrapper from "@/components/global/max-width-wrapper";
 import { cn } from "@/utils";
-
-export const metadata: Metadata = {
-  title: "Security | Artintel",
-  description:
-    "Learn about Artintel's security practices and how we protect your data.",
-};
 
 const SecurityPage = () => {
   return (

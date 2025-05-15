@@ -6,12 +6,8 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true
   },
-  swcMinify: true,
   reactStrictMode: true,
-  experimental: {
-    // Enable React 19 support
-    serverComponentsExternalPackages: []
-  }
+  serverExternalPackages: []
 };
 
 module.exports = nextConfig;

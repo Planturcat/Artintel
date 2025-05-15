@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState } from 'react';
 import { cn, createCssVars } from '@/lib';
 import { useDelayedAnimation } from '@/lib/hooks';
@@ -40,19 +42,19 @@ const EnhancedGridLayout: React.FC<EnhancedGridLayoutProps> = ({
 }) => {
   const [activeItem, setActiveItem] = useState<string | null>(null);
   const { ref, isInView } = useDelayedAnimation(0, 0.2);
-  
+
   const handleItemClick = (id: string) => {
     setActiveItem(id === activeItem ? null : id);
     if (onItemClick) onItemClick(id);
   };
-  
+
   const handleItemKeyDown = (e: React.KeyboardEvent, id: string) => {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
       handleItemClick(id);
     }
   };
-  
+
   const gridVars = createCssVars({
     columns: columns,
     rows: rows,
@@ -62,7 +64,7 @@ const EnhancedGridLayout: React.FC<EnhancedGridLayoutProps> = ({
   });
 
   return (
-    <div 
+    <div
       ref={ref as React.RefObject<HTMLDivElement>}
       className={cn(
         'grid-wrapper',
@@ -72,7 +74,7 @@ const EnhancedGridLayout: React.FC<EnhancedGridLayoutProps> = ({
         className
       )}
     >
-      <div 
+      <div
         className={cn(
           'enhanced-grid-container',
           'p-4 rounded-md shadow-lg',
@@ -119,4 +121,4 @@ const EnhancedGridLayout: React.FC<EnhancedGridLayoutProps> = ({
   );
 };
 
-export default EnhancedGridLayout; 
+export default EnhancedGridLayout;

@@ -1,5 +1,4 @@
 "use client";
-import { Metadata } from "next";
 import TermsHero from "./TermsHero";
 import {
   Gavel,

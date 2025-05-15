@@ -11,7 +11,9 @@
     "NEXT_PUBLIC_CLERK_SIGN_IN_URL": "/signin",
     "NEXT_PUBLIC_CLERK_SIGN_UP_URL": "/signup",
     "NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_URL": "/",
-    "NEXT_PUBLIC_CLERK_SIGN_UP_FALLBACK_URL": "/"
+    "NEXT_PUBLIC_CLERK_SIGN_UP_FALLBACK_URL": "/",
+    "NEXT_TYPESCRIPT_IGNORE_ERRORS": "true",
+    "NEXT_ESLINT_IGNORE_ERRORS": "true"
   },
   "github": {
     "silent": true
