@@ -7,8 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "update-lockfile": "pnpm install --no-frozen-lockfile",
-    "vercel-build": "node build.js"
+    "update-lockfile": "pnpm install --no-frozen-lockfile"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.9.15",

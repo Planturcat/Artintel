@@ -1,16 +1,14 @@
 "use client";
 import React from "react";
 import { Cookie } from "lucide-react";
+import LegalPageLayout from "@/components/legal/LegalPageLayout";
 
 const CookiePolicyPage = () => {
   return (
-    <div className="max-w-3xl mx-auto py-12 px-4" data-oid="l0zzlh_">
-      <div className="flex items-center justify-center mb-8" data-oid="9t36b0l">
-        <Cookie className="h-8 w-8 text-primary mr-2" data-oid="880kzlr" />
-        <h1 className="text-3xl font-bold text-center" data-oid="dp4u5o0">
-          Cookie Policy
-        </h1>
-      </div>
+    <LegalPageLayout
+      title="Cookie Policy"
+      icon={Cookie}
+    >
 
       <div className="space-y-8 text-muted-foreground" data-oid="xd_ikzo">
         <section data-oid="a6e9zlr">
@@ -196,7 +194,7 @@ const CookiePolicyPage = () => {
           <strong data-oid="--_4wqx">Last Updated:</strong> May 1, 2023
         </p>
       </div>
-    </div>
+    </LegalPageLayout>
   );
 };
 
