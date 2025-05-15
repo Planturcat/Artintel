@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Eye, EyeOff, ArrowRight, Apple, Globe, Mail, X, AlertCircle } from 'lucide-react';
+import { Eye, EyeOff, ArrowRight, Mail, X, AlertCircle } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
@@ -15,13 +15,13 @@ interface UnverifiedEmailModalProps {
   onResendVerification: (email: string) => Promise<void>;
 }
 
-const UnverifiedEmailModal: React.FC<UnverifiedEmailModalProps> = ({ 
-  email, 
+const UnverifiedEmailModal: React.FC<UnverifiedEmailModalProps> = ({
+  email,
   onClose,
   onResendVerification
 }) => {
   const [isResending, setIsResending] = useState(false);
-  
+
   const handleResend = async () => {
     try {
       setIsResending(true);
@@ -32,40 +32,40 @@ const UnverifiedEmailModal: React.FC<UnverifiedEmailModalProps> = ({
       setIsResending(false);
     }
   };
-  
+
   return (
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         className="relative w-full max-w-md bg-gray-900 rounded-xl border border-cyan-950 shadow-2xl p-6"
       >
-        <button 
+        <button
           onClick={onClose}
           className="absolute top-4 right-4 text-gray-400 hover:text-white"
         >
           <X size={20} />
         </button>
-        
+
         <div className="flex flex-col items-center justify-center mb-6">
           <div className="p-3 bg-yellow-600/20 rounded-full mb-4">
             <AlertCircle className="h-10 w-10 text-yellow-500" />
           </div>
           <h3 className="text-xl font-bold text-white mb-2">Email Verification Required</h3>
         </div>
-        
+
         <p className="text-gray-300 mb-4">
           Your account exists but you need to verify your email before logging in. We sent a verification link to:
         </p>
-        
+
         <div className="px-4 py-3 bg-gray-800 rounded-lg mb-6 text-center">
           <p className="text-[#00cbdd] font-medium">{email}</p>
         </div>
-        
+
         <p className="text-gray-400 mb-6 text-sm">
           Please check your inbox and spam folders for the verification email.
         </p>
-        
+
         <div className="flex flex-col space-y-3">
           <button
             onClick={handleResend}
@@ -87,7 +87,7 @@ const UnverifiedEmailModal: React.FC<UnverifiedEmailModalProps> = ({
               </>
             )}
           </button>
-          
+
           <button
             onClick={onClose}
             className="w-full flex items-center justify-center py-3 rounded-lg border border-gray-700 bg-transparent text-white font-medium hover:bg-gray-800 transition-all duration-300"
@@ -107,7 +107,7 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showUnverifiedModal, setShowUnverifiedModal] = useState(false);
   const [unverifiedEmail, setUnverifiedEmail] = useState('');
-  
+
   const { login, error: authError, loading, clearError, isAuthenticated, user } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -123,19 +123,19 @@ export default function LoginPage() {
   // Handle login form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!username || !password) {
       toast.error('Please enter both username and password');
       return;
     }
-    
+
     try {
       await login({ username, password });
-      
+
       // Login will redirect automatically if successful
       // If there's an error with unverified email, we need to show the modal
-      if (authError && 
-         (authError.includes('not verified') || 
+      if (authError &&
+         (authError.includes('not verified') ||
           authError.includes('verify your email') ||
           authError.includes('email verification') ||
           authError.includes('Email not verified'))) {
@@ -148,33 +148,7 @@ export default function LoginPage() {
     }
   };
 
-  // Demo account login handler
-  const handleDemoLogin = async (demoAccount: 'free' | 'pro' | 'enterprise') => {
-    let credentials;
-    
-    switch (demoAccount) {
-      case 'free':
-        credentials = { username: 'testuser', password: 'password123' };
-        break;
-      case 'pro':
-        credentials = { username: 'prouser', password: 'pro123' };
-        break;
-      case 'enterprise':
-        credentials = { username: 'adminuser', password: 'admin123' };
-        break;
-    }
-    
-    setUsername(credentials.username);
-    setPassword(credentials.password);
-    
-    try {
-      await login(credentials);
-      // Login will redirect automatically if successful
-    } catch (error: any) {
-      console.error('Demo login error:', error);
-      toast.error(error.message || 'Failed to sign in with demo account');
-    }
-  };
+
 
   // Handle resend verification email
   const handleResendVerification = async (email: string) => {
@@ -185,7 +159,7 @@ export default function LoginPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email })
       });
-      
+
       toast.success('Verification email sent successfully');
     } catch (error: any) {
       console.error('Failed to resend verification:', error);
@@ -193,21 +167,7 @@ export default function LoginPage() {
     }
   };
 
-  // Social login handlers
-  const handleGoogleSignIn = async () => {
-    try {
-      // Implement OAuth redirect for Google here
-      toast.info('Google sign-in is not implemented yet');
-    } catch (error) {
-      console.error('Google Sign In error:', error);
-      toast.error('Failed to initiate Google sign in');
-    }
-  };
 
-  const handleAppleSignIn = () => {
-    // Implement OAuth redirect for Apple here
-    toast.info('Apple sign-in is not implemented yet');
-  };
 
   // Show message based on query params
   useEffect(() => {
@@ -228,7 +188,7 @@ export default function LoginPage() {
     if (authError && !showUnverifiedModal) {
       toast.error(authError);
     }
-    
+
     // Clear error on component unmount
     return () => {
       clearError();
@@ -240,10 +200,10 @@ export default function LoginPage() {
       {/* Content */}
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-[#00cbdd] to-[#0088ff] bg-clip-text text-transparent">Welcome Back</h1>
-          <p className="text-gray-400">Sign in to continue to ArtIntel LLMs</p>
+          <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-[#00cbdd] to-[#0088ff] bg-clip-text text-transparent">ArtIntel LLMs</h1>
+          <p className="text-gray-400">Sign in to access your account</p>
         </div>
-        
+
         <div className="bg-gray-900 rounded-xl border border-gray-800 p-6 shadow-lg mb-6">
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
@@ -262,14 +222,14 @@ export default function LoginPage() {
                 />
               </div>
             </div>
-            
+
             <div>
               <div className="flex justify-between items-center mb-1">
                 <label htmlFor="password" className="block text-sm font-medium text-gray-300">
                   Password
                 </label>
-                <Link 
-                  href="/forgot-password" 
+                <Link
+                  href="/forgot-password"
                   className="text-sm text-[#00cbdd] hover:text-[#0088ff] transition-colors"
                 >
                   Forgot password?
@@ -298,7 +258,7 @@ export default function LoginPage() {
                 </button>
               </div>
             </div>
-            
+
             <div className="flex items-center">
               <input
                 id="remember-me"
@@ -312,7 +272,7 @@ export default function LoginPage() {
                 Remember me
               </label>
             </div>
-            
+
             <button
               type="submit"
               disabled={loading}
@@ -334,37 +294,10 @@ export default function LoginPage() {
               )}
             </button>
           </form>
-          
-          <div className="mt-6">
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-700"></div>
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-gray-900 text-gray-400">Or continue with</span>
-              </div>
-            </div>
-            
-            <div className="mt-6 grid grid-cols-2 gap-3">
-              <button
-                onClick={handleGoogleSignIn}
-                className="w-full flex items-center justify-center px-4 py-2.5 border border-gray-700 rounded-md shadow-sm text-sm font-medium text-white bg-gray-800 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-              >
-                <Globe className="h-5 w-5 mr-2" />
-                Google
-              </button>
-              
-              <button
-                onClick={handleAppleSignIn}
-                className="w-full flex items-center justify-center px-4 py-2.5 border border-gray-700 rounded-md shadow-sm text-sm font-medium text-white bg-gray-800 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-              >
-                <Apple className="h-5 w-5 mr-2" />
-                Apple
-              </button>
-            </div>
-          </div>
+
+
         </div>
-        
+
         <div className="bg-gray-900 rounded-xl border border-gray-800 p-5">
           <div className="text-center">
             <p className="text-sm text-gray-400">
@@ -375,7 +308,7 @@ export default function LoginPage() {
             </p>
           </div>
         </div>
-        
+
         <div className="mt-6">
           <p className="text-center text-sm text-gray-500">
             By continuing, you agree to ArtIntel's{' '}
@@ -389,64 +322,12 @@ export default function LoginPage() {
           </p>
         </div>
       </div>
-      
-      {/* Demo account cards */}
-      <div className="mt-8 w-full max-w-4xl">
-        <h2 className="text-xl font-semibold mb-4 text-center">Try Demo Accounts</h2>
-        <div className="grid md:grid-cols-3 gap-4">
-          <button
-            onClick={() => handleDemoLogin('free')}
-            disabled={loading}
-            className="relative w-full bg-gray-900 hover:bg-gray-800 border border-gray-800 rounded-xl p-5 transition-all duration-300 group cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed"
-          >
-            <div className="absolute top-0 left-0 h-1 w-full bg-green-500 rounded-t-xl"></div>
-            <h3 className="text-lg font-medium mb-1">Free Tier</h3>
-            <p className="text-gray-400 text-sm mb-3">Basic access to explore the platform</p>
-            <div className="flex items-center text-sm text-gray-300">
-              <span>Username: testuser</span>
-            </div>
-            <div className="absolute inset-0 flex items-center justify-center bg-black/70 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity">
-              <span className="px-4 py-2 bg-green-600 rounded-lg font-medium">Try Free Demo</span>
-            </div>
-          </button>
-          
-          <button
-            onClick={() => handleDemoLogin('pro')}
-            disabled={loading}
-            className="relative w-full bg-gray-900 hover:bg-gray-800 border border-gray-800 rounded-xl p-5 transition-all duration-300 group cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed"
-          >
-            <div className="absolute top-0 left-0 h-1 w-full bg-blue-500 rounded-t-xl"></div>
-            <h3 className="text-lg font-medium mb-1">Pro Tier</h3>
-            <p className="text-gray-400 text-sm mb-3">Enhanced features for professionals</p>
-            <div className="flex items-center text-sm text-gray-300">
-              <span>Username: prouser</span>
-            </div>
-            <div className="absolute inset-0 flex items-center justify-center bg-black/70 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity">
-              <span className="px-4 py-2 bg-blue-600 rounded-lg font-medium">Try Pro Demo</span>
-            </div>
-          </button>
-          
-          <button
-            onClick={() => handleDemoLogin('enterprise')}
-            disabled={loading}
-            className="relative w-full bg-gray-900 hover:bg-gray-800 border border-gray-800 rounded-xl p-5 transition-all duration-300 group cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed"
-          >
-            <div className="absolute top-0 left-0 h-1 w-full bg-purple-500 rounded-t-xl"></div>
-            <h3 className="text-lg font-medium mb-1">Enterprise Tier</h3>
-            <p className="text-gray-400 text-sm mb-3">Full capabilities for organizations</p>
-            <div className="flex items-center text-sm text-gray-300">
-              <span>Username: adminuser</span>
-            </div>
-            <div className="absolute inset-0 flex items-center justify-center bg-black/70 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity">
-              <span className="px-4 py-2 bg-purple-600 rounded-lg font-medium">Try Enterprise Demo</span>
-            </div>
-          </button>
-        </div>
-      </div>
-      
+
+
+
       {/* Unverified email modal */}
       {showUnverifiedModal && (
-        <UnverifiedEmailModal 
+        <UnverifiedEmailModal
           email={unverifiedEmail}
           onClose={() => setShowUnverifiedModal(false)}
           onResendVerification={handleResendVerification}
@@ -454,4 +335,4 @@ export default function LoginPage() {
       )}
     </div>
   );
-} 
+}

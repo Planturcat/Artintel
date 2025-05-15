@@ -19,17 +19,17 @@ const passwordStrengthLevels = [
 
 // User types
 const userTypes = [
-  { 
-    id: "regular", 
-    name: "Personal", 
-    description: "For individual users exploring AI capabilities", 
+  {
+    id: "regular",
+    name: "Personal",
+    description: "For individual users exploring AI capabilities",
     icon: <User className="h-5 w-5" />,
     color: "from-cyan-600 to-blue-700"
   },
-  { 
-    id: "enterprise", 
-    name: "Enterprise", 
-    description: "For teams and organizations with professional needs", 
+  {
+    id: "enterprise",
+    name: "Enterprise",
+    description: "For teams and organizations with professional needs",
     icon: <Building className="h-5 w-5" />,
     color: "from-cyan-600 to-blue-800"
   }
@@ -84,12 +84,12 @@ const tiers = [
 export default function RegisterPage() {
   const router = useRouter();
   const { register, loading: authLoading, error: authError } = useAuth();
-  
+
   // Multi-step form state
   const [currentStep, setCurrentStep] = useState(1);
   const [userType, setUserType] = useState<string | null>(null);
   const [selectedTier, setSelectedTier] = useState<string>("free");
-  
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -102,12 +102,12 @@ export default function RegisterPage() {
     emailNotifications: true,
     theme: "dark"
   });
-  
+
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState(0);
-  
+
   // Show auth errors
   useEffect(() => {
     if (authError) {
@@ -115,7 +115,7 @@ export default function RegisterPage() {
       toast.error(authError);
     }
   }, [authError]);
-  
+
   // Social signup handlers (these would be connected to actual auth providers in production)
   const handleGoogleSignUp = async () => {
     try {
@@ -131,20 +131,20 @@ export default function RegisterPage() {
     // Implement OAuth redirect for Apple here
     toast.info('Apple sign-up is not implemented yet');
   };
-  
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, checked, type } = e.target;
     setFormData(prev => ({
       ...prev,
       [name]: type === "checkbox" ? checked : value
     }));
-    
+
     // Update password strength if password field changes
     if (name === "password") {
       setPasswordStrength(calculatePasswordStrength(value));
     }
   };
-  
+
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -152,25 +152,25 @@ export default function RegisterPage() {
       [name]: value
     }));
   };
-  
+
   // Calculate password strength
   const calculatePasswordStrength = (password: string) => {
     if (!password) return 0;
-    
+
     let strength = 0;
-    
+
     // Length check
     if (password.length >= 8) strength += 1;
     if (password.length >= 12) strength += 1;
-    
+
     // Character type checks
     if (/[A-Z]/.test(password)) strength += 1;
     if (/[0-9]/.test(password)) strength += 1;
     if (/[^A-Za-z0-9]/.test(password)) strength += 1;
-    
+
     return Math.min(4, strength);
   };
-  
+
   // Password validation criteria
   const passwordCriteria = [
     { label: "At least 8 characters", met: formData.password.length >= 8 },
@@ -178,7 +178,7 @@ export default function RegisterPage() {
     { label: "Contains number", met: /[0-9]/.test(formData.password) },
     { label: "Contains special character", met: /[^A-Za-z0-9]/.test(formData.password) }
   ];
-  
+
   // Handle next step in multi-step form
   const handleNextStep = () => {
     // Validation for each step
@@ -189,24 +189,24 @@ export default function RegisterPage() {
       }
       setError(null);
       setCurrentStep(2);
-    } 
+    }
     else if (currentStep === 2) {
       // Validate basic information
       if (!formData.name.trim()) {
         setError("Name is required");
         return;
       }
-      
+
       if (!formData.email.trim()) {
         setError("Email is required");
         return;
       }
-      
+
       if (userType === "enterprise" && !formData.organization.trim()) {
         setError("Organization name is required for enterprise accounts");
         return;
       }
-      
+
       setError(null);
       setCurrentStep(3);
     }
@@ -216,35 +216,35 @@ export default function RegisterPage() {
         setError("Password must be at least 8 characters");
         return;
       }
-      
+
       if (formData.password !== formData.confirmPassword) {
         setError("Passwords do not match");
         return;
       }
-      
+
       setError(null);
       setCurrentStep(4);
     }
   };
-  
+
   // Handle previous step
   const handlePrevStep = () => {
     setError(null);
     setCurrentStep(prev => Math.max(1, prev - 1));
   };
-  
+
   // Handle form submission
   const handleSubmit = async () => {
     setError(null);
     setIsLoading(true);
-    
+
     // Final validation before submission
     if (formData.password !== formData.confirmPassword) {
       setError("Passwords do not match");
       setIsLoading(false);
       return;
     }
-    
+
     if (!formData.acceptTerms) {
       setError("You must accept the terms and conditions");
       setIsLoading(false);
@@ -255,7 +255,7 @@ export default function RegisterPage() {
       console.log("Registration submission started");
       console.log("Selected user type:", userType);
       console.log("Selected tier:", selectedTier);
-      
+
       // Prepare data for registration - ensure we use the correct parameter names
       const userData = {
         username: formData.email.split('@')[0].toLowerCase().replace(/[^a-z0-9]/g, '') + Math.floor(Math.random() * 1000),  // Generate username from email with random suffix
@@ -273,7 +273,7 @@ export default function RegisterPage() {
 
       // Register the user using our AuthContext
       await register(userData);
-      
+
       console.log("Registration submitted successfully");
       toast.success("Account created! Please check your email for verification instructions.");
     } catch (error: any) {
@@ -284,25 +284,25 @@ export default function RegisterPage() {
       setIsLoading(false);
     }
   };
-  
+
   return (
     <div className="min-h-screen flex flex-col bg-[#00031b]">
       {/* Header with progress indicator */}
       <header className="border-b border-cyan-950 bg-[#00031b]/80 backdrop-blur-lg py-4 px-6">
         <div className="max-w-6xl mx-auto flex justify-between items-center">
-          <Link href="/" className="text-2xl font-bold text-white">
+          <div className="text-2xl font-bold text-white">
             Artintel<span className="text-[#00cbdd]"> LLms</span>
-          </Link>
-          
+          </div>
+
           {/* Progress steps */}
           <div className="hidden sm:flex items-center space-x-2">
             {[1, 2, 3, 4].map((step) => (
               <div key={step} className="flex items-center">
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                  currentStep === step 
-                    ? "bg-[#00cbdd] text-[#00031b]" 
-                    : currentStep > step 
-                      ? "bg-[#00cbdd]/80 text-[#00031b]" 
+                  currentStep === step
+                    ? "bg-[#00cbdd] text-[#00031b]"
+                    : currentStep > step
+                      ? "bg-[#00cbdd]/80 text-[#00031b]"
                       : "bg-gray-800 text-gray-400"
                 }`}>
                   {currentStep > step ? <Check className="h-4 w-4" /> : step}
@@ -315,7 +315,7 @@ export default function RegisterPage() {
               </div>
             ))}
           </div>
-          
+
           <div className="text-sm text-gray-400">
             <Link href="/login" className="hover:text-[#00cbdd]">
               Already have an account?
@@ -323,27 +323,27 @@ export default function RegisterPage() {
           </div>
         </div>
       </header>
-      
+
       <div className="flex-1 flex items-center justify-center px-4 py-12">
         <div className="w-full max-w-3xl">
           {/* Step indicators for mobile */}
           <div className="sm:hidden flex justify-center mb-8">
             <div className="flex space-x-2">
               {[1, 2, 3, 4].map((step) => (
-                <div 
-                  key={step} 
+                <div
+                  key={step}
                   className={`w-2.5 h-2.5 rounded-full ${
-                    currentStep === step 
-                      ? "bg-[#00cbdd]" 
-                      : currentStep > step 
-                        ? "bg-[#00cbdd]/60" 
+                    currentStep === step
+                      ? "bg-[#00cbdd]"
+                      : currentStep > step
+                        ? "bg-[#00cbdd]/60"
                         : "bg-gray-700"
-                  }`} 
+                  }`}
                 />
               ))}
             </div>
           </div>
-          
+
           {/* Card with step content */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
@@ -357,16 +357,16 @@ export default function RegisterPage() {
                 <p>{error}</p>
               </div>
             )}
-            
+
             {/* Step 1: Account Type Selection */}
             {currentStep === 1 && (
               <div className="p-8">
                 <h2 className="text-2xl font-bold text-white mb-6">Choose Account Type</h2>
                 <p className="text-gray-400 mb-8">Select the type of account that best fits your needs</p>
-                
+
                 {/* Social Sign Up Buttons */}
                 <div className="mb-8 space-y-3">
-                  <button 
+                  <button
                     onClick={handleGoogleSignUp}
                     type="button"
                     className="w-full flex items-center justify-center px-4 py-3 rounded-lg bg-white text-gray-800 font-medium hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-[#00cbdd] focus:ring-offset-2 focus:ring-offset-[#00031b] transition-all duration-300"
@@ -391,7 +391,7 @@ export default function RegisterPage() {
                     </svg>
                     Sign up with Google
                   </button>
-                  <button 
+                  <button
                     onClick={handleAppleSignUp}
                     type="button"
                     className="w-full flex items-center justify-center px-4 py-3 rounded-lg bg-black text-white font-medium hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-[#00cbdd] focus:ring-offset-2 focus:ring-offset-[#00031b] transition-all duration-300"
@@ -400,14 +400,14 @@ export default function RegisterPage() {
                     Sign up with Apple
                   </button>
                 </div>
-                
+
                 {/* Divider */}
                 <div className="flex items-center mb-8">
                   <div className="flex-1 h-px bg-gray-700"></div>
                   <span className="px-4 text-sm text-gray-500">or create an account</span>
                   <div className="flex-1 h-px bg-gray-700"></div>
                 </div>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
                   {userTypes.map(type => (
                     <div
@@ -423,7 +423,7 @@ export default function RegisterPage() {
                       {userType === type.id && (
                         <div className="absolute inset-0 opacity-10 bg-[url('/grid-pattern.svg')] bg-repeat"></div>
                       )}
-                      
+
                       <div className="relative p-6">
                         <div className="flex items-start mb-4">
                           <div className={`p-2 rounded-lg ${
@@ -446,7 +446,7 @@ export default function RegisterPage() {
                     </div>
                   ))}
                 </div>
-                
+
                 <div className="flex justify-end">
                   <button
                     type="button"
@@ -458,13 +458,13 @@ export default function RegisterPage() {
                 </div>
               </div>
             )}
-            
+
             {/* Step 2: Basic Information */}
             {currentStep === 2 && (
               <div className="p-8">
                 <h2 className="text-2xl font-bold text-white mb-6">Basic Information</h2>
                 <p className="text-gray-400 mb-8">Tell us about yourself{userType === 'enterprise' ? ' and your organization' : ''}</p>
-                
+
                 <div className="space-y-6">
                   <div>
                     <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-1">
@@ -485,7 +485,7 @@ export default function RegisterPage() {
                       />
                     </div>
                   </div>
-                  
+
                   <div>
                     <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-1">
                       Email Address
@@ -505,7 +505,7 @@ export default function RegisterPage() {
                       />
                     </div>
                   </div>
-                  
+
                   {userType === 'enterprise' && (
                     <>
                       <div>
@@ -527,7 +527,7 @@ export default function RegisterPage() {
                           />
                         </div>
                       </div>
-                      
+
                       <div>
                         <label htmlFor="domain" className="block text-sm font-medium text-gray-300 mb-1">
                           Organization Domain (Optional)
@@ -550,7 +550,7 @@ export default function RegisterPage() {
                           May be used for domain-based SSO or email restrictions
                         </p>
                       </div>
-                      
+
                       <div>
                         <label htmlFor="role" className="block text-sm font-medium text-gray-300 mb-1">
                           Your Role
@@ -578,7 +578,7 @@ export default function RegisterPage() {
                     </>
                   )}
                 </div>
-                
+
                 <div className="flex justify-between mt-8">
                   <button
                     type="button"
@@ -597,13 +597,13 @@ export default function RegisterPage() {
                 </div>
               </div>
             )}
-            
+
             {/* Step 3: Password and Security */}
             {currentStep === 3 && (
               <div className="p-8">
                 <h2 className="text-2xl font-bold text-white mb-6">Create Password</h2>
                 <p className="text-gray-400 mb-8">Set up a secure password for your account</p>
-                
+
                 <div className="space-y-6">
                   <div>
                     <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-1">
@@ -630,28 +630,28 @@ export default function RegisterPage() {
                         {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                       </button>
                     </div>
-                    
+
                     {/* Password strength meter */}
                     {formData.password && (
                       <div className="mt-4 space-y-3">
                         <div className="flex items-center justify-between text-xs">
                           <span className="text-gray-400">Password strength:</span>
                           <span className={`font-medium ${
-                            passwordStrength <= 1 ? "text-red-400" : 
-                            passwordStrength === 2 ? "text-yellow-400" : 
+                            passwordStrength <= 1 ? "text-red-400" :
+                            passwordStrength === 2 ? "text-yellow-400" :
                             "text-green-400"
                           }`}>
                             {passwordStrengthLevels[passwordStrength].label}
                           </span>
                         </div>
-                        
+
                         <div className="h-1.5 w-full rounded-full bg-gray-700">
-                          <div 
+                          <div
                             className={`h-1.5 rounded-full ${passwordStrengthLevels[passwordStrength].color}`}
                             style={{ width: `${(passwordStrength / 4) * 100}%` }}
                           />
                         </div>
-                        
+
                         {/* Password criteria checklist */}
                         <ul className="mt-2 space-y-1">
                           {passwordCriteria.map((criteria, index) => (
@@ -670,7 +670,7 @@ export default function RegisterPage() {
                       </div>
                     )}
                   </div>
-                  
+
                   <div>
                     <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-300 mb-1">
                       Confirm Password
@@ -702,7 +702,7 @@ export default function RegisterPage() {
                     )}
                   </div>
                 </div>
-                
+
                 <div className="flex justify-between mt-8">
                   <button
                     type="button"
@@ -721,13 +721,13 @@ export default function RegisterPage() {
                 </div>
               </div>
             )}
-            
+
             {/* Step 4: Select Plan and Finish */}
             {currentStep === 4 && (
               <div className="p-8">
                 <h2 className="text-2xl font-bold text-white mb-6">Select Your Plan</h2>
                 <p className="text-gray-400 mb-8">Choose the plan that works best for you. You can always upgrade later.</p>
-                
+
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-8">
                   {tiers.map(tier => (
                     <div
@@ -744,11 +744,11 @@ export default function RegisterPage() {
                         <h3 className="text-lg font-bold text-white">{tier.name}</h3>
                         <div className="mt-1 text-white/90 font-medium">{tier.price}</div>
                       </div>
-                      
+
                       {/* Body */}
                       <div className="p-4 bg-gray-800">
                         <p className="text-sm text-gray-300 mb-4">{tier.description}</p>
-                        
+
                         <ul className="space-y-2">
                           {tier.features.map((feature, index) => (
                             <li key={index} className="flex items-start text-sm">
@@ -757,12 +757,12 @@ export default function RegisterPage() {
                             </li>
                           ))}
                         </ul>
-                        
+
                         {/* Conditional message for Pro/Enterprise tiers */}
                         {(tier.id === 'pro' || tier.id === 'enterprise') && (
                           <div className="mt-4 p-3 bg-cyan-950/50 border border-cyan-900 rounded-lg">
                             <p className="text-sm text-cyan-300">
-                              We'll contact you soon about {tier.id === 'pro' ? 'Pro' : 'Enterprise'} setup. 
+                              We'll contact you soon about {tier.id === 'pro' ? 'Pro' : 'Enterprise'} setup.
                               We recommend trying the Free tier first to explore our platform!
                             </p>
                           </div>
@@ -771,7 +771,7 @@ export default function RegisterPage() {
                     </div>
                   ))}
                 </div>
-                
+
                 {/* Additional message when Pro/Enterprise tier is selected */}
                 {(selectedTier === 'pro' || selectedTier === 'enterprise') && (
                   <div className="mb-6 p-4 bg-cyan-900/20 border border-cyan-900/40 rounded-lg flex items-start">
@@ -787,7 +787,7 @@ export default function RegisterPage() {
                     </div>
                   </div>
                 )}
-                
+
                 <div className="space-y-4 mb-8">
                   <div className="flex items-start">
                     <div className="flex h-5 items-center">
@@ -813,7 +813,7 @@ export default function RegisterPage() {
                       </label>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-start">
                     <div className="flex h-5 items-center">
                       <input
@@ -832,7 +832,7 @@ export default function RegisterPage() {
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="flex justify-between mt-8">
                   <button
                     type="button"
@@ -858,4 +858,4 @@ export default function RegisterPage() {
       </div>
     </div>
   );
-} 
+}

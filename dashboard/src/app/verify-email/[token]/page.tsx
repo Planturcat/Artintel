@@ -23,7 +23,7 @@ export default function VerifyEmailPage() {
   const router = useRouter();
   const token = params.token as string;
   const { verifyEmail, completeProfile } = useAuth();
-  
+
   const [isVerifying, setIsVerifying] = useState(true);
   const [isVerified, setIsVerified] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -34,7 +34,7 @@ export default function VerifyEmailPage() {
   } | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isEnterprise, setIsEnterprise] = useState(false);
-  
+
   const [formData, setFormData] = useState<ProfileFormData>({
     displayName: "",
     avatar: null,
@@ -45,7 +45,7 @@ export default function VerifyEmailPage() {
     emailNotifications: true,
     theme: "dark"
   });
-  
+
   // Verify the token on page load
   useEffect(() => {
     const verifyUserEmail = async () => {
@@ -58,13 +58,13 @@ export default function VerifyEmailPage() {
           email: data.email,
           requires_profile_setup: data.requires_profile_setup
         });
-        
+
         // Pre-fill form data
         setFormData(prev => ({
           ...prev,
           displayName: data.user?.full_name || "",
         }));
-        
+
         // Check if enterprise user
         if (data.user?.organization || data.user?.role === 'admin' || data.user?.role === 'manager') {
           setIsEnterprise(true);
@@ -75,10 +75,10 @@ export default function VerifyEmailPage() {
         setIsVerifying(false);
       }
     };
-    
+
     verifyUserEmail();
   }, [token, verifyEmail]);
-  
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -86,7 +86,7 @@ export default function VerifyEmailPage() {
       [name]: value
     }));
   };
-  
+
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -94,12 +94,12 @@ export default function VerifyEmailPage() {
       [name]: value
     }));
   };
-  
+
   const handleProfileSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     setIsSubmitting(true);
-    
+
     try {
       const profileData = {
         full_name: formData.displayName,
@@ -110,9 +110,9 @@ export default function VerifyEmailPage() {
           email_notifications: formData.emailNotifications
         }
       };
-      
+
       await completeProfile(token, profileData);
-      
+
       // Redirect to dashboard after successful profile completion
       router.push('/dashboard');
     } catch (err: any) {
@@ -120,18 +120,18 @@ export default function VerifyEmailPage() {
       setIsSubmitting(false);
     }
   };
-  
+
   return (
     <div className="min-h-screen flex flex-col bg-[#00031b]">
       {/* Header */}
       <header className="border-b border-cyan-950 bg-[#00031b]/80 backdrop-blur-lg py-4 px-6">
         <div className="max-w-6xl mx-auto flex justify-between items-center">
-          <Link href="/" className="text-2xl font-bold text-white">
+          <div className="text-2xl font-bold text-white">
             Artintel<span className="bg-clip-text text-transparent bg-gradient-to-r from-[#00cbdd] to-blue-500"> LLms</span>
-          </Link>
+          </div>
         </div>
       </header>
-      
+
       <div className="flex-1 flex items-center justify-center px-4 py-12">
         <div className="w-full max-w-2xl">
           <motion.div
@@ -146,7 +146,7 @@ export default function VerifyEmailPage() {
                 <p>{error}</p>
               </div>
             )}
-            
+
             {/* Verification in progress */}
             {isVerifying && (
               <div className="p-8 text-center">
@@ -155,7 +155,7 @@ export default function VerifyEmailPage() {
                 <p className="text-gray-400">Please wait while we verify your email address...</p>
               </div>
             )}
-            
+
             {/* Verification failed */}
             {!isVerifying && !isVerified && (
               <div className="p-8 text-center">
@@ -164,15 +164,15 @@ export default function VerifyEmailPage() {
                 </div>
                 <h2 className="text-xl font-bold text-white mt-6 mb-2">Verification Failed</h2>
                 <p className="text-gray-400 mb-6">{error || "The verification link is invalid or has expired."}</p>
-                <Link 
-                  href="/register" 
+                <Link
+                  href="/register"
                   className="inline-block px-6 py-2 bg-gradient-to-r from-[#00cbdd] to-blue-600 text-white rounded-lg font-medium hover:from-[#00cbdd]/90 hover:to-blue-700 transition-all duration-300"
                 >
                   Back to Registration
                 </Link>
               </div>
             )}
-            
+
             {/* Verification successful - Profile setup */}
             {!isVerifying && isVerified && userData && (
               <div className="p-8">
@@ -183,7 +183,7 @@ export default function VerifyEmailPage() {
                   <h2 className="text-2xl font-bold text-white mt-6 mb-2">Email Verified!</h2>
                   <p className="text-gray-400">Complete your profile to get started</p>
                 </div>
-                
+
                 <form onSubmit={handleProfileSubmit} className="space-y-6">
                   <div>
                     <label htmlFor="displayName" className="block text-sm font-medium text-gray-300 mb-1">
@@ -205,7 +205,7 @@ export default function VerifyEmailPage() {
                       />
                     </div>
                   </div>
-                  
+
                   <div>
                     <label htmlFor="bio" className="block text-sm font-medium text-gray-300 mb-1">
                       Bio (Optional)
@@ -220,7 +220,7 @@ export default function VerifyEmailPage() {
                       placeholder="Tell us a bit about yourself"
                     />
                   </div>
-                  
+
                   {isEnterprise && (
                     <>
                       <div>
@@ -242,7 +242,7 @@ export default function VerifyEmailPage() {
                           />
                         </div>
                       </div>
-                      
+
                       <div>
                         <label htmlFor="domain" className="block text-sm font-medium text-gray-300 mb-1">
                           Organization Domain (Optional)
@@ -265,7 +265,7 @@ export default function VerifyEmailPage() {
                           May be used for domain-based SSO or email restrictions
                         </p>
                       </div>
-                      
+
                       <div>
                         <label htmlFor="role" className="block text-sm font-medium text-gray-300 mb-1">
                           Your Role
@@ -292,7 +292,7 @@ export default function VerifyEmailPage() {
                       </div>
                     </>
                   )}
-                  
+
                   <div>
                     <label className="block text-sm font-medium text-gray-300 mb-1">
                       Preferences
@@ -315,7 +315,7 @@ export default function VerifyEmailPage() {
                           </label>
                         </div>
                       </div>
-                      
+
                       <div className="flex items-start">
                         <div className="flex h-5 items-center">
                           <input
@@ -334,7 +334,7 @@ export default function VerifyEmailPage() {
                           </label>
                         </div>
                       </div>
-                      
+
                       <div className="flex items-start">
                         <div className="flex h-5 items-center">
                           <input
@@ -355,7 +355,7 @@ export default function VerifyEmailPage() {
                       </div>
                     </div>
                   </div>
-                  
+
                   <div className="pt-4">
                     <button
                       type="submit"
@@ -374,4 +374,4 @@ export default function VerifyEmailPage() {
       </div>
     </div>
   );
-} 
+}

@@ -11,7 +11,7 @@ export default function ResetPasswordPage() {
   const params = useParams();
   const router = useRouter();
   const token = params.token as string;
-  
+
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -19,7 +19,7 @@ export default function ResetPasswordPage() {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [passwordStrength, setPasswordStrength] = useState(0);
-  
+
   // Password strength levels
   const passwordStrengthLevels = [
     { level: 0, color: "bg-gray-700", label: "Too weak" },
@@ -28,7 +28,7 @@ export default function ResetPasswordPage() {
     { level: 3, color: "bg-green-500", label: "Strong" },
     { level: 4, color: "bg-green-600", label: "Very strong" }
   ];
-  
+
   // Password validation criteria
   const passwordCriteria = [
     { label: "At least 8 characters", met: password.length >= 8 },
@@ -36,48 +36,48 @@ export default function ResetPasswordPage() {
     { label: "Contains number", met: /[0-9]/.test(password) },
     { label: "Contains special character", met: /[^A-Za-z0-9]/.test(password) }
   ];
-  
+
   // Calculate password strength
   const calculatePasswordStrength = (password: string) => {
     if (!password) return 0;
-    
+
     let strength = 0;
-    
+
     // Length check
     if (password.length >= 8) strength += 1;
     if (password.length >= 12) strength += 1;
-    
+
     // Character type checks
     if (/[A-Z]/.test(password)) strength += 1;
     if (/[0-9]/.test(password)) strength += 1;
     if (/[^A-Za-z0-9]/.test(password)) strength += 1;
-    
+
     return Math.min(4, strength);
   };
-  
+
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newPassword = e.target.value;
     setPassword(newPassword);
     setPasswordStrength(calculatePasswordStrength(newPassword));
   };
-  
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Validation
     if (password.length < 8) {
       setError('Password must be at least 8 characters');
       return;
     }
-    
+
     if (password !== confirmPassword) {
       setError('Passwords do not match');
       return;
     }
-    
+
     setIsSubmitting(true);
     setError(null);
-    
+
     try {
       const result = await AuthService.resetPassword(token, password);
       setSuccess(true);
@@ -87,18 +87,18 @@ export default function ResetPasswordPage() {
       setIsSubmitting(false);
     }
   };
-  
+
   return (
     <div className="min-h-screen flex flex-col bg-[#00031b]">
       {/* Header */}
       <header className="border-b border-cyan-950 bg-[#00031b]/80 backdrop-blur-lg py-4 px-6">
         <div className="max-w-6xl mx-auto flex justify-between items-center">
-          <Link href="/" className="text-2xl font-bold text-white">
+          <div className="text-2xl font-bold text-white">
             Artintel<span className="text-[#00cbdd]"> LLms</span>
-          </Link>
+          </div>
         </div>
       </header>
-      
+
       <div className="flex-1 flex items-center justify-center px-4 py-12">
         <div className="w-full max-w-md">
           <motion.div
@@ -115,7 +115,7 @@ export default function ResetPasswordPage() {
                       <Check className="h-10 w-10 text-green-500" />
                     </div>
                   </div>
-                  
+
                   <div className="text-center mb-8">
                     <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#00cbdd] to-blue-600">
                       Password Reset Successful
@@ -127,7 +127,7 @@ export default function ResetPasswordPage() {
                       You can now log in with your new password.
                     </p>
                   </div>
-                  
+
                   <div className="mt-8">
                     <Link
                       href="/login"
@@ -148,13 +148,13 @@ export default function ResetPasswordPage() {
                       Please enter a new password for your account.
                     </p>
                   </div>
-                  
+
                   {error && (
                     <div className="bg-red-900/30 border-l-4 border-red-500 p-4 mb-6 text-red-100">
                       <p>{error}</p>
                     </div>
                   )}
-                  
+
                   <form onSubmit={handleSubmit} className="space-y-6">
                     <div>
                       <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-1">
@@ -181,28 +181,28 @@ export default function ResetPasswordPage() {
                           {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                         </button>
                       </div>
-                      
+
                       {/* Password strength meter */}
                       {password && (
                         <div className="mt-4 space-y-3">
                           <div className="flex items-center justify-between text-xs">
                             <span className="text-gray-400">Password strength:</span>
                             <span className={`font-medium ${
-                              passwordStrength <= 1 ? "text-red-400" : 
-                              passwordStrength === 2 ? "text-yellow-400" : 
+                              passwordStrength <= 1 ? "text-red-400" :
+                              passwordStrength === 2 ? "text-yellow-400" :
                               "text-green-400"
                             }`}>
                               {passwordStrengthLevels[passwordStrength].label}
                             </span>
                           </div>
-                          
+
                           <div className="h-1.5 w-full rounded-full bg-gray-700">
-                            <div 
+                            <div
                               className={`h-1.5 rounded-full ${passwordStrengthLevels[passwordStrength].color}`}
                               style={{ width: `${(passwordStrength / 4) * 100}%` }}
                             />
                           </div>
-                          
+
                           {/* Password criteria checklist */}
                           <ul className="mt-2 space-y-1">
                             {passwordCriteria.map((criteria, index) => (
@@ -221,7 +221,7 @@ export default function ResetPasswordPage() {
                         </div>
                       )}
                     </div>
-                    
+
                     <div>
                       <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-300 mb-1">
                         Confirm New Password
@@ -252,7 +252,7 @@ export default function ResetPasswordPage() {
                         <p className="mt-1 text-xs text-red-400">Passwords do not match</p>
                       )}
                     </div>
-                    
+
                     <div>
                       <button
                         type="submit"
@@ -263,7 +263,7 @@ export default function ResetPasswordPage() {
                       </button>
                     </div>
                   </form>
-                  
+
                   <div className="mt-8 pt-6 border-t border-gray-800">
                     <p className="text-sm text-center text-gray-500">
                       <Link
@@ -282,4 +282,4 @@ export default function ResetPasswordPage() {
       </div>
     </div>
   );
-} 
+}

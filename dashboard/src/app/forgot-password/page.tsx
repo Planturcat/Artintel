@@ -11,18 +11,18 @@ export default function ForgotPasswordPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!email.trim()) {
       setError('Please enter your email address');
       return;
     }
-    
+
     setIsSubmitting(true);
     setError(null);
-    
+
     try {
       const result = await AuthService.forgotPassword(email);
       setSuccess(true);
@@ -32,18 +32,18 @@ export default function ForgotPasswordPage() {
       setIsSubmitting(false);
     }
   };
-  
+
   return (
     <div className="min-h-screen flex flex-col bg-[#00031b]">
       {/* Header */}
       <header className="border-b border-cyan-950 bg-[#00031b]/80 backdrop-blur-lg py-4 px-6">
         <div className="max-w-6xl mx-auto flex justify-between items-center">
-          <Link href="/" className="text-2xl font-bold text-white">
+          <div className="text-2xl font-bold text-white">
             Artintel<span className="text-[#00cbdd]"> LLms</span>
-          </Link>
+          </div>
         </div>
       </header>
-      
+
       <div className="flex-1 flex items-center justify-center px-4 py-12">
         <div className="w-full max-w-md">
           <motion.div
@@ -60,7 +60,7 @@ export default function ForgotPasswordPage() {
                       <Mail className="h-10 w-10 text-green-500" />
                     </div>
                   </div>
-                  
+
                   <div className="text-center mb-8">
                     <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#00cbdd] to-blue-600">
                       Check Your Email
@@ -72,7 +72,7 @@ export default function ForgotPasswordPage() {
                       Please check your inbox and follow the link to reset your password.
                     </p>
                   </div>
-                  
+
                   <div className="mt-8">
                     <Link
                       href="/login"
@@ -90,7 +90,7 @@ export default function ForgotPasswordPage() {
                       <Shield className="h-10 w-10 text-[#00cbdd]" />
                     </div>
                   </div>
-                  
+
                   <div className="text-center mb-8">
                     <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#00cbdd] to-blue-600">
                       Forgot Password
@@ -99,13 +99,13 @@ export default function ForgotPasswordPage() {
                       Enter your email address and we'll send you a link to reset your password.
                     </p>
                   </div>
-                  
+
                   {error && (
                     <div className="bg-red-900/30 border-l-4 border-red-500 p-4 mb-6 text-red-100">
                       <p>{error}</p>
                     </div>
                   )}
-                  
+
                   <form onSubmit={handleSubmit} className="space-y-6">
                     <div>
                       <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-1">
@@ -126,7 +126,7 @@ export default function ForgotPasswordPage() {
                         />
                       </div>
                     </div>
-                    
+
                     <div>
                       <button
                         type="submit"
@@ -137,7 +137,7 @@ export default function ForgotPasswordPage() {
                       </button>
                     </div>
                   </form>
-                  
+
                   <div className="mt-8 pt-6 border-t border-gray-800">
                     <p className="text-sm text-center text-gray-500">
                       <Link
@@ -156,4 +156,4 @@ export default function ForgotPasswordPage() {
       </div>
     </div>
   );
-} 
+}

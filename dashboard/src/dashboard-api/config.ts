@@ -5,9 +5,8 @@
 // API Base URL
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000/api/v1';
 
-// Mock API flag - default to true in development, can be overridden by environment variable
-export let USE_MOCK_API = process.env.NODE_ENV === 'development' && 
-  process.env.NEXT_PUBLIC_USE_MOCK_API !== 'false';
+// Mock API flag - disabled
+export let USE_MOCK_API = false;
 
 // Get the stored flag value on component mount if running in browser
 if (typeof window !== 'undefined') {
@@ -29,12 +28,12 @@ export const toggleMockApi = (useMock?: boolean): boolean => {
   } else {
     USE_MOCK_API = !USE_MOCK_API;
   }
-  
+
   // Store the setting if in browser
   if (typeof window !== 'undefined') {
     localStorage.setItem('USE_MOCK_API', USE_MOCK_API.toString());
   }
-  
+
   return USE_MOCK_API;
 };
 
@@ -62,9 +61,9 @@ export const clearAuthToken = (): void => {
 export const createHeaders = () => {
   // Get the auth token from localStorage if available
   const authToken = typeof window !== 'undefined' ? localStorage.getItem('AUTH_TOKEN') : null;
-  
+
   return {
     'Content-Type': 'application/json',
     ...(authToken ? { 'Authorization': `Bearer ${authToken}` } : {})
   };
-}; 
+};
