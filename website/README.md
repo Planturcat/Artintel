@@ -94,3 +94,11 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 If you enjoy using this project, consider supporting my work!
 [Buy Me a Coffee ☕](https://buymeacoffee.com/shreyas29)
+
+## Legal Pages
+
+The website includes comprehensive legal pages:
+- Terms of Service
+- Privacy Policy
+- Security Policy
+- Cookie Policy
