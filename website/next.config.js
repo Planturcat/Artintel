@@ -7,7 +7,12 @@ const nextConfig = {
     ignoreBuildErrors: true
   },
   reactStrictMode: true,
-  serverExternalPackages: []
+  serverExternalPackages: [],
+  // Disable static generation for specific pages
+  experimental: {
+    // Disable static generation for not-found page
+    disableStaticGeneration: true
+  }
 };
 
 module.exports = nextConfig;

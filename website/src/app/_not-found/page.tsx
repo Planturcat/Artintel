@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Home } from "lucide-react";
 
-export default function NotFound() {
+export default function NotFoundPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-black text-white p-4">
       <div className="text-center max-w-md">
@@ -12,8 +12,8 @@ export default function NotFound() {
         <p className="text-gray-400 mb-8">
           Sorry, we couldn't find the page you're looking for.
         </p>
-        <Link
-          href="/"
+        <Link 
+          href="/" 
           className="inline-flex items-center gap-2 bg-cyan-600 hover:bg-cyan-700 text-white px-6 py-3 rounded-full transition-colors"
         >
           <Home className="h-4 w-4" />

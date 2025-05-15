@@ -22,7 +22,10 @@ export default function RootLayout({
         )}
         data-oid="c9sx6.z"
       >
-        <ClerkProvider data-oid="s_9.trk">
+        <ClerkProvider
+          publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
+          data-oid="s_9.trk"
+        >
           <Toaster
             richColors
             theme="dark"
