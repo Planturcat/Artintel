@@ -172,12 +172,23 @@ npm install -g vercel
 ```
 
 2. Run the deployment script:
+
+**For Linux/Mac:**
 ```bash
 # For preview deployment
-node deploy.js
+./deploy.sh
 
 # For production deployment
-node deploy.js production
+./deploy.sh production
+```
+
+**For Windows:**
+```powershell
+# For preview deployment
+.\deploy.ps1
+
+# For production deployment
+.\deploy.ps1 production
 ```
 
 #### Manual Deployment
