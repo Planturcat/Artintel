@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "node build-skip-static.js",
+    "build:static": "next build",
     "start": "next start",
     "lint": "next lint",
     "update-lockfile": "pnpm install --no-frozen-lockfile"
