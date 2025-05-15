@@ -1,0 +1,18 @@
+{
+  "buildCommand": "next build",
+  "framework": "nextjs",
+  "installCommand": "pnpm install --no-frozen-lockfile",
+  "env": {
+    "NEXT_PUBLIC_APP_NAME": "Artintel",
+    "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY": "pk_test_c3VwcmVtZS1qYWd1YXItNTYuY2xlcmsuYWNjb3VudHMuZGV2JA",
+    "CLERK_SECRET_KEY": "sk_test_4sBtFdFsUF7fxcXx0GHDVkE00VbYkqN0ABkunI57hV",
+    "NEXT_PUBLIC_CLERK_SIGN_IN_URL": "/signin",
+    "NEXT_PUBLIC_CLERK_SIGN_UP_URL": "/signup",
+    "NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_URL": "/",
+    "NEXT_PUBLIC_CLERK_SIGN_UP_FALLBACK_URL": "/",
+    "NEXT_TYPESCRIPT_IGNORE_ERRORS": "true",
+    "NEXT_ESLINT_IGNORE_ERRORS": "true",
+    "NEXT_DISABLE_SOURCEMAPS": "true",
+    "NEXT_TELEMETRY_DISABLED": "1"
+  }
+}
