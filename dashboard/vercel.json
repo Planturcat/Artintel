@@ -2,6 +2,7 @@
   "buildCommand": "next build",
   "framework": "nextjs",
   "installCommand": "npm install",
+  "outputDirectory": ".next",
   "env": {
     "NEXT_PUBLIC_APP_NAME": "Artintel",
     "NEXT_PUBLIC_API_BASE_URL": "https://api.artintel.ai/api/v1",
