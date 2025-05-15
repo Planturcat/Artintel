@@ -34,8 +34,13 @@ const RESOURCES_LINKS = [
 const COMPANY_LINKS = [
   { label: "About Us", href: "/about" },
   { label: "Contact", href: "/contact" },
-  { label: "Privacy Policy", href: "/privacy-policy" },
+];
+
+const LEGAL_LINKS = [
+  { label: "Privacy Policy", href: "/privacy" },
   { label: "Terms of Service", href: "/terms" },
+  { label: "Cookie Policy", href: "/cookies" },
+  { label: "GDPR Compliance", href: "/gdpr" },
   { label: "Security", href: "/security" },
 ];
 
@@ -163,7 +168,7 @@ const Footer = () => {
           </AnimationContainer>
 
           <div
-            className="grid grid-cols-2 gap-8 xl:col-span-2 md:grid-cols-3"
+            className="grid grid-cols-2 gap-8 xl:col-span-2 md:grid-cols-4"
             data-oid="unwrp1b"
           >
             <AnimationContainer
@@ -261,6 +266,41 @@ const Footer = () => {
                           href={link.href}
                           className="hover:text-foreground transition-colors duration-300"
                           data-oid="wagv_bl"
+                        >
+                          {link.label}
+                        </Link>
+                      </li>
+                    </AnimationContainer>
+                  ))}
+                </ul>
+              </div>
+            </AnimationContainer>
+
+            <AnimationContainer
+              animation="fadeUp"
+              delay={0.5}
+              data-oid="legal-links"
+            >
+              <div data-oid="legal-links-container">
+                <h3 className="text-base font-medium" data-oid="legal-title">
+                  Legal
+                </h3>
+                <ul
+                  className="mt-4 space-y-2 text-sm text-muted-foreground"
+                  data-oid="legal-list"
+                >
+                  {LEGAL_LINKS.map((link, index) => (
+                    <AnimationContainer
+                      key={index}
+                      animation="fadeLeft"
+                      delay={0.9 + index * 0.1}
+                      data-oid={`legal-link-${index}`}
+                    >
+                      <li data-oid={`legal-item-${index}`}>
+                        <Link
+                          href={link.href}
+                          className="hover:text-foreground transition-colors duration-300"
+                          data-oid={`legal-anchor-${index}`}
                         >
                           {link.label}
                         </Link>

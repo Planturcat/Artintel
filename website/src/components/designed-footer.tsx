@@ -297,7 +297,7 @@ const DesignedFooter = () => {
                 </li>
                 <li>
                   <Link
-                    href="/legal/terms"
+                    href="/terms"
                     className="hover:text-foreground transition-colors duration-300"
                   >
                     Terms of Service
@@ -305,7 +305,7 @@ const DesignedFooter = () => {
                 </li>
                 <li>
                   <Link
-                    href="/legal/privacy-policy"
+                    href="/privacy"
                     className="hover:text-foreground transition-colors duration-300"
                   >
                     Privacy Policy
@@ -313,7 +313,23 @@ const DesignedFooter = () => {
                 </li>
                 <li>
                   <Link
-                    href="/legal/security"
+                    href="/cookies"
+                    className="hover:text-foreground transition-colors duration-300"
+                  >
+                    Cookie Policy
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/gdpr"
+                    className="hover:text-foreground transition-colors duration-300"
+                  >
+                    GDPR Compliance
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/security"
                     className="hover:text-foreground transition-colors duration-300"
                   >
                     Security

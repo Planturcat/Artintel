@@ -136,7 +136,7 @@ const Footer = () => {
         </AnimationContainer>
 
         <div
-          className="grid grid-cols-3 gap-8 xl:col-span-2"
+          className="grid grid-cols-1 md:grid-cols-3 gap-8 xl:col-span-2"
           data-oid="ynmr2:r"
         >
           {/* Product Column */}
@@ -297,7 +297,7 @@ const Footer = () => {
                 </li>
                 <li data-oid="2ccynk5">
                   <Link
-                    href="/privacy-policy"
+                    href="/privacy"
                     className="hover:text-foreground transition-colors duration-300"
                     data-oid="tsi1h1w"
                   >
@@ -306,9 +306,27 @@ const Footer = () => {
                 </li>
                 <li data-oid="o1vkiwa">
                   <Link
-                    href="/security"
+                    href="/cookies"
                     className="hover:text-foreground transition-colors duration-300"
                     data-oid=".4yrazv"
+                  >
+                    Cookie Policy
+                  </Link>
+                </li>
+                <li data-oid="gdpr-link">
+                  <Link
+                    href="/gdpr"
+                    className="hover:text-foreground transition-colors duration-300"
+                    data-oid="gdpr-anchor"
+                  >
+                    GDPR Compliance
+                  </Link>
+                </li>
+                <li data-oid="security-link">
+                  <Link
+                    href="/security"
+                    className="hover:text-foreground transition-colors duration-300"
+                    data-oid="security-anchor"
                   >
                     Security
                   </Link>

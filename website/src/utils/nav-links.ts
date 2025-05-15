@@ -1,4 +1,4 @@
-import { BrainCircuit, Cpu, Gauge, Layers, LayoutGrid, LineChart, Rocket, Server, Settings, Zap, BookOpen, HelpCircle, MessageSquare } from "lucide-react";
+import { BrainCircuit, Cpu, Gauge, Layers, LayoutGrid, LineChart, Rocket, Server, Settings, Zap, BookOpen, HelpCircle, MessageSquare, Shield, FileText, Cookie, Lock } from "lucide-react";
 
 export const NAV_LINKS = [
   {
@@ -92,6 +92,42 @@ export const NAV_LINKS = [
         href: "/resources/case-studies",
         icon: BookOpen,
         tagline: "Success stories from our customers"
+      }
+    ]
+  },
+  {
+    title: "Legal",
+    href: "/privacy",
+    menu: [
+      {
+        title: "Privacy Policy",
+        href: "/privacy",
+        icon: Shield,
+        tagline: "How we collect and protect your data"
+      },
+      {
+        title: "Terms of Service",
+        href: "/terms",
+        icon: FileText,
+        tagline: "Rules and guidelines for using our platform"
+      },
+      {
+        title: "Cookie Policy",
+        href: "/cookies",
+        icon: Cookie,
+        tagline: "How we use cookies on our website"
+      },
+      {
+        title: "GDPR Compliance",
+        href: "/gdpr",
+        icon: Lock,
+        tagline: "Our compliance with EU data protection laws"
+      },
+      {
+        title: "Security",
+        href: "/security",
+        icon: Shield,
+        tagline: "How we keep your data secure"
       }
     ]
   },

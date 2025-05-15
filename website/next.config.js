@@ -1,6 +1,4 @@
 /** @type {import('next').NextConfig} */
-const skipStaticPages = require('./skip-static');
-
 const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true
@@ -19,20 +17,6 @@ const nextConfig = {
   experimental: {
     // Disable static generation for not-found page
     appDocumentPreloading: false
-  },
-  // Skip static generation for specific pages
-  exportPathMap: async function (
-    defaultPathMap,
-    { dev, dir, outDir, distDir, buildId }
-  ) {
-    // Filter out pages that should be skipped
-    const filteredPathMap = {};
-    for (const [path, page] of Object.entries(defaultPathMap)) {
-      if (!skipStaticPages[path]) {
-        filteredPathMap[path] = page;
-      }
-    }
-    return filteredPathMap;
   }
 };
 
