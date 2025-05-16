@@ -96,7 +96,7 @@ export default function NewPostPage() {
       >
         <div className={`p-6 rounded-xl ${
           isDark 
-            ? 'bg-[#00031b]/90 border border-[#00cbdd]/20'
+            ? 'bg-[#00091b]/90 border border-[#00cbdd]/20'
             : 'bg-white border border-gray-200'
         }`}>
           <form onSubmit={handleSubmit} className="space-y-6">

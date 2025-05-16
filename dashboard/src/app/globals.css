@@ -4,11 +4,15 @@
   --background: #ffffff;
   --foreground: #171717;
   --primary: #00cbdd;
-  --primary-dark: #00a3b1;
-  --primary-light: #4fdfed;
-  --secondary: #00031b;
-  --secondary-light: #00061b;
+  --primary-dark: #007a85;
+  --primary-light: #33d5e3;
+  --primary-lighter: #7fe4eb;
+  --secondary: #000508;
+  --secondary-light: #000a12;
   --accent: #0066ff;
+  --success: #00e5aa;
+  --warning: #e5c700;
+  --error: #ff5a65;
 }
 
 @theme inline {
@@ -17,17 +21,21 @@
   --color-primary: var(--primary);
   --color-primary-dark: var(--primary-dark);
   --color-primary-light: var(--primary-light);
+  --color-primary-lighter: var(--primary-lighter);
   --color-secondary: var(--secondary);
   --color-secondary-light: var(--secondary-light);
   --color-accent: var(--accent);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-error: var(--error);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #00031b;
-    --foreground: #ededed;
+    --background: #000508;
+    --foreground: #ffffff;
   }
 }
 
@@ -56,25 +64,39 @@ body {
 
 /* Dark mode specific styles */
 .dark body {
-  background-color: #00021a;
+  background-color: #000508;
   color: #ffffff;
 }
 
 /* Glassmorphism effects */
 .glassmorphic {
-  background: rgba(0, 5, 45, 0.5);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(0, 203, 221, 0.2);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  background: rgba(0, 5, 8, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(0, 203, 221, 0.25);
+  box-shadow: 0 8px 32px 0 rgba(0, 203, 221, 0.1);
 }
 
 .light .glassmorphic {
   background: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(0, 203, 221, 0.1);
+  box-shadow: 0 8px 32px 0 rgba(0, 203, 221, 0.05);
+}
+
+/* Text color utilities */
+.text-primary {
+  color: var(--primary);
+}
+.text-primary-light {
+  color: var(--primary-light);
+}
+.text-primary-lighter {
+  color: var(--primary-lighter);
+}
+.text-primary-dark {
+  color: var(--primary-dark);
 }
 
 /* Gradient text */
@@ -88,6 +110,7 @@ body {
 /* Custom scrollbar for webkit browsers */
 ::-webkit-scrollbar {
   width: 8px;
+  background: #000508;
 }
 
 ::-webkit-scrollbar-track {
@@ -99,8 +122,20 @@ body {
   border-radius: 4px;
 }
 
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 203, 221, 0.5);
+}
+
+.light ::-webkit-scrollbar {
+  background: #f8f8f8;
+}
+
 .light ::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 0, 0, 0.1);
+  background-color: rgba(0, 203, 221, 0.2);
+}
+
+.light ::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 203, 221, 0.4);
 }
 
 /* Animation for floating effect */

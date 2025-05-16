@@ -131,7 +131,7 @@ export default function DashHeader() {
     <motion.header
       className={`sticky top-0 z-10 ${
         isDark
-          ? 'bg-[#00031b]/80 text-white border-b border-[#00cbdd]/20'
+          ? 'bg-[#00091b]/80 text-white border-b border-[#00cbdd]/20'
           : 'bg-white/80 text-gray-800 border-b border-gray-100'
       } backdrop-blur-md px-6 py-3`}
       initial={{ y: -20, opacity: 0 }}
@@ -212,7 +212,7 @@ export default function DashHeader() {
                 <div
                   className={`absolute right-0 mt-2 w-80 rounded-lg shadow-lg overflow-hidden z-20 ${
                     isDark
-                      ? 'bg-[#00031b] border border-[#00cbdd]/20'
+                      ? 'bg-[#00091b] border border-[#00cbdd]/20'
                       : 'bg-white border border-gray-200'
                   }`}
                 >
@@ -302,7 +302,7 @@ export default function DashHeader() {
                 <div
                   className={`absolute right-0 mt-2 w-80 rounded-lg shadow-lg overflow-hidden z-20 ${
                     isDark
-                      ? 'bg-[#00031b] border border-[#00cbdd]/20'
+                      ? 'bg-[#00091b] border border-[#00cbdd]/20'
                       : 'bg-white border border-gray-200'
                   }`}
                 >
@@ -381,7 +381,7 @@ export default function DashHeader() {
                 <div
                   className={`absolute right-0 mt-2 w-64 rounded-lg shadow-lg overflow-hidden z-20 ${
                     isDark
-                      ? 'bg-[#00031b] border border-[#00cbdd]/20'
+                      ? 'bg-[#00091b] border border-[#00cbdd]/20'
                       : 'bg-white border border-gray-200'
                   }`}
                 >

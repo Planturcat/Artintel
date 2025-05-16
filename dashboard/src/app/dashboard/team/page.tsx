@@ -145,7 +145,7 @@ const InviteModal = ({
       <motion.div 
         className={`relative w-full max-w-md p-6 rounded-xl shadow-lg ${
           isDark 
-            ? 'bg-[#00031b]/95 border border-[#00cbdd]/20'
+            ? 'bg-[#00091b]/95 border border-[#00cbdd]/20'
             : 'bg-white border border-gray-200'
         }`}
         initial={{ scale: 0.9, opacity: 0 }}
@@ -403,7 +403,7 @@ export default function TeamPage() {
           transition={{ duration: 0.3, delay: index * 0.05 }}
           className={`rounded-xl p-5 ${
             isDark 
-              ? 'bg-[#00031b]/90 border border-[#00cbdd]/20 hover:border-[#00cbdd]/50'
+              ? 'bg-[#00091b]/90 border border-[#00cbdd]/20 hover:border-[#00cbdd]/50'
               : 'bg-white border border-gray-200 hover:border-blue-300'
           } transition-all duration-200 relative`}
         >
@@ -418,7 +418,7 @@ export default function TeamPage() {
                 <UserCircle className={`h-12 w-12 ${isDark ? 'text-[#00cbdd]' : 'text-blue-500'}`} />
               </div>
               <div className={`absolute bottom-0 right-0 w-4 h-4 rounded-full border-2 ${
-                isDark ? 'border-[#00031b]/90' : 'border-white'
+                isDark ? 'border-[#00091b]/90' : 'border-white'
               } ${
                 member.status === 'active' ? 'bg-green-500' :
                 member.status === 'pending' ? 'bg-amber-500' : 'bg-gray-500'
@@ -472,7 +472,7 @@ export default function TeamPage() {
   const renderListView = () => (
     <div className={`rounded-xl overflow-hidden ${
       isDark 
-        ? 'bg-[#00031b]/90 border border-[#00cbdd]/20'
+        ? 'bg-[#00091b]/90 border border-[#00cbdd]/20'
         : 'bg-white border border-gray-200'
     }`}>
       <table className="min-w-full divide-y divide-gray-600/20">
@@ -526,7 +526,7 @@ export default function TeamPage() {
                       <UserCircle className={`h-6 w-6 ${isDark ? 'text-[#00cbdd]' : 'text-blue-500'}`} />
                     </div>
                     <div className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 ${
-                      isDark ? 'border-[#00031b]/90' : 'border-white'
+                      isDark ? 'border-[#00091b]/90' : 'border-white'
                     } ${
                       member.status === 'active' ? 'bg-green-500' :
                       member.status === 'pending' ? 'bg-amber-500' : 'bg-gray-500'
@@ -619,7 +619,7 @@ export default function TeamPage() {
       {/* Filters and Search */}
       <div className={`p-4 rounded-xl ${
         isDark 
-          ? 'bg-[#00031b]/90 border border-[#00cbdd]/20'
+          ? 'bg-[#00091b]/90 border border-[#00cbdd]/20'
           : 'bg-white border border-gray-200'
       }`}>
         <div className="flex flex-col md:flex-row gap-4">
@@ -720,7 +720,7 @@ export default function TeamPage() {
       {filteredMembers.length === 0 && (
         <div className={`rounded-xl p-8 text-center ${
           isDark 
-            ? 'bg-[#00031b]/90 border border-[#00cbdd]/20'
+            ? 'bg-[#00091b]/90 border border-[#00cbdd]/20'
             : 'bg-white border border-gray-200'
         }`}>
           <Users className={`h-12 w-12 mx-auto mb-4 ${isDark ? 'text-gray-400' : 'text-gray-400'}`} />

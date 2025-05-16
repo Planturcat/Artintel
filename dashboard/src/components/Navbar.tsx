@@ -30,12 +30,12 @@ export default function Navbar() {
     <nav 
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled 
-          ? `py-3 backdrop-blur-lg shadow-md ${isDark ? 'bg-[#00031b]/80' : 'bg-white/90'}`
+          ? `py-3 backdrop-blur-lg shadow-md ${isDark ? 'bg-[#00091b]/80' : 'bg-white/90'}`
           : 'py-5 bg-transparent'
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
-        <Link href="/" className={`text-2xl font-bold transition-colors ${isDark ? 'text-white' : 'text-[#00031b]'}`}>
+        <Link href="/" className={`text-2xl font-bold transition-colors ${isDark ? 'text-white' : 'text-[#00091b]'}`}>
           Artintel<span className="bg-clip-text text-transparent bg-gradient-to-r from-[#00cbdd] to-blue-500"> LLMs</span>
         </Link>
         
@@ -96,7 +96,7 @@ export default function Navbar() {
       {/* Mobile menu */}
       {mobileMenuOpen && (
         <div className={`md:hidden absolute top-full left-0 right-0 backdrop-blur-md p-6 shadow-lg ${
-          isDark ? 'bg-[#00031b]/95' : 'bg-white/95'
+          isDark ? 'bg-[#00091b]/95' : 'bg-white/95'
         }`}>
           <div className="flex flex-col space-y-4">
             <Link 

@@ -302,7 +302,7 @@ export default function ApiKeysSettingsPage() {
 
       {/* New Key Form */}
       {isCreatingKey && (
-        <div className={`rounded-xl border ${isDark ? 'border-indigo-500/20 bg-[#00031b]/90 backdrop-blur-md' : 'border-indigo-200 bg-white shadow-sm'}`}>
+        <div className={`rounded-xl border ${isDark ? 'border-indigo-500/20 bg-[#00091b]/90 backdrop-blur-md' : 'border-indigo-200 bg-white shadow-sm'}`}>
           <div className="p-6">
             <div className="flex items-center mb-4">
               <Key className={`h-5 w-5 mr-2 ${isDark ? 'text-indigo-400' : 'text-indigo-600'}`} />
@@ -500,7 +500,7 @@ export default function ApiKeysSettingsPage() {
       )}
 
       {/* API Keys List */}
-      <div className={`rounded-xl border ${isDark ? 'border-[#00cbdd]/20 bg-[#00031b]/90 backdrop-blur-md' : 'border-gray-200 bg-white shadow-sm'}`}>
+      <div className={`rounded-xl border ${isDark ? 'border-[#00cbdd]/20 bg-[#00091b]/90 backdrop-blur-md' : 'border-gray-200 bg-white shadow-sm'}`}>
         <div className="p-6">
           <div className="flex items-center mb-4">
             <Key className={`h-5 w-5 mr-2 ${isDark ? 'text-[#00cbdd]' : 'text-indigo-600'}`} />
@@ -665,7 +665,7 @@ export default function ApiKeysSettingsPage() {
       </div>
 
       {/* API Keys Security Notice */}
-      <div className={`rounded-xl border ${isDark ? 'border-[#00cbdd]/20 bg-[#00031b]/90 backdrop-blur-md' : 'border-gray-200 bg-white shadow-sm'}`}>
+      <div className={`rounded-xl border ${isDark ? 'border-[#00cbdd]/20 bg-[#00091b]/90 backdrop-blur-md' : 'border-gray-200 bg-white shadow-sm'}`}>
         <div className="p-6">
           <div className="flex items-center mb-4">
             <Shield className={`h-5 w-5 mr-2 ${isDark ? 'text-[#00cbdd]' : 'text-indigo-600'}`} />

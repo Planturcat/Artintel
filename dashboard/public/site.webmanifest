@@ -4,8 +4,8 @@
   "description": "A comprehensive platform for managing, comparing, and deploying AI models",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#00031b",
-  "theme_color": "#00031b",
+  "background_color": "#00091b",
+  "theme_color": "#00091b",
   "orientation": "portrait-primary",
   "icons": [
     {

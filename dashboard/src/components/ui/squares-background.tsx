@@ -47,7 +47,7 @@ export function Squares({
     if (!ctx) return;
 
     // Set canvas background
-    canvas.style.background = isDark ? "#00031b" : "#ffffff";
+    canvas.style.background = isDark ? "#00091b" : "#ffffff";
 
     const resizeCanvas = () => {
       canvas.width = canvas.offsetWidth;
@@ -97,7 +97,7 @@ export function Squares({
       
       if (isDark) {
         gradient.addColorStop(0, "rgba(0, 3, 27, 0)");
-        gradient.addColorStop(1, "#00031b");
+        gradient.addColorStop(1, "#00091b");
       } else {
         gradient.addColorStop(0, "rgba(255, 255, 255, 0)");
         gradient.addColorStop(1, "#ffffff");
@@ -196,7 +196,7 @@ export function Squares({
 export function SquaresDemo() {
   return (
     <div className="space-y-8">
-      <div className="relative h-[400px] rounded-lg overflow-hidden bg-[#00031b] dark:bg-[#00031b] light:bg-white">
+      <div className="relative h-[400px] rounded-lg overflow-hidden bg-[#00091b] dark:bg-[#00091b] light:bg-white">
         <Squares 
           direction="diagonal"
           speed={0.5}

@@ -173,7 +173,7 @@ export default function CustomPipelinesPage() {
         className="mb-8"
       >
         <div className="p-4 rounded-lg border border-dashed flex flex-col items-center justify-center text-center py-10 space-y-4
-          ${isDark ? 'border-gray-700 bg-[#00031b]/30' : 'border-gray-300 bg-gray-50'}">
+          ${isDark ? 'border-gray-700 bg-[#00091b]/30' : 'border-gray-300 bg-gray-50'}">
           <div className={`p-4 rounded-full ${
             isDark ? 'bg-[#00cbdd]/10' : 'bg-blue-50'
           }`}>

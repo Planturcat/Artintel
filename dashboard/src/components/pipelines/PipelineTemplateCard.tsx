@@ -31,7 +31,7 @@ export default function PipelineTemplateCard({
     <div
       className={`rounded-xl overflow-hidden border ${
         isDark
-          ? 'bg-[#00031b]/70 border-[#00cbdd]/20 hover:bg-[#00031b]/90'
+          ? 'bg-[#00091b]/70 border-[#00cbdd]/20 hover:bg-[#00091b]/90'
           : 'bg-white border-gray-200 hover:bg-gray-50 shadow-sm'
       } transition-all duration-200 cursor-pointer group`}
       onClick={onClick}

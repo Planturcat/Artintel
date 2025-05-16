@@ -92,7 +92,7 @@ export default function DashSidebar() {
     <motion.div
       className={`h-full flex flex-col ${
         isDark
-          ? 'bg-[#00031b]/90 border-r border-[#00031b]/20'
+          ? 'bg-[#00091b]/90 border-r border-[#00091b]/20'
           : 'bg-white border-r border-[#00cbdd]/10'
       } backdrop-blur-md`}
       initial={{ x: -20, opacity: 0 }}
@@ -154,7 +154,7 @@ export default function DashSidebar() {
               href={item.path}
               className={`flex items-center group px-3 py-2 rounded-lg ${
                 isActive
-                  ? `bg-gradient-to-r from-[#00cbdd]/20 to-blue-500/10 font-medium ${isDark ? 'text-white' : 'text-[#00031b]'}`
+                  ? `bg-gradient-to-r from-[#00cbdd]/20 to-blue-500/10 font-medium ${isDark ? 'text-white' : 'text-[#00091b]'}`
                   : `${isDark ? 'text-gray-400 hover:text-white' : 'text-gray-700 hover:text-[#00cbdd]'} hover:bg-[#00cbdd]/10`
               } transition-all duration-200`}
             >
@@ -218,7 +218,7 @@ export default function DashSidebar() {
           {showLanguageDropdown && !isCollapsed && (
             <div className={`absolute bottom-full left-0 w-full mb-1 rounded-lg shadow-lg overflow-hidden z-20 ${
               isDark
-                ? 'bg-[#00031b] border border-[#00cbdd]/20'
+                ? 'bg-[#00091b] border border-[#00cbdd]/20'
                 : 'bg-white border border-gray-200'
             }`}>
               {languageOptions.map((option) => (
@@ -229,7 +229,7 @@ export default function DashSidebar() {
                     language === option.code
                       ? isDark
                         ? 'bg-[#00cbdd]/20 text-white'
-                        : 'bg-[#00cbdd]/10 text-[#00031b]'
+                        : 'bg-[#00cbdd]/10 text-[#00091b]'
                       : isDark
                         ? 'text-gray-300 hover:bg-[#00cbdd]/10'
                         : 'text-gray-700 hover:bg-gray-100'

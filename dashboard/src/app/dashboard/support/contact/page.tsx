@@ -144,7 +144,7 @@ export default function ContactSupportPage() {
       >
         <div className={`p-5 rounded-xl border ${
           isDark 
-            ? 'bg-[#00031b]/80 border-[#00cbdd]/20'
+            ? 'bg-[#00091b]/80 border-[#00cbdd]/20'
             : 'bg-blue-50 border-blue-200'
         }`}>
           <h3 className={`font-medium mb-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>
@@ -166,7 +166,7 @@ export default function ContactSupportPage() {
       >
         <div className={`p-6 rounded-xl ${
           isDark 
-            ? 'bg-[#00031b]/90 border border-[#00cbdd]/20'
+            ? 'bg-[#00091b]/90 border border-[#00cbdd]/20'
             : 'bg-white border border-gray-200'
         }`}>
           {isSubmitted ? (

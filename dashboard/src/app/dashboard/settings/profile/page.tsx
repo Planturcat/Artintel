@@ -166,7 +166,7 @@ export default function ProfileSettingsPage() {
         {/* Profile Image */}
         <div className={`p-6 rounded-xl ${
           isDark 
-            ? 'bg-[#00031b]/90 border border-[#00cbdd]/20'
+            ? 'bg-[#00091b]/90 border border-[#00cbdd]/20'
             : 'bg-white border border-gray-200'
         }`}>
           <h2 className={`text-xl font-medium mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>
@@ -185,14 +185,14 @@ export default function ProfileSettingsPage() {
                     className="object-cover w-full h-full"
                   />
                 ) : (
-                  <div className={`w-full h-full flex items-center justify-center ${isDark ? 'bg-[#00031b]' : 'bg-gray-100'}`}>
+                  <div className={`w-full h-full flex items-center justify-center ${isDark ? 'bg-[#00091b]' : 'bg-gray-100'}`}>
                     <User className={`h-12 w-12 ${isDark ? 'text-[#00cbdd]/50' : 'text-gray-400'}`} />
                   </div>
                 )}
               </div>
               
               <label htmlFor="profile-image" className={`absolute -bottom-1 -right-1 p-1.5 rounded-full cursor-pointer ${
-                isDark ? 'bg-[#00cbdd] text-[#00031b]' : 'bg-blue-500 text-white'
+                isDark ? 'bg-[#00cbdd] text-[#00091b]' : 'bg-blue-500 text-white'
               }`}>
                 <Camera className="h-4 w-4" />
                 <input 
@@ -247,7 +247,7 @@ export default function ProfileSettingsPage() {
         {/* Personal Information */}
         <div className={`p-6 rounded-xl ${
           isDark 
-            ? 'bg-[#00031b]/90 border border-[#00cbdd]/20'
+            ? 'bg-[#00091b]/90 border border-[#00cbdd]/20'
             : 'bg-white border border-gray-200'
         }`}>
           <h2 className={`text-xl font-medium mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>
@@ -271,7 +271,7 @@ export default function ProfileSettingsPage() {
                   onChange={handleInputChange}
                   className={`block w-full pl-10 pr-3 py-2 rounded-lg ${
                     isDark 
-                      ? 'bg-[#00031b]/90 border border-[#00cbdd]/20 text-white placeholder-gray-400'
+                      ? 'bg-[#00091b]/90 border border-[#00cbdd]/20 text-white placeholder-gray-400'
                       : 'bg-white border border-gray-200 text-gray-900 placeholder-gray-500'
                   } focus:outline-none focus:ring-2 focus:ring-[#00cbdd]`}
                   placeholder="Your full name"
@@ -295,7 +295,7 @@ export default function ProfileSettingsPage() {
                   onChange={handleInputChange}
                   className={`block w-full pl-10 pr-3 py-2 rounded-lg ${
                     isDark 
-                      ? 'bg-[#00031b]/90 border border-[#00cbdd]/20 text-white placeholder-gray-400'
+                      ? 'bg-[#00091b]/90 border border-[#00cbdd]/20 text-white placeholder-gray-400'
                       : 'bg-white border border-gray-200 text-gray-900 placeholder-gray-500'
                   } focus:outline-none focus:ring-2 focus:ring-[#00cbdd]`}
                   placeholder="your.email@example.com"
@@ -323,7 +323,7 @@ export default function ProfileSettingsPage() {
                   onChange={handleInputChange}
                   className={`block w-full pl-10 pr-3 py-2 rounded-lg ${
                     isDark 
-                      ? 'bg-[#00031b]/90 border border-[#00cbdd]/20 text-white placeholder-gray-400'
+                      ? 'bg-[#00091b]/90 border border-[#00cbdd]/20 text-white placeholder-gray-400'
                       : 'bg-white border border-gray-200 text-gray-900 placeholder-gray-500'
                   } focus:outline-none focus:ring-2 focus:ring-[#00cbdd]`}
                   placeholder="+1 (555) 123-4567"
@@ -347,7 +347,7 @@ export default function ProfileSettingsPage() {
                   onChange={handleInputChange}
                   className={`block w-full pl-10 pr-3 py-2 rounded-lg ${
                     isDark 
-                      ? 'bg-[#00031b]/90 border border-[#00cbdd]/20 text-white placeholder-gray-400'
+                      ? 'bg-[#00091b]/90 border border-[#00cbdd]/20 text-white placeholder-gray-400'
                       : 'bg-white border border-gray-200 text-gray-900 placeholder-gray-500'
                   } focus:outline-none focus:ring-2 focus:ring-[#00cbdd]`}
                   placeholder="Your company name"
@@ -371,7 +371,7 @@ export default function ProfileSettingsPage() {
                   onChange={handleInputChange}
                   className={`block w-full pl-10 pr-3 py-2 rounded-lg ${
                     isDark 
-                      ? 'bg-[#00031b]/90 border border-[#00cbdd]/20 text-white placeholder-gray-400'
+                      ? 'bg-[#00091b]/90 border border-[#00cbdd]/20 text-white placeholder-gray-400'
                       : 'bg-white border border-gray-200 text-gray-900 placeholder-gray-500'
                   } focus:outline-none focus:ring-2 focus:ring-[#00cbdd]`}
                   placeholder="https://example.com"
@@ -391,7 +391,7 @@ export default function ProfileSettingsPage() {
                 rows={4}
                 className={`block w-full px-3 py-2 rounded-lg ${
                   isDark 
-                    ? 'bg-[#00031b]/90 border border-[#00cbdd]/20 text-white placeholder-gray-400'
+                    ? 'bg-[#00091b]/90 border border-[#00cbdd]/20 text-white placeholder-gray-400'
                     : 'bg-white border border-gray-200 text-gray-900 placeholder-gray-500'
                 } focus:outline-none focus:ring-2 focus:ring-[#00cbdd]`}
                 placeholder="Tell us a bit about yourself..."
@@ -406,7 +406,7 @@ export default function ProfileSettingsPage() {
         {/* Preferences */}
         <div className={`p-6 rounded-xl ${
           isDark 
-            ? 'bg-[#00031b]/90 border border-[#00cbdd]/20'
+            ? 'bg-[#00091b]/90 border border-[#00cbdd]/20'
             : 'bg-white border border-gray-200'
         }`}>
           <h2 className={`text-xl font-medium mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>
@@ -429,7 +429,7 @@ export default function ProfileSettingsPage() {
                   onChange={handleInputChange}
                   className={`block w-full pl-10 pr-3 py-2 rounded-lg appearance-none ${
                     isDark 
-                      ? 'bg-[#00031b]/90 border border-[#00cbdd]/20 text-white'
+                      ? 'bg-[#00091b]/90 border border-[#00cbdd]/20 text-white'
                       : 'bg-white border border-gray-200 text-gray-900'
                   } focus:outline-none focus:ring-2 focus:ring-[#00cbdd]`}
                 >

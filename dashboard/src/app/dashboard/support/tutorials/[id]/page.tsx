@@ -401,13 +401,13 @@ export default function TutorialDetailPage({ params }: { params: { id: string } 
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
             className={`rounded-xl overflow-hidden ${
-              isDark ? 'bg-[#00031b]/90 border border-[#00cbdd]/20' : 'bg-white border border-gray-200'
+              isDark ? 'bg-[#00091b]/90 border border-[#00cbdd]/20' : 'bg-white border border-gray-200'
             }`}
           >
             <div className="aspect-video relative">
               <video 
                 className="w-full h-full"
-                poster="https://placehold.co/1280x720/00031b/00cbdd?text=ArtIntel+Tutorial"
+                poster="https://placehold.co/1280x720/00091b/00cbdd?text=ArtIntel+Tutorial"
                 controls
                 preload="metadata"
               >
@@ -480,7 +480,7 @@ export default function TutorialDetailPage({ params }: { params: { id: string } 
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, delay: 0.1 }}
             className={`p-6 rounded-xl ${
-              isDark ? 'bg-[#00031b]/90 border border-[#00cbdd]/20' : 'bg-white border border-gray-200'
+              isDark ? 'bg-[#00091b]/90 border border-[#00cbdd]/20' : 'bg-white border border-gray-200'
             }`}
           >
             <h2 className={`text-xl font-semibold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>
@@ -507,7 +507,7 @@ export default function TutorialDetailPage({ params }: { params: { id: string } 
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, delay: 0.2 }}
             className={`p-6 rounded-xl ${
-              isDark ? 'bg-[#00031b]/90 border border-[#00cbdd]/20' : 'bg-white border border-gray-200'
+              isDark ? 'bg-[#00091b]/90 border border-[#00cbdd]/20' : 'bg-white border border-gray-200'
             }`}
           >
             <div className="flex items-center mb-6">
@@ -644,7 +644,7 @@ export default function TutorialDetailPage({ params }: { params: { id: string } 
                 <Link href={`/dashboard/support/tutorials/${relatedTutorial.id}`}>
                   <div className={`p-4 rounded-xl ${
                     isDark 
-                      ? 'bg-[#00031b]/90 border border-[#00cbdd]/20 hover:border-[#00cbdd]/50'
+                      ? 'bg-[#00091b]/90 border border-[#00cbdd]/20 hover:border-[#00cbdd]/50'
                       : 'bg-white border border-gray-200 hover:border-[#00cbdd]/50'
                   } transition-all duration-200 hover:shadow-lg`}>
                     <div className="flex flex-col sm:flex-row gap-4">
@@ -652,7 +652,7 @@ export default function TutorialDetailPage({ params }: { params: { id: string } 
                       <div className="sm:w-1/3 aspect-video relative rounded-lg overflow-hidden bg-gray-800">
                         <video 
                           className="absolute inset-0 w-full h-full object-cover"
-                          poster="https://placehold.co/600x400/00031b/00cbdd?text=Related"
+                          poster="https://placehold.co/600x400/00091b/00cbdd?text=Related"
                           preload="none"
                         >
                           <source src={relatedTutorial.videoUrl} type="video/mp4" />
@@ -685,7 +685,7 @@ export default function TutorialDetailPage({ params }: { params: { id: string } 
             ))
           ) : (
             <div className={`p-6 rounded-xl ${
-              isDark ? 'bg-[#00031b]/90 border border-[#00cbdd]/20' : 'bg-white border border-gray-200'
+              isDark ? 'bg-[#00091b]/90 border border-[#00cbdd]/20' : 'bg-white border border-gray-200'
             }`}>
               <p className={`text-center ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
                 No related tutorials found

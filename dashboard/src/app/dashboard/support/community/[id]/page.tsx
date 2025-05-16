@@ -176,7 +176,7 @@ export default function DiscussionPage({ params }: { params: { id: string } }) {
         // Loading skeleton
         <div className={`p-6 rounded-xl ${
           isDark 
-            ? 'bg-[#00031b]/90 border border-[#00cbdd]/20'
+            ? 'bg-[#00091b]/90 border border-[#00cbdd]/20'
             : 'bg-white border border-gray-200'
         }`}>
           <div className="animate-pulse space-y-4">
@@ -200,7 +200,7 @@ export default function DiscussionPage({ params }: { params: { id: string } }) {
           {/* Main Post */}
           <div className={`p-6 rounded-xl ${
             isDark 
-              ? 'bg-[#00031b]/90 border border-[#00cbdd]/20'
+              ? 'bg-[#00091b]/90 border border-[#00cbdd]/20'
               : 'bg-white border border-gray-200'
           } mb-6`}>
             {/* Author and Meta */}
@@ -300,7 +300,7 @@ export default function DiscussionPage({ params }: { params: { id: string } }) {
                 key={reply.id}
                 className={`p-5 rounded-xl ${
                   isDark 
-                    ? 'bg-[#00031b]/90 border border-[#00cbdd]/20'
+                    ? 'bg-[#00091b]/90 border border-[#00cbdd]/20'
                     : 'bg-white border border-gray-200'
                 }`}
               >
@@ -338,7 +338,7 @@ export default function DiscussionPage({ params }: { params: { id: string } }) {
             {/* Reply Form */}
             <div className={`p-5 rounded-xl ${
               isDark 
-                ? 'bg-[#00031b]/90 border border-[#00cbdd]/20'
+                ? 'bg-[#00091b]/90 border border-[#00cbdd]/20'
                 : 'bg-white border border-gray-200'
             }`}>
               <h3 className={`text-lg font-medium mb-3 ${isDark ? 'text-white' : 'text-gray-900'}`}>
@@ -387,7 +387,7 @@ export default function DiscussionPage({ params }: { params: { id: string } }) {
       ) : (
         <div className={`p-8 text-center rounded-xl ${
           isDark 
-            ? 'bg-[#00031b]/90 border border-[#00cbdd]/20'
+            ? 'bg-[#00091b]/90 border border-[#00cbdd]/20'
             : 'bg-white border border-gray-200'
         }`}>
           <MessageCircle className={`h-12 w-12 mx-auto mb-4 ${isDark ? 'text-gray-400' : 'text-gray-500'}`} />

@@ -15,7 +15,7 @@ export default function EmptyState({ title, description, icon, isDark, action }:
   return (
     <div className={`p-8 rounded-xl ${
       isDark 
-        ? 'bg-[#00031b]/90 border border-[#00cbdd]/20' 
+        ? 'bg-[#00091b]/90 border border-[#00cbdd]/20' 
         : 'bg-white border border-gray-200'
     } text-center`}>
       <div className={`mx-auto mb-4 ${isDark ? 'text-gray-600' : 'text-gray-400'}`}>

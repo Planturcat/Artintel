@@ -213,11 +213,11 @@ export default function CreateJobModal({
             exit={{ y: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
             className={`absolute inset-0 ${
-              isDark ? 'bg-[#00031b]' : 'bg-white'
+              isDark ? 'bg-[#00091b]' : 'bg-white'
             }`}
           >
             <div className={`fixed top-0 left-0 right-0 z-10 px-6 py-4 border-b ${
-              isDark ? 'bg-[#00031b]/90 border-[#00cbdd]/20' : 'bg-white/90 border-[#00cbdd]/10'
+              isDark ? 'bg-[#00091b]/90 border-[#00cbdd]/20' : 'bg-white/90 border-[#00cbdd]/10'
             } backdrop-blur-md`}>
               <div className="flex items-center justify-between max-w-7xl mx-auto">
                 <div className="flex items-center space-x-4">
@@ -737,7 +737,7 @@ export default function CreateJobModal({
             </div>
 
             <div className={`fixed bottom-0 left-0 right-0 px-6 py-4 border-t ${
-              isDark ? 'bg-[#00031b]/90 border-[#00cbdd]/20' : 'bg-white/90 border-[#00cbdd]/10'
+              isDark ? 'bg-[#00091b]/90 border-[#00cbdd]/20' : 'bg-white/90 border-[#00cbdd]/10'
             } backdrop-blur-md`}>
               <div className="max-w-7xl mx-auto flex justify-between items-center">
                 {step > 1 ? (

@@ -187,7 +187,7 @@ export default function BillingSettingsPage() {
       </div>
 
       {/* Current Plan Card */}
-      <div id="current-plan" className={`rounded-xl border ${isDark ? 'border-[#00cbdd]/20 bg-[#00031b]/90 backdrop-blur-md' : 'border-gray-200 bg-white shadow-sm'}`}>
+      <div id="current-plan" className={`rounded-xl border ${isDark ? 'border-[#00cbdd]/20 bg-[#00091b]/90 backdrop-blur-md' : 'border-gray-200 bg-white shadow-sm'}`}>
         <div className="p-6">
           <div className="flex items-center mb-4">
             <DollarSign className={`h-5 w-5 mr-2 ${isDark ? 'text-[#00cbdd]' : 'text-amber-600'}`} />
@@ -379,7 +379,7 @@ export default function BillingSettingsPage() {
       </div>
 
       {/* Usage & Quotas */}
-      <div className={`rounded-xl border ${isDark ? 'border-[#00cbdd]/20 bg-[#00031b]/90 backdrop-blur-md' : 'border-gray-200 bg-white shadow-sm'}`}>
+      <div className={`rounded-xl border ${isDark ? 'border-[#00cbdd]/20 bg-[#00091b]/90 backdrop-blur-md' : 'border-gray-200 bg-white shadow-sm'}`}>
         <div className="p-6">
           <div className="flex items-center mb-4">
             <BarChart className={`h-5 w-5 mr-2 ${isDark ? 'text-[#00cbdd]' : 'text-amber-600'}`} />
@@ -468,7 +468,7 @@ export default function BillingSettingsPage() {
       </div>
 
       {/* Payment Methods */}
-      <div id="payment" className={`rounded-xl border ${isDark ? 'border-[#00cbdd]/20 bg-[#00031b]/90 backdrop-blur-md' : 'border-gray-200 bg-white shadow-sm'}`}>
+      <div id="payment" className={`rounded-xl border ${isDark ? 'border-[#00cbdd]/20 bg-[#00091b]/90 backdrop-blur-md' : 'border-gray-200 bg-white shadow-sm'}`}>
         <div className="p-6">
           <div className="flex items-center mb-4">
             <CreditCard className={`h-5 w-5 mr-2 ${isDark ? 'text-[#00cbdd]' : 'text-amber-600'}`} />
@@ -567,7 +567,7 @@ export default function BillingSettingsPage() {
       </div>
 
       {/* Billing History */}
-      <div className={`rounded-xl border ${isDark ? 'border-[#00cbdd]/20 bg-[#00031b]/90 backdrop-blur-md' : 'border-gray-200 bg-white shadow-sm'}`}>
+      <div className={`rounded-xl border ${isDark ? 'border-[#00cbdd]/20 bg-[#00091b]/90 backdrop-blur-md' : 'border-gray-200 bg-white shadow-sm'}`}>
         <div className="p-6">
           <div className="flex items-center mb-4">
             <Clock className={`h-5 w-5 mr-2 ${isDark ? 'text-[#00cbdd]' : 'text-amber-600'}`} />

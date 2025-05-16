@@ -121,13 +121,13 @@ export default function Mash({ pipeline, isDark, onClose }: MashProps) {
   return (
     <div className={`flex flex-col h-full rounded-xl overflow-hidden ${
       isDark 
-        ? 'bg-[#00031b]/70 border border-[#00cbdd]/20' 
+        ? 'bg-[#00091b]/70 border border-[#00cbdd]/20' 
         : 'bg-white border border-gray-200 shadow-sm'
     }`}>
       {/* Header */}
       <div className={`py-4 px-6 flex items-center justify-between ${
         isDark 
-          ? 'bg-[#00031b]/80 border-b border-[#00cbdd]/20' 
+          ? 'bg-[#00091b]/80 border-b border-[#00cbdd]/20' 
           : 'bg-gray-50 border-b border-gray-200'
       }`}>
         <div className="flex items-center">

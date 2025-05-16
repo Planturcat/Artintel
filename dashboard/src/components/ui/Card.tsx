@@ -15,7 +15,7 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
         className={cn(
           'rounded-lg',
           isDark
-            ? 'bg-[#00031b]/90 border border-[#00cbdd]/20 backdrop-blur-md'
+            ? 'bg-cosmic-900/95 border border-[#00cbdd]/20 backdrop-blur-md'
             : 'bg-white border border-[#00cbdd]/10 shadow-sm backdrop-blur-md',
           className
         )}
@@ -27,4 +27,4 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
 
 Card.displayName = 'Card';
 
-export default Card; 
+export default Card;

@@ -15,7 +15,7 @@ const Terms = () => {
           Terms of Service
         </h1>
         <p className="text-sm mb-2 italic mt-20" data-oid="luz5qxf">
-          Last updated: 17th June 2024
+          Last updated: 17th April 2025
         </p>
         <p className="mt-4" data-oid="ozpazup">
           Welcome to <strong data-oid="7c.sm:7">ArtIntel</strong>. By accessing or using our website and services, you agree to be bound by these Terms of Service. Please read them carefully.

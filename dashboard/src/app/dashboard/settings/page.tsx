@@ -193,7 +193,7 @@ export default function SettingsPage() {
             type="text"
             className={`block w-full pl-10 pr-3 py-2 rounded-lg ${
               isDark 
-                ? 'bg-[#00031b]/90 border border-[#00cbdd]/20 text-white placeholder-gray-400'
+                ? 'bg-[#00091b]/90 border border-[#00cbdd]/20 text-white placeholder-gray-400'
                 : 'bg-white border border-gray-200 text-gray-900 placeholder-gray-500'
             } focus:outline-none focus:ring-2 focus:ring-[#00cbdd]`}
             placeholder={t('search_settings')}
@@ -215,7 +215,7 @@ export default function SettingsPage() {
             <Link href={category.link}>
               <div className={`h-full p-6 rounded-xl ${
                 isDark 
-                  ? 'bg-[#00031b]/90 border border-[#00cbdd]/20 hover:border-[#00cbdd]/50'
+                  ? 'bg-[#00091b]/90 border border-[#00cbdd]/20 hover:border-[#00cbdd]/50'
                   : 'bg-white border border-gray-200 hover:border-[#00cbdd]/50'
               } transition-all duration-200 hover:shadow-lg group`}>
                 <div className={`w-12 h-12 rounded-full bg-gradient-to-br ${category.color} flex items-center justify-center mb-4`}>
@@ -236,7 +236,7 @@ export default function SettingsPage() {
       {/* Quick Access Settings */}
       <div className={`p-6 rounded-xl ${
         isDark 
-          ? 'bg-[#00031b]/90 border border-[#00cbdd]/20'
+          ? 'bg-[#00091b]/90 border border-[#00cbdd]/20'
           : 'bg-white border border-gray-200'
       }`}>
         <h2 className={`text-xl font-medium mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>

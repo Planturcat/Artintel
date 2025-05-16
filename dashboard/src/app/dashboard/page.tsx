@@ -225,7 +225,7 @@ export default function Dashboard() {
       {/* Welcome Header */}
       <div className="mb-8">
         <motion.h1
-          className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}
+          className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-[#00091b]'}`}
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
@@ -233,7 +233,7 @@ export default function Dashboard() {
           {user?.full_name ? `${t('welcomeTitle')}, ${user.full_name}!` : t('welcomeTitle')}
         </motion.h1>
         <motion.p
-          className={`mt-2 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}
+          className={`mt-2 ${isDark ? 'text-[#7fe4eb]' : 'text-[#00cbdd]'}`}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.2 }}
@@ -256,68 +256,68 @@ export default function Dashboard() {
         <button
           className={`flex items-center p-4 rounded-xl border transition-all ${
             isDark
-              ? 'border-gray-800 bg-gray-900/50 hover:bg-[#00cbdd]/5 hover:border-[#00cbdd]/30'
-              : 'border-gray-200 bg-white hover:bg-blue-50 hover:border-blue-200'
+              ? 'border-[#00cbdd]/20 bg-cosmic-900/95 hover:bg-[#00cbdd]/10 hover:border-[#00cbdd]/30'
+              : 'border-[#00cbdd]/10 bg-white hover:bg-[#E6FCFF] hover:border-[#00cbdd]/20'
           }`}
           onClick={() => router.push('/dashboard/models')}
         >
-          <div className={`p-2 rounded-lg ${isDark ? 'bg-[#00cbdd]/10' : 'bg-blue-100'}`}>
-            <Brain className={`h-5 w-5 ${isDark ? 'text-[#00cbdd]' : 'text-blue-600'}`} />
+          <div className={`p-2 rounded-lg ${isDark ? 'bg-[#00cbdd]/10' : 'bg-[#00cbdd]/10'}`}>
+            <Brain className={`h-5 w-5 ${isDark ? 'text-[#00cbdd]' : 'text-[#00cbdd]'}`} />
           </div>
           <div className="ml-3 text-left">
-            <p className={`text-sm font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>{t('deployModel')}</p>
-            <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>{t('launchNewModel')}</p>
+            <p className={`text-sm font-medium ${isDark ? 'text-white' : 'text-[#00091b]'}`}>{t('deployModel')}</p>
+            <p className={`text-xs ${isDark ? 'text-[#7fe4eb]' : 'text-[#00cbdd]'}`}>{t('launchNewModel')}</p>
           </div>
         </button>
 
         <button
           className={`flex items-center p-4 rounded-xl border transition-all ${
             isDark
-              ? 'border-gray-800 bg-gray-900/50 hover:bg-purple-500/5 hover:border-purple-500/30'
-              : 'border-gray-200 bg-white hover:bg-purple-50 hover:border-purple-200'
+              ? 'border-[#00cbdd]/20 bg-cosmic-900/95 hover:bg-[#00cbdd]/10 hover:border-[#00cbdd]/30'
+              : 'border-[#00cbdd]/10 bg-white hover:bg-[#E6FCFF] hover:border-[#00cbdd]/20'
           }`}
           onClick={() => router.push('/dashboard/datasets')}
         >
-          <div className={`p-2 rounded-lg ${isDark ? 'bg-purple-500/10' : 'bg-purple-100'}`}>
-            <Workflow className={`h-5 w-5 ${isDark ? 'text-purple-500' : 'text-purple-600'}`} />
+          <div className={`p-2 rounded-lg ${isDark ? 'bg-[#00cbdd]/10' : 'bg-[#00cbdd]/10'}`}>
+            <Workflow className={`h-5 w-5 ${isDark ? 'text-[#00cbdd]' : 'text-[#00cbdd]'}`} />
           </div>
           <div className="ml-3 text-left">
-            <p className={`text-sm font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>{t('uploadDataset')}</p>
-            <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>{t('addTrainingData')}</p>
+            <p className={`text-sm font-medium ${isDark ? 'text-white' : 'text-[#00091b]'}`}>{t('uploadDataset')}</p>
+            <p className={`text-xs ${isDark ? 'text-[#7fe4eb]' : 'text-[#00cbdd]'}`}>{t('addTrainingData')}</p>
           </div>
         </button>
 
         <button
           className={`flex items-center p-4 rounded-xl border transition-all ${
             isDark
-              ? 'border-gray-800 bg-gray-900/50 hover:bg-amber-500/5 hover:border-amber-500/30'
-              : 'border-gray-200 bg-white hover:bg-amber-50 hover:border-amber-200'
+              ? 'border-[#00cbdd]/20 bg-cosmic-900/95 hover:bg-[#00cbdd]/10 hover:border-[#00cbdd]/30'
+              : 'border-[#00cbdd]/10 bg-white hover:bg-[#E6FCFF] hover:border-[#00cbdd]/20'
           }`}
           onClick={() => router.push('/dashboard/settings/api-keys')}
         >
-          <div className={`p-2 rounded-lg ${isDark ? 'bg-amber-500/10' : 'bg-amber-100'}`}>
-            <Key className={`h-5 w-5 ${isDark ? 'text-amber-500' : 'text-amber-600'}`} />
+          <div className={`p-2 rounded-lg ${isDark ? 'bg-[#00cbdd]/10' : 'bg-[#00cbdd]/10'}`}>
+            <Key className={`h-5 w-5 ${isDark ? 'text-[#00cbdd]' : 'text-[#00cbdd]'}`} />
           </div>
           <div className="ml-3 text-left">
-            <p className={`text-sm font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>{t('createAPIKey')}</p>
-            <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>{t('generateCredentials')}</p>
+            <p className={`text-sm font-medium ${isDark ? 'text-white' : 'text-[#00091b]'}`}>{t('createAPIKey')}</p>
+            <p className={`text-xs ${isDark ? 'text-[#7fe4eb]' : 'text-[#00cbdd]'}`}>{t('generateCredentials')}</p>
           </div>
         </button>
 
         <button
           className={`flex items-center p-4 rounded-xl border transition-all ${
             isDark
-              ? 'border-gray-800 bg-gray-900/50 hover:bg-green-500/5 hover:border-green-500/30'
-              : 'border-gray-200 bg-white hover:bg-green-50 hover:border-green-200'
+              ? 'border-[#00cbdd]/20 bg-cosmic-900/95 hover:bg-[#00cbdd]/10 hover:border-[#00cbdd]/30'
+              : 'border-[#00cbdd]/10 bg-white hover:bg-[#E6FCFF] hover:border-[#00cbdd]/20'
           }`}
           onClick={() => router.push('/dashboard/team')}
         >
-          <div className={`p-2 rounded-lg ${isDark ? 'bg-green-500/10' : 'bg-green-100'}`}>
-            <UserPlus className={`h-5 w-5 ${isDark ? 'text-green-500' : 'text-green-600'}`} />
+          <div className={`p-2 rounded-lg ${isDark ? 'bg-[#00cbdd]/10' : 'bg-[#00cbdd]/10'}`}>
+            <UserPlus className={`h-5 w-5 ${isDark ? 'text-[#00cbdd]' : 'text-[#00cbdd]'}`} />
           </div>
           <div className="ml-3 text-left">
-            <p className={`text-sm font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>{t('inviteTeam')}</p>
-            <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>{t('addCollaborators')}</p>
+            <p className={`text-sm font-medium ${isDark ? 'text-white' : 'text-[#00091b]'}`}>{t('inviteTeam')}</p>
+            <p className={`text-xs ${isDark ? 'text-[#7fe4eb]' : 'text-[#00cbdd]'}`}>{t('addCollaborators')}</p>
           </div>
         </button>
       </motion.div>
@@ -339,7 +339,7 @@ export default function Dashboard() {
           change={tokenUsage?.trend || 0}
           changeText={t('fromLastWeek')}
           isLoading={loading}
-          gradient="from-purple-500 to-pink-500"
+          gradient="from-[#00cbdd] to-[#0066ff]"
         />
         <StatCard
           title={t('computeHours')}
@@ -348,7 +348,7 @@ export default function Dashboard() {
           change={deploymentMetrics?.cpuUtilization ? deploymentMetrics.cpuUtilization - 70 : 0}
           changeText={t('fromYesterday')}
           isLoading={loading}
-          gradient="from-amber-500 to-orange-500"
+          gradient="from-[#00cbdd] to-[#0066ff]"
         />
         <StatCard
           title={t('activeUsers')}
@@ -357,7 +357,7 @@ export default function Dashboard() {
           change={user?.organization ? 15 : 0}
           changeText={t('fromLastMonth')}
           isLoading={loading}
-          gradient="from-green-500 to-emerald-500"
+          gradient="from-[#00cbdd] to-[#0066ff]"
         />
 
       </div>
@@ -367,7 +367,7 @@ export default function Dashboard() {
         {/* Main Analytics Chart */}
         <div className="lg:col-span-2">
           <div className="flex justify-between items-center mb-4">
-            <h3 className={`text-lg font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
+            <h3 className={`text-lg font-medium ${isDark ? 'text-white' : 'text-[#00091b]'}`}>
               {t('apiUsageAnalytics')}
             </h3>
             <div className="flex space-x-2">
@@ -378,10 +378,10 @@ export default function Dashboard() {
                     range === '30d'
                       ? isDark
                         ? 'bg-[#00cbdd]/20 text-[#00cbdd]'
-                        : 'bg-blue-100 text-blue-700'
+                        : 'bg-[#00cbdd]/10 text-[#00cbdd]'
                       : isDark
-                        ? 'text-gray-400 hover:text-gray-200 hover:bg-gray-800'
-                        : 'text-gray-600 hover:text-gray-800 hover:bg-gray-100'
+                        ? 'text-[#7fe4eb] hover:text-white hover:bg-[#00cbdd]/10'
+                        : 'text-[#00cbdd] hover:text-[#007a85] hover:bg-[#00cbdd]/10'
                   }`}
                 >
                   {t(`time_range_${range.toLowerCase()}`)}
@@ -411,50 +411,50 @@ export default function Dashboard() {
         >
           {!loading && tokenUsage && (
             <div className="space-y-4">
-              <div className={`space-y-1 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
+              <div className={`space-y-1 ${isDark ? 'text-white' : 'text-[#00091b]'}`}>
                 <div className="flex justify-between items-center">
                   <span>{t('totalTokenUsage')}</span>
                   <span className="font-medium">{(tokenUsage.totalTokens / 1000000).toFixed(1)}M</span>
                 </div>
-                <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                <div className="w-full bg-[#000a12] rounded-full h-2.5 dark:bg-[#000a12]">
                   <div
-                    className="bg-gradient-to-r from-[#00cbdd] to-blue-500 h-2.5 rounded-full"
+                    className="bg-gradient-to-r from-[#00cbdd] to-[#0066ff] h-2.5 rounded-full"
                     style={{ width: `${Math.min(100, (tokenUsage.totalTokens / tokenUsage.limit) * 100)}%` }}
                   ></div>
                 </div>
-                <div className="flex justify-between text-xs text-gray-500">
-                  <span>0</span>
-                  <span>{t('limit')}: {(tokenUsage.limit / 1000000).toFixed(0)}M</span>
+                <div className="flex justify-between text-xs">
+                  <span className={isDark ? 'text-[#7fe4eb]' : 'text-[#00cbdd]'}>0</span>
+                  <span className={isDark ? 'text-[#7fe4eb]' : 'text-[#00cbdd]'}>{t('limit')}: {(tokenUsage.limit / 1000000).toFixed(0)}M</span>
                 </div>
               </div>
 
-              <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
+              <div className="pt-2 border-t border-[#00cbdd]/20 dark:border-[#00cbdd]/20">
                 <div className="flex items-center justify-between mb-4">
-                  <h4 className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>{t('costBreakdown')}</h4>
-                  <span className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>{t('thisMonth')}</span>
+                  <h4 className={`font-medium ${isDark ? 'text-white' : 'text-[#00091b]'}`}>{t('costBreakdown')}</h4>
+                  <span className={`text-sm ${isDark ? 'text-[#7fe4eb]' : 'text-[#00cbdd]'}`}>{t('thisMonth')}</span>
                 </div>
 
                 <div className="space-y-3">
                   {tokenUsage ? (
                     // Use real token usage data if available
                     <>
-                      <div className={`flex justify-between ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
+                      <div className={`flex justify-between ${isDark ? 'text-white' : 'text-[#00091b]'}`}>
                         <div className="flex items-center">
                           <div className="w-3 h-3 rounded-full bg-[#00cbdd] mr-2"></div>
                           <span>{t('inference')}</span>
                         </div>
                         <span>${((tokenUsage.totalTokens * 0.6) / 1000 * 0.002).toFixed(2)}</span>
                       </div>
-                      <div className={`flex justify-between ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
+                      <div className={`flex justify-between ${isDark ? 'text-white' : 'text-[#00091b]'}`}>
                         <div className="flex items-center">
-                          <div className="w-3 h-3 rounded-full bg-purple-500 mr-2"></div>
+                          <div className="w-3 h-3 rounded-full bg-[#33d5e3] mr-2"></div>
                           <span>{t('training')}</span>
                         </div>
                         <span>${((tokenUsage.totalTokens * 0.2) / 1000 * 0.006).toFixed(2)}</span>
                       </div>
-                      <div className={`flex justify-between ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
+                      <div className={`flex justify-between ${isDark ? 'text-white' : 'text-[#00091b]'}`}>
                         <div className="flex items-center">
-                          <div className="w-3 h-3 rounded-full bg-pink-500 mr-2"></div>
+                          <div className="w-3 h-3 rounded-full bg-[#7fe4eb] mr-2"></div>
                           <span>{t('storage')}</span>
                         </div>
                         <span>${((tokenUsage.totalTokens * 0.2) / 1000 * 0.0005).toFixed(2)}</span>
@@ -463,23 +463,23 @@ export default function Dashboard() {
                   ) : (
                     // Fallback for when no data is available
                     <>
-                      <div className={`flex justify-between ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
+                      <div className={`flex justify-between ${isDark ? 'text-white' : 'text-[#00091b]'}`}>
                         <div className="flex items-center">
                           <div className="w-3 h-3 rounded-full bg-[#00cbdd] mr-2"></div>
                           <span>{t('inference')}</span>
                         </div>
                         <span>{loading ? "—" : "$0.00"}</span>
                       </div>
-                      <div className={`flex justify-between ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
+                      <div className={`flex justify-between ${isDark ? 'text-white' : 'text-[#00091b]'}`}>
                         <div className="flex items-center">
-                          <div className="w-3 h-3 rounded-full bg-purple-500 mr-2"></div>
+                          <div className="w-3 h-3 rounded-full bg-[#33d5e3] mr-2"></div>
                           <span>{t('training')}</span>
                         </div>
                         <span>{loading ? "—" : "$0.00"}</span>
                       </div>
-                      <div className={`flex justify-between ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
+                      <div className={`flex justify-between ${isDark ? 'text-white' : 'text-[#00091b]'}`}>
                         <div className="flex items-center">
-                          <div className="w-3 h-3 rounded-full bg-pink-500 mr-2"></div>
+                          <div className="w-3 h-3 rounded-full bg-[#7fe4eb] mr-2"></div>
                           <span>{t('storage')}</span>
                         </div>
                         <span>{loading ? "—" : "$0.00"}</span>
@@ -488,7 +488,7 @@ export default function Dashboard() {
                   )}
                 </div>
 
-                <div className={`mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 flex justify-between items-center ${isDark ? 'text-white' : 'text-gray-900'} font-medium`}>
+                <div className={`mt-4 pt-4 border-t border-[#00cbdd]/20 dark:border-[#00cbdd]/20 flex justify-between items-center ${isDark ? 'text-white' : 'text-[#00091b]'} font-medium`}>
                   <span>{t('total')}</span>
                   <span>
                     {tokenUsage

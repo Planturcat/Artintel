@@ -70,7 +70,7 @@ export default function HowItWorksSection() {
       id="how-it-works"
       className={`w-full py-24 relative ${
         isDark 
-          ? 'bg-[#00031b]' 
+          ? 'bg-[#00091b]' 
           : 'bg-white'
       }`}
     >
@@ -80,7 +80,7 @@ export default function HowItWorksSection() {
             Simplified Process
           </span>
           
-          <h2 className={`text-4xl md:text-5xl font-bold mb-4 ${isDark ? 'text-white' : 'text-[#00031b]'}`}>
+          <h2 className={`text-4xl md:text-5xl font-bold mb-4 ${isDark ? 'text-white' : 'text-[#00091b]'}`}>
             How It <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#00cbdd] to-blue-500">Works</span>
           </h2>
           
@@ -94,7 +94,7 @@ export default function HowItWorksSection() {
             title="The 5-Step Process" 
             subtitle="From model selection to deployment and beyond"
             fullWidth
-            className={`border border-[#00cbdd]/20 ${isDark ? 'bg-[#00061b]/80' : 'bg-gray-50/90'}`}
+            className={`border border-[#00cbdd]/20 ${isDark ? 'bg-[#00091b]/80' : 'bg-gray-50/90'}`}
           >
             <div className="py-10 px-6 relative">
               {/* Connection line */}
@@ -119,7 +119,7 @@ export default function HowItWorksSection() {
                         Step {step.id}
                       </div>
                       
-                      <h3 className={`text-xl font-bold mb-3 text-center ${isDark ? 'text-white' : 'text-[#00031b]'}`}>
+                      <h3 className={`text-xl font-bold mb-3 text-center ${isDark ? 'text-white' : 'text-[#00091b]'}`}>
                         {step.title}
                       </h3>
                       
@@ -134,7 +134,7 @@ export default function HowItWorksSection() {
                             : 'max-h-0 opacity-0 p-0'
                         } ${
                           isDark 
-                            ? 'bg-[#00031b]/80 text-gray-300 border border-[#00cbdd]/20' 
+                            ? 'bg-[#00091b]/80 text-gray-300 border border-[#00cbdd]/20' 
                             : 'bg-white text-gray-700 border border-gray-200'
                         }`}
                       >

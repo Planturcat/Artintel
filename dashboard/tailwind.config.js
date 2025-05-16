@@ -12,19 +12,37 @@ module.exports = {
         primary: {
           100: '#E6FCFF',
           200: '#A5F3FA',
-          300: '#67E3F0',
-          400: '#2ACFE1',
-          500: '#00CBDD',
+          300: '#7fe4eb', // primary-lighter
+          400: '#33d5e3', // primary-light
+          500: '#00CBDD', // primary
           600: '#00A3B3',
-          700: '#007A89',
+          700: '#007a85', // primary-dark
           800: '#005260',
           900: '#002A33',
         },
         cosmic: {
-          900: '#00021a',
-          800: '#00031b', 
-          700: '#00052d',
-          600: '#000a47',
+          900: '#000508', // secondary (darkest)
+          800: '#000a12', // secondary-light
+          700: '#001824', // slightly lighter
+          600: '#002a33', // even lighter
+        },
+        success: {
+          100: '#ccfaed',
+          300: '#66f0cb',
+          500: '#00e5aa', // success
+          700: '#00a06a',
+        },
+        warning: {
+          100: '#faf5cc',
+          300: '#f0e566',
+          500: '#e5c700', // warning
+          700: '#b27800',
+        },
+        error: {
+          100: '#ffccd3',
+          300: '#ff99a6',
+          500: '#ff5a65', // error
+          700: '#b02a37',
         }
       },
       backgroundImage: {
@@ -52,4 +70,4 @@ module.exports = {
     },
   },
   plugins: [],
-} 
+}

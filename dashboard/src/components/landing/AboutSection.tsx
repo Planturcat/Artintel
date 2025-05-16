@@ -100,7 +100,7 @@ export default function AboutSection() {
         ref={sectionRef}
         className={`w-full py-32 relative overflow-hidden ${
           isDark 
-            ? 'bg-gradient-to-b from-[#00031b] to-[#00052d]' 
+            ? 'bg-gradient-to-b from-[#00091b] to-[#00052d]' 
             : 'bg-gradient-to-b from-gray-50 to-white'
         }`}
       >
@@ -110,7 +110,7 @@ export default function AboutSection() {
               About Artintel
             </span>
             
-            <h2 className={`text-4xl md:text-5xl font-bold mb-6 ${isDark ? 'text-white' : 'text-[#00031b]'}`}>
+            <h2 className={`text-4xl md:text-5xl font-bold mb-6 ${isDark ? 'text-white' : 'text-[#00091b]'}`}>
               {title}
             </h2>
             
@@ -158,7 +158,7 @@ export default function AboutSection() {
           </div>
 
           <div className="text-center mb-12">
-            <h3 className={`text-2xl font-bold mb-10 inline-block relative ${isDark ? 'text-white' : 'text-[#00031b]'}`}>
+            <h3 className={`text-2xl font-bold mb-10 inline-block relative ${isDark ? 'text-white' : 'text-[#00091b]'}`}>
               Our Core Values
               <span className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-[#00cbdd] to-blue-500"></span>
             </h3>
@@ -178,7 +178,7 @@ export default function AboutSection() {
                   {value.icon}
                 </div>
                 
-                <h4 className={`text-xl font-bold mb-4 relative z-10 ${isDark ? 'text-white' : 'text-[#00031b]'}`}>
+                <h4 className={`text-xl font-bold mb-4 relative z-10 ${isDark ? 'text-white' : 'text-[#00091b]'}`}>
                   {value.title}
                 </h4>
                 
@@ -199,7 +199,7 @@ export default function AboutSection() {
       ref={sectionRef}
       className={`w-full py-32 relative overflow-hidden ${
         isDark 
-          ? 'bg-gradient-to-b from-[#00031b] to-[#00052d]' 
+          ? 'bg-gradient-to-b from-[#00091b] to-[#00052d]' 
           : 'bg-gradient-to-b from-gray-50 to-white'
       }`}
     >
@@ -251,7 +251,7 @@ export default function AboutSection() {
             About Artintel
           </motion.span>
           
-          <h2 className={`text-4xl md:text-5xl font-bold mb-6 flex flex-wrap justify-center ${isDark ? 'text-white' : 'text-[#00031b]'}`}>
+          <h2 className={`text-4xl md:text-5xl font-bold mb-6 flex flex-wrap justify-center ${isDark ? 'text-white' : 'text-[#00091b]'}`}>
             {titleArray.map((word, index) => (
               <motion.span
                 key={index}
@@ -355,7 +355,7 @@ export default function AboutSection() {
 
         <div className="text-center mb-12">
           <motion.h3 
-            className={`text-2xl font-bold mb-10 inline-block relative ${isDark ? 'text-white' : 'text-[#00031b]'}`}
+            className={`text-2xl font-bold mb-10 inline-block relative ${isDark ? 'text-white' : 'text-[#00091b]'}`}
             initial={{ opacity: 0, y: 20 }}
             animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
             transition={{ duration: 0.6 }}
@@ -397,7 +397,7 @@ export default function AboutSection() {
                 {value.icon}
               </div>
               
-              <h4 className={`text-xl font-bold mb-4 relative z-10 ${isDark ? 'text-white' : 'text-[#00031b]'}`}>
+              <h4 className={`text-xl font-bold mb-4 relative z-10 ${isDark ? 'text-white' : 'text-[#00091b]'}`}>
                 {value.title}
               </h4>
               

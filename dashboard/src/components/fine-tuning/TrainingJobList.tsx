@@ -87,7 +87,7 @@ export default function TrainingJobList({
           animate={{ opacity: 1, y: 0 }}
           className={`p-6 rounded-lg border cursor-pointer transition-all duration-200 ${
             isDark 
-              ? 'bg-[#00031b]/90 border-[#00cbdd]/20 hover:border-[#00cbdd]/40' 
+              ? 'bg-[#00091b]/90 border-[#00cbdd]/20 hover:border-[#00cbdd]/40' 
               : 'bg-white border-[#00cbdd]/10 hover:border-[#00cbdd]/30'
           }`}
           onClick={() => handleJobClick(job.id)}
@@ -181,7 +181,7 @@ export default function TrainingJobList({
       {jobs.length === 0 && (
         <div className={`p-8 text-center rounded-lg border ${
           isDark 
-            ? 'bg-[#00031b]/90 border-[#00cbdd]/20' 
+            ? 'bg-[#00091b]/90 border-[#00cbdd]/20' 
             : 'bg-white border-[#00cbdd]/10'
         }`}>
           <p className={isDark ? 'text-gray-400' : 'text-gray-600'}>

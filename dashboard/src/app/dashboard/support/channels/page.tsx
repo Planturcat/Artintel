@@ -143,7 +143,7 @@ export default function SupportChannelsPage() {
             >
               <div className={`p-6 rounded-xl ${
                 isDark 
-                  ? 'bg-[#00031b]/90 border border-[#00cbdd]/20'
+                  ? 'bg-[#00091b]/90 border border-[#00cbdd]/20'
                   : 'bg-white border border-gray-200'
               } transition-all duration-200 ${isAvailable ? 'hover:shadow-lg' : 'opacity-70'}`}>
                 <div className="flex items-start">
@@ -188,7 +188,7 @@ export default function SupportChannelsPage() {
       {/* Support Hours */}
       <div className={`p-6 rounded-xl ${
         isDark 
-          ? 'bg-[#00031b]/90 border border-[#00cbdd]/20'
+          ? 'bg-[#00091b]/90 border border-[#00cbdd]/20'
           : 'bg-white border border-gray-200'
       }`}>
         <h2 className={`text-xl font-medium mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>
@@ -225,7 +225,7 @@ export default function SupportChannelsPage() {
       {/* Response Times */}
       <div className={`p-6 rounded-xl ${
         isDark 
-          ? 'bg-[#00031b]/90 border border-[#00cbdd]/20'
+          ? 'bg-[#00091b]/90 border border-[#00cbdd]/20'
           : 'bg-white border border-gray-200'
       }`}>
         <h2 className={`text-xl font-medium mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>

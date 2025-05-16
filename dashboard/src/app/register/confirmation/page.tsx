@@ -41,9 +41,9 @@ function ConfirmationContent() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#00031b]">
+    <div className="min-h-screen flex flex-col bg-[#00091b]">
       {/* Header */}
-      <header className="border-b border-cyan-950 bg-[#00031b]/80 backdrop-blur-lg py-4 px-6">
+      <header className="border-b border-cyan-950 bg-[#00091b]/80 backdrop-blur-lg py-4 px-6">
         <div className="max-w-6xl mx-auto flex justify-between items-center">
           <Link href="/" className="text-2xl font-bold text-white">
             Artintel<span className="text-[#00cbdd]"> LLms</span>
@@ -135,7 +135,7 @@ function ConfirmationContent() {
 export default function ConfirmationPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex flex-col items-center justify-center bg-[#00031b]">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-[#00091b]">
         <div className="animate-pulse text-[#00cbdd]">Loading...</div>
       </div>
     }>

@@ -12,7 +12,7 @@ export default function Home() {
   }, [router]);
 
   // Return empty div while redirecting
-  return <div className="min-h-screen w-full flex items-center justify-center bg-[#00031b]">
+  return <div className="min-h-screen w-full flex items-center justify-center bg-[#00091b]">
     <div className="animate-pulse text-white text-lg">Redirecting to login...</div>
   </div>;
 }

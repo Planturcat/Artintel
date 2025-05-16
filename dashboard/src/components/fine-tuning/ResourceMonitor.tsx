@@ -61,7 +61,7 @@ export default function ResourceMonitor({
       transition={{ duration: 0.3 }}
       className={`rounded-lg border ${
         isDark 
-          ? 'bg-[#00031b]/90 border-[#00cbdd]/20' 
+          ? 'bg-[#00091b]/90 border-[#00cbdd]/20' 
           : 'bg-white border-[#00cbdd]/10'
       } overflow-hidden`}
     >

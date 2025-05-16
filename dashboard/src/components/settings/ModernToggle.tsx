@@ -36,7 +36,7 @@ export default function ModernToggle({
         className={`
           relative inline-flex h-6 w-11 items-center rounded-full
           transition-all duration-300 ease-spring
-          focus:outline-none focus:ring-2 focus:ring-[#00cbdd]/50 focus:ring-offset-2 focus:ring-offset-[#00031b]
+          focus:outline-none focus:ring-2 focus:ring-[#00cbdd]/50 focus:ring-offset-2 focus:ring-offset-[#00091b]
           ${enabled 
             ? 'bg-gradient-to-r from-[#00cbdd] to-[#00cbdd]/80' 
             : 'bg-gradient-to-r from-gray-700 to-gray-600'

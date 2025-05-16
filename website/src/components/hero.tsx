@@ -42,31 +42,31 @@ export default function Hero() {
   ];
 
   return (
-    <div className="relative min-h-screen w-full flex flex-col items-center justify-start pt-16">
+    <div className="relative min-h-[90vh] sm:min-h-screen w-full flex flex-col items-center justify-start pt-12 sm:pt-16">
       <HeroBackground />
 
-      <div className="z-10 text-center max-w-5xl mx-auto px-4 mt-52">
-        <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-medium mb-4 text-transparent bg-clip-text bg-gradient-to-r from-[#00CBDD] to-[#00CBDD] overflow-x-visible px-4 mx-auto w-fit whitespace-nowrap">
+      <div className="z-10 text-center max-w-5xl mx-auto px-4 mt-24 sm:mt-32 md:mt-40 lg:mt-52">
+        <h1 className="text-xl xs:text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-medium mb-4 text-transparent bg-clip-text bg-gradient-to-r from-[#00CBDD] to-[#00CBDD] px-2 mx-auto w-full sm:w-fit sm:whitespace-nowrap">
           Discover.Fine-tune.Inference.Deploy.
         </h1>
 
-        <p className="text-2xl font-semibold mb-2">
+        <p className="text-xl sm:text-2xl font-semibold mb-2">
           Open-source Language Models
         </p>
 
-        <p className="text-lg text-muted-foreground mb-6">
+        <p className="text-base sm:text-lg text-muted-foreground mb-6 max-w-3xl mx-auto px-2">
           The complete no-code platform for language models. Go from idea to implementation in minutes, not months.
           No Machine Learning expertise required. Just pure innovation potential.
         </p>
 
         <Link href="/">
-          <Button size="lg" className="mb-8 text-base">
+          <Button size="lg" className="mb-6 sm:mb-8 text-base bg-gradient-to-r from-[#00cbdd] to-[#00cbdd]/70 hover:from-[#00cbdd]/90 hover:to-[#00cbdd]/60 text-white border-none">
             Start free trial
           </Button>
         </Link>
 
         <div className="w-full mt-4">
-          <StatsCard stats={stats} className="scale-90 transform origin-top" />
+          <StatsCard stats={stats} className="scale-[0.85] sm:scale-90 transform origin-top" />
         </div>
 {/*
         <div className="mt-12">

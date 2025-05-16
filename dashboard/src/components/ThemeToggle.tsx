@@ -12,12 +12,12 @@ export default function ThemeToggle({ className = '' }: ThemeToggleProps) {
   const isDark = theme === 'dark';
 
   return (
-    <button 
+    <button
       onClick={toggleTheme}
       className={`flex items-center justify-center p-2 rounded-full transition-colors ${
-        isDark 
-          ? 'bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white' 
-          : 'bg-gray-200 hover:bg-gray-300 text-gray-700 hover:text-[#00cbdd]'
+        isDark
+          ? 'bg-cosmic-800 hover:bg-[#001824] text-[#00cbdd] hover:text-white'
+          : 'bg-[#E6FCFF] hover:bg-[#A5F3FA] text-[#00cbdd] hover:text-[#007a85]'
       } ${className}`}
       aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
     >
@@ -28,4 +28,4 @@ export default function ThemeToggle({ className = '' }: ThemeToggleProps) {
       )}
     </button>
   );
-} 
+}

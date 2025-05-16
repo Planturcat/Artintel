@@ -24,7 +24,7 @@ export default function RegistrationSuccessPage() {
   }, [router]);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-[#00031b]">
+    <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-[#00091b]">
       <div className={`max-w-lg w-full rounded-xl overflow-hidden ${
         isDark ? 'bg-gray-900' : 'bg-white'
       } shadow-xl`}>

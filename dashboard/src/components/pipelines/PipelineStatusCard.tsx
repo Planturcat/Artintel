@@ -33,7 +33,7 @@ export default function PipelineStatusCard({
   return (
     <div className={`relative rounded-xl overflow-hidden ${
       isDark 
-        ? 'bg-[#00031b]/70 border border-[#00cbdd]/20' 
+        ? 'bg-[#00091b]/70 border border-[#00cbdd]/20' 
         : 'bg-white border border-gray-200 shadow-sm'
     }`}>
       <div className="px-6 py-5">

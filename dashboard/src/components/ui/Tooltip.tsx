@@ -65,7 +65,7 @@ export default function Tooltip({ content, children, position = 'top' }: Tooltip
               absolute z-50 px-2 py-1 text-sm rounded-lg whitespace-nowrap
               ${getPositionStyles()}
               ${isDark 
-                ? 'bg-[#00031b]/90 border border-[#00cbdd]/20 text-white' 
+                ? 'bg-[#00091b]/90 border border-[#00cbdd]/20 text-white' 
                 : 'bg-white border border-[#00cbdd]/10 text-gray-900'
               }
               shadow-lg backdrop-blur-md

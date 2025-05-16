@@ -9,11 +9,11 @@ export default function Footer() {
   const isDark = theme === 'dark';
 
   return (
-    <footer className={`py-12 px-6 ${isDark ? 'bg-[#00061b]' : 'bg-gray-50'}`}>
+    <footer className={`py-12 px-6 ${isDark ? 'bg-[#00091b]' : 'bg-gray-50'}`}>
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-5 gap-8">
         {/* Logo and Description */}
         <div className="col-span-2">
-          <Link href="/" className={`text-2xl font-bold inline-block mb-4 ${isDark ? 'text-white' : 'text-[#00031b]'}`}>
+          <Link href="/" className={`text-2xl font-bold inline-block mb-4 ${isDark ? 'text-white' : 'text-[#00091b]'}`}>
             Artintel<span className="bg-clip-text text-transparent bg-gradient-to-r from-[#00cbdd] to-blue-500"> LLMs</span>
           </Link>
           <p className={`max-w-md mb-6 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
@@ -37,7 +37,7 @@ export default function Footer() {
 
         {/* Quick Links */}
         <div>
-          <h3 className={`text-lg font-semibold mb-4 ${isDark ? 'text-white' : 'text-[#00031b]'}`}>Product</h3>
+          <h3 className={`text-lg font-semibold mb-4 ${isDark ? 'text-white' : 'text-[#00091b]'}`}>Product</h3>
           <ul className="space-y-2">
             <li>
               <Link href="/features" className={`transition-colors ${isDark ? 'text-gray-400 hover:text-[#00cbdd]' : 'text-gray-600 hover:text-[#00cbdd]'}`}>
@@ -64,7 +64,7 @@ export default function Footer() {
 
         {/* Resources */}
         <div>
-          <h3 className={`text-lg font-semibold mb-4 ${isDark ? 'text-white' : 'text-[#00031b]'}`}>Resources</h3>
+          <h3 className={`text-lg font-semibold mb-4 ${isDark ? 'text-white' : 'text-[#00091b]'}`}>Resources</h3>
           <ul className="space-y-2">
             <li>
               <Link href="/blog" className={`transition-colors ${isDark ? 'text-gray-400 hover:text-[#00cbdd]' : 'text-gray-600 hover:text-[#00cbdd]'}`}>
@@ -91,7 +91,7 @@ export default function Footer() {
 
         {/* Company */}
         <div>
-          <h3 className={`text-lg font-semibold mb-4 ${isDark ? 'text-white' : 'text-[#00031b]'}`}>Company</h3>
+          <h3 className={`text-lg font-semibold mb-4 ${isDark ? 'text-white' : 'text-[#00091b]'}`}>Company</h3>
           <ul className="space-y-2">
             <li>
               <Link href="/about" className={`transition-colors ${isDark ? 'text-gray-400 hover:text-[#00cbdd]' : 'text-gray-600 hover:text-[#00cbdd]'}`}>

@@ -10,14 +10,14 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ 
-    className = '', 
-    variant = 'default', 
-    size = 'md', 
+  ({
+    className = '',
+    variant = 'default',
+    size = 'md',
     loading = false,
     disabled,
     children,
-    ...props 
+    ...props
   }, ref) => {
     const { theme } = useTheme();
     const isDark = theme === 'dark';
@@ -26,14 +26,14 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       switch (variant) {
         case 'outline':
           return isDark
-            ? 'border border-[#00cbdd]/20 hover:bg-[#00cbdd]/10 text-white'
-            : 'border border-gray-200 hover:border-[#00cbdd] text-gray-700 hover:text-[#00cbdd]';
+            ? 'border border-[#00cbdd]/30 hover:bg-[#00cbdd]/15 text-white'
+            : 'border border-[#00cbdd]/30 hover:border-[#00cbdd] text-[#00cbdd] hover:text-[#00cbdd]';
         case 'ghost':
           return isDark
-            ? 'hover:bg-white/10'
-            : 'hover:bg-gray-100';
+            ? 'hover:bg-[#00cbdd]/15 text-white'
+            : 'hover:bg-[#00cbdd]/10 text-[#00cbdd]';
         default:
-          return 'bg-gradient-to-r from-[#00cbdd] to-blue-500 text-white hover:opacity-90';
+          return 'bg-gradient-to-r from-[#00cbdd] to-[#0066ff] text-white hover:opacity-90';
       }
     };
 
@@ -64,7 +64,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         {loading ? (
           <div className="flex items-center justify-center">
             <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-            <span className="ml-2">Loading...</span>
+            <span className="ml-2 text-white">Loading...</span>
           </div>
         ) : (
           children
@@ -77,4 +77,4 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 // Add display name for React DevTools
 Button.displayName = 'Button';
 
-export default Button; 
+export default Button;

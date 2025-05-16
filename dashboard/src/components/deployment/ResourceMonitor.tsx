@@ -18,21 +18,21 @@ export default function ResourceMonitor({
 }: ResourceMonitorProps) {
   // Determine status color based on value
   const getStatusColor = (value: number) => {
-    if (value >= 90) return 'text-red-500';
-    if (value >= 75) return 'text-amber-500';
-    return 'text-green-500';
+    if (value >= 90) return 'text-error-500';
+    if (value >= 75) return 'text-warning-500';
+    return 'text-success-500';
   };
 
   // Determine background color based on value and theme
   const getBackgroundColor = (value: number) => {
     if (isDark) {
-      if (value >= 90) return 'from-red-500/20 to-red-900/20';
-      if (value >= 75) return 'from-amber-500/20 to-amber-900/20';
-      return 'from-green-500/20 to-green-900/20';
+      if (value >= 90) return 'from-error-500/20 to-error-900/20';
+      if (value >= 75) return 'from-warning-500/20 to-warning-900/20';
+      return 'from-success-500/20 to-success-900/20';
     } else {
-      if (value >= 90) return 'from-red-50 to-red-100';
-      if (value >= 75) return 'from-amber-50 to-amber-100';
-      return 'from-green-50 to-green-100';
+      if (value >= 90) return 'from-error-50 to-error-100';
+      if (value >= 75) return 'from-warning-50 to-warning-100';
+      return 'from-success-50 to-success-100';
     }
   };
 
@@ -40,10 +40,10 @@ export default function ResourceMonitor({
     <div
       className={`p-6 rounded-xl ${
         isDark
-          ? 'bg-gray-800/50 hover:bg-gray-800/70'
-          : 'bg-white hover:bg-gray-50'
+          ? 'bg-cosmic-800 hover:bg-[#001824]'
+          : 'bg-white hover:bg-[#E6FCFF]'
       } transition-all duration-200 border ${
-        isDark ? 'border-gray-700' : 'border-gray-100'
+        isDark ? 'border-[#00cbdd]/20' : 'border-[#00cbdd]/10'
       } shadow-sm hover:shadow-md`}
     >
       <div className="flex items-center justify-between mb-4">

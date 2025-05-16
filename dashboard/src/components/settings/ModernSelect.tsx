@@ -99,7 +99,7 @@ export default function ModernSelect({
               <Listbox.Options className={`
                 absolute z-10 mt-2 w-full rounded-lg
                 ${isDark 
-                  ? 'bg-[#00031b]/95 backdrop-blur-xl border-[#00cbdd]/10' 
+                  ? 'bg-[#00091b]/95 backdrop-blur-xl border-[#00cbdd]/10' 
                   : 'bg-white border-gray-200'
                 }
                 border py-2 shadow-lg

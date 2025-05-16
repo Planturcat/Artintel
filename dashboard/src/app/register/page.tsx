@@ -296,9 +296,9 @@ function RegisterContent() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#00031b]">
+    <div className="min-h-screen flex flex-col bg-[#00091b]">
       {/* Header with progress indicator */}
-      <header className="border-b border-cyan-950 bg-[#00031b]/80 backdrop-blur-lg py-4 px-6">
+      <header className="border-b border-cyan-950 bg-[#00091b]/80 backdrop-blur-lg py-4 px-6">
         <div className="max-w-6xl mx-auto flex justify-between items-center">
           <Link href="/" className="text-2xl font-bold text-white">
             Artintel<span className="text-[#00cbdd]"> LLms</span>
@@ -310,9 +310,9 @@ function RegisterContent() {
               <div key={step} className="flex items-center">
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
                   currentStep === step
-                    ? "bg-[#00cbdd] text-[#00031b]"
+                    ? "bg-[#00cbdd] text-[#00091b]"
                     : currentStep > step
-                      ? "bg-[#00cbdd]/80 text-[#00031b]"
+                      ? "bg-[#00cbdd]/80 text-[#00091b]"
                       : "bg-gray-800 text-gray-400"
                 }`}>
                   {currentStep > step ? <Check className="h-4 w-4" /> : step}
@@ -379,7 +379,7 @@ function RegisterContent() {
                   <button
                     onClick={handleGoogleSignUp}
                     type="button"
-                    className="w-full flex items-center justify-center px-4 py-3 rounded-lg bg-white text-gray-800 font-medium hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-[#00cbdd] focus:ring-offset-2 focus:ring-offset-[#00031b] transition-all duration-300"
+                    className="w-full flex items-center justify-center px-4 py-3 rounded-lg bg-white text-gray-800 font-medium hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-[#00cbdd] focus:ring-offset-2 focus:ring-offset-[#00091b] transition-all duration-300"
                   >
                     <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
                       <path
@@ -404,7 +404,7 @@ function RegisterContent() {
                   <button
                     onClick={handleAppleSignUp}
                     type="button"
-                    className="w-full flex items-center justify-center px-4 py-3 rounded-lg bg-black text-white font-medium hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-[#00cbdd] focus:ring-offset-2 focus:ring-offset-[#00031b] transition-all duration-300"
+                    className="w-full flex items-center justify-center px-4 py-3 rounded-lg bg-black text-white font-medium hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-[#00cbdd] focus:ring-offset-2 focus:ring-offset-[#00091b] transition-all duration-300"
                   >
                     <Apple className="w-5 h-5 mr-2" />
                     Sign up with Apple
@@ -873,8 +873,8 @@ function RegisterContent() {
 export default function RegisterPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex flex-col bg-[#00031b]">
-        <header className="border-b border-cyan-950 bg-[#00031b]/80 backdrop-blur-lg py-4 px-6">
+      <div className="min-h-screen flex flex-col bg-[#00091b]">
+        <header className="border-b border-cyan-950 bg-[#00091b]/80 backdrop-blur-lg py-4 px-6">
           <div className="max-w-6xl mx-auto flex justify-between items-center">
             <div className="text-2xl font-bold text-white">
               Artintel<span className="text-[#00cbdd]"> LLms</span>

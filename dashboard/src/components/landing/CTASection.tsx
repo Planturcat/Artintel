@@ -33,10 +33,10 @@ export default function CTASection() {
           transition={{ duration: 0.5 }}
           className="text-center mb-16"
         >
-          <h2 className={`text-3xl md:text-4xl font-bold mb-4 ${isDark ? 'text-white' : 'text-[#00031b]'}`}>
+          <h2 className={`text-3xl md:text-4xl font-bold mb-4 ${isDark ? 'text-white' : 'text-[#00091b]'}`}>
             Ready to <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#00cbdd] to-blue-500">Transform</span> Your Enterprise?
           </h2>
-          <p className={`text-xl max-w-3xl mx-auto ${isDark ? 'text-gray-300' : 'text-[#00031b]'}`}>
+          <p className={`text-xl max-w-3xl mx-auto ${isDark ? 'text-gray-300' : 'text-[#00091b]'}`}>
             Choose the plan that's right for your business and start building with Artintel today
           </p>
         </motion.div>
@@ -50,19 +50,19 @@ export default function CTASection() {
             transition={{ duration: 0.5, delay: 0 }}
             className={`rounded-xl overflow-hidden border ${
               isDark 
-                ? 'bg-[#00061b]/50 border-gray-700' 
+                ? 'bg-[#00091b]/50 border-gray-700' 
                 : 'bg-white border-gray-200'
             } shadow-md hover:shadow-lg transition-all duration-300`}
           >
             <div className="p-6">
-              <h3 className={`text-xl font-bold mb-2 ${isDark ? 'text-white' : 'text-[#00031b]'}`}>
+              <h3 className={`text-xl font-bold mb-2 ${isDark ? 'text-white' : 'text-[#00091b]'}`}>
                 Starter
               </h3>
               <p className={`mb-4 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
                 Perfect for individuals and small teams
               </p>
               <div className="mb-4">
-                <span className={`text-3xl font-bold ${isDark ? 'text-white' : 'text-[#00031b]'}`}>$49</span>
+                <span className={`text-3xl font-bold ${isDark ? 'text-white' : 'text-[#00091b]'}`}>$49</span>
                 <span className={`${isDark ? 'text-gray-400' : 'text-gray-600'}`}>/month</span>
               </div>
 
@@ -93,7 +93,7 @@ export default function CTASection() {
             transition={{ duration: 0.5, delay: 0.1 }}
             className={`rounded-xl overflow-hidden border ${
               isDark 
-                ? 'bg-[#00061b]/50 border-[#00cbdd]' 
+                ? 'bg-[#00091b]/50 border-[#00cbdd]' 
                 : 'bg-white border-[#00cbdd]'
             } shadow-lg hover:shadow-xl transition-all duration-300 relative z-10 scale-105`}
           >
@@ -101,14 +101,14 @@ export default function CTASection() {
               Most Popular
             </div>
             <div className="p-6">
-              <h3 className={`text-xl font-bold mb-2 ${isDark ? 'text-white' : 'text-[#00031b]'}`}>
+              <h3 className={`text-xl font-bold mb-2 ${isDark ? 'text-white' : 'text-[#00091b]'}`}>
                 Professional
               </h3>
               <p className={`mb-4 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
                 Ideal for growing teams and businesses
               </p>
               <div className="mb-4">
-                <span className={`text-3xl font-bold ${isDark ? 'text-white' : 'text-[#00031b]'}`}>$199</span>
+                <span className={`text-3xl font-bold ${isDark ? 'text-white' : 'text-[#00091b]'}`}>$199</span>
                 <span className={`${isDark ? 'text-gray-400' : 'text-gray-600'}`}>/month</span>
               </div>
 
@@ -139,19 +139,19 @@ export default function CTASection() {
             transition={{ duration: 0.5, delay: 0.2 }}
             className={`rounded-xl overflow-hidden border ${
               isDark 
-                ? 'bg-[#00061b]/50 border-gray-700' 
+                ? 'bg-[#00091b]/50 border-gray-700' 
                 : 'bg-white border-gray-200'
             } shadow-md hover:shadow-lg transition-all duration-300`}
           >
             <div className="p-6">
-              <h3 className={`text-xl font-bold mb-2 ${isDark ? 'text-white' : 'text-[#00031b]'}`}>
+              <h3 className={`text-xl font-bold mb-2 ${isDark ? 'text-white' : 'text-[#00091b]'}`}>
                 Enterprise
               </h3>
               <p className={`mb-4 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
                 For large organizations with advanced needs
               </p>
               <div className="mb-4">
-                <span className={`text-3xl font-bold ${isDark ? 'text-white' : 'text-[#00031b]'}`}>Custom</span>
+                <span className={`text-3xl font-bold ${isDark ? 'text-white' : 'text-[#00091b]'}`}>Custom</span>
               </div>
 
               <ul className="mb-6 space-y-2">
@@ -182,11 +182,11 @@ export default function CTASection() {
           transition={{ duration: 0.5, delay: 0.3 }}
           className={`p-8 rounded-xl ${
             isDark 
-              ? 'bg-gradient-to-br from-[#00061b] to-[#00031b]' 
+              ? 'bg-gradient-to-br from-[#00091b] to-[#00091b]' 
               : 'bg-gradient-to-br from-gray-50 to-white'
           } border border-[#00cbdd]/30 shadow-xl text-center`}
         >
-          <h3 className={`text-2xl font-bold mb-4 ${isDark ? 'text-white' : 'text-[#00031b]'}`}>
+          <h3 className={`text-2xl font-bold mb-4 ${isDark ? 'text-white' : 'text-[#00091b]'}`}>
             Not sure which plan is right for you?
           </h3>
           <p className={`mb-6 max-w-2xl mx-auto ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>

@@ -130,7 +130,7 @@ export default function AccountSettingsPage() {
       </div>
 
       {/* Account Verification Card */}
-      <div className={`rounded-xl border ${isDark ? 'border-[#00cbdd]/20 bg-[#00031b]/90 backdrop-blur-md' : 'border-gray-200 bg-white shadow-sm'}`}>
+      <div className={`rounded-xl border ${isDark ? 'border-[#00cbdd]/20 bg-[#00091b]/90 backdrop-blur-md' : 'border-gray-200 bg-white shadow-sm'}`}>
         <div className="p-6">
           <div className="flex items-center mb-4">
             <Shield className={`h-5 w-5 mr-2 ${isDark ? 'text-[#00cbdd]' : 'text-slate-600'}`} />
@@ -267,7 +267,7 @@ export default function AccountSettingsPage() {
       </div>
 
       {/* Data Management Card */}
-      <div className={`rounded-xl border ${isDark ? 'border-[#00cbdd]/20 bg-[#00031b]/90 backdrop-blur-md' : 'border-gray-200 bg-white shadow-sm'}`}>
+      <div className={`rounded-xl border ${isDark ? 'border-[#00cbdd]/20 bg-[#00091b]/90 backdrop-blur-md' : 'border-gray-200 bg-white shadow-sm'}`}>
         <div className="p-6">
           <div className="flex items-center mb-4">
             <Download className={`h-5 w-5 mr-2 ${isDark ? 'text-[#00cbdd]' : 'text-slate-600'}`} />

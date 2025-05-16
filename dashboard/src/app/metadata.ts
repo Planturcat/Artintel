@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   },
   description: "Harness the power of state-of-the-art language models to enhance your creativity, productivity, and problem-solving capabilities.",
   viewport: "width=device-width, initial-scale=1.0, maximum-scale=1.0",
-  themeColor: "#00031b",
+  themeColor: "#00091b",
   keywords: [
     'AI',
     'artificial intelligence',

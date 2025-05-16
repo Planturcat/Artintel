@@ -240,7 +240,7 @@ export default function EventsPage() {
         transition={{ duration: 0.3 }}
         className={`p-5 rounded-xl ${
           isDark 
-            ? 'bg-[#00031b]/90 border border-[#00cbdd]/20'
+            ? 'bg-[#00091b]/90 border border-[#00cbdd]/20'
             : 'bg-white border border-gray-200'
         }`}
       >
@@ -330,7 +330,7 @@ export default function EventsPage() {
               transition={{ duration: 0.3, delay: index * 0.05 }}
               className={`p-5 rounded-xl ${
                 isDark 
-                  ? 'bg-[#00031b]/90 border border-[#00cbdd]/20'
+                  ? 'bg-[#00091b]/90 border border-[#00cbdd]/20'
                   : 'bg-white border border-gray-200'
               } overflow-hidden`}
             >
@@ -438,7 +438,7 @@ export default function EventsPage() {
             transition={{ duration: 0.3 }}
             className={`p-8 rounded-xl text-center ${
               isDark 
-                ? 'bg-[#00031b]/90 border border-[#00cbdd]/20'
+                ? 'bg-[#00091b]/90 border border-[#00cbdd]/20'
                 : 'bg-white border border-gray-200'
             }`}
           >

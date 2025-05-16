@@ -310,7 +310,7 @@ export default function EventRegistrationPage({ params }: { params: { id: string
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
             className={`p-6 rounded-xl ${
-              isDark ? 'bg-[#00031b]/90 border border-[#00cbdd]/20' : 'bg-white border border-gray-200'
+              isDark ? 'bg-[#00091b]/90 border border-[#00cbdd]/20' : 'bg-white border border-gray-200'
             }`}
           >
             <h2 className={`text-xl font-semibold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>
@@ -418,7 +418,7 @@ export default function EventRegistrationPage({ params }: { params: { id: string
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: 0.1 }}
               className={`p-6 rounded-xl ${
-                isDark ? 'bg-[#00031b]/90 border border-[#00cbdd]/20' : 'bg-white border border-gray-200'
+                isDark ? 'bg-[#00091b]/90 border border-[#00cbdd]/20' : 'bg-white border border-gray-200'
               }`}
             >
               <h2 className={`text-xl font-semibold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>
@@ -630,7 +630,7 @@ export default function EventRegistrationPage({ params }: { params: { id: string
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: 0.1 }}
               className={`p-6 rounded-xl ${
-                isDark ? 'bg-[#00031b]/90 border border-[#00cbdd]/20' : 'bg-white border border-gray-200'
+                isDark ? 'bg-[#00091b]/90 border border-[#00cbdd]/20' : 'bg-white border border-gray-200'
               }`}
             >
               <div className="text-center py-6">

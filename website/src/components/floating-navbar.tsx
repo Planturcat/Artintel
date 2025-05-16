@@ -22,8 +22,8 @@ import Wrapper from "./global/wrapper";
 
 // ListItem component for dropdown menus
 const ListItem = React.forwardRef<
-    React.ElementRef<typeof NavigationMenuLink>,
-    React.ComponentPropsWithoutRef<typeof NavigationMenuLink> & {
+    HTMLAnchorElement,
+    React.ComponentPropsWithoutRef<typeof Link> & {
         title: string;
         href: string;
         icon?: React.ComponentType<{ className?: string }>;
@@ -96,7 +96,7 @@ const Navbar = () => {
                     damping: 40,
                 }}
                 style={{
-                    minWidth: "800px",
+                    minWidth: visible ? "min(800px, 95%)" : "100%",
                 }}
                 className={cn(
                     "hidden lg:flex bg-transparent self-start items-center justify-between py-4 rounded-full relative z-[50] mx-auto w-full backdrop-blur",
@@ -110,7 +110,7 @@ const Navbar = () => {
                         transition={{ duration: 0.2 }}
                     >
                         <Link href="/" className="flex items-center gap-2">
-                            <img src="/logo/Logo - PNG (2).png" alt="Artintel Logo" className="h-12" />
+                            <img src="/logo/Logo - PNG (2).png" alt="Artintel Logo" className="h-14" />
                         </Link>
                     </motion.div>
 
@@ -193,8 +193,8 @@ const Navbar = () => {
                     damping: 50,
                 }}
                 className={cn(
-                    "flex relative flex-col lg:hidden w-full justify-between items-center mx-auto py-4 z-50",
-                    visible && "bg-neutral-950 w-11/12 border",
+                    "flex relative flex-col lg:hidden w-full justify-between items-center mx-auto py-3 z-50",
+                    visible && "bg-neutral-950/90 backdrop-blur-md w-[95%] border rounded-2xl shadow-lg",
                     open && "border-transparent"
                 )}
             >
@@ -202,28 +202,32 @@ const Navbar = () => {
                     <div className="flex items-center justify-between gap-x-4 w-full">
                         <AnimationContainer animation="fadeRight" delay={0.1}>
                             <Link href="/">
-                                <img src="/logo/Logo - PNG (2).png" alt="Artintel Logo" className="h-10" />
+                                <img src="/logo/Logo - PNG (2).png" alt="Artintel Logo" className="h-12" />
                             </Link>
                         </AnimationContainer>
 
                         <AnimationContainer animation="fadeLeft" delay={0.1}>
-                            <div className="flex items-center justify-center gap-x-4">
+                            <div className="flex items-center justify-center gap-x-3">
                                 <Link href="/waiting-list">
                                     <Button size="sm" className="bg-gradient-to-r from-[#00cbdd] to-[#00cbdd]/70 hover:from-[#00cbdd]/90 hover:to-[#00cbdd]/60 text-white border-none">
-                                        Join Waiting List
+                                        Join List
                                     </Button>
                                 </Link>
-                                {open ? (
-                                    <XIcon
-                                        className="text-black dark:text-white"
-                                        onClick={() => setOpen(!open)}
-                                    />
-                                ) : (
-                                    <MenuIcon
-                                        className="text-black dark:text-white"
-                                        onClick={() => setOpen(!open)}
-                                    />
-                                )}
+                                <button
+                                    className="p-2 rounded-md hover:bg-neutral-800 transition-colors"
+                                    onClick={() => setOpen(!open)}
+                                    aria-label={open ? "Close menu" : "Open menu"}
+                                >
+                                    {open ? (
+                                        <XIcon
+                                            className="text-white h-5 w-5"
+                                        />
+                                    ) : (
+                                        <MenuIcon
+                                            className="text-white h-5 w-5"
+                                        />
+                                    )}
+                                </button>
                             </div>
                         </AnimationContainer>
                     </div>
@@ -236,7 +240,7 @@ const Navbar = () => {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
-                            className="flex rounded-b-xl absolute top-16 bg-neutral-950 inset-x-0 z-50 flex-col items-start justify-start gap-2 w-full px-4 py-8 shadow-xl shadow-neutral-950"
+                            className="flex rounded-b-xl absolute top-[calc(100%-1px)] bg-neutral-950/95 backdrop-blur-md inset-x-0 z-50 flex-col items-start justify-start gap-2 w-full px-4 py-6 shadow-xl"
                         >
                             {NAV_LINKS.map((navItem: any, idx: number) => (
                                 <AnimationContainer
@@ -249,21 +253,31 @@ const Navbar = () => {
                                         <Link
                                             href={navItem.link}
                                             onClick={() => setOpen(false)}
-                                            className="relative text-neutral-300 hover:bg-neutral-800 w-full px-4 py-2 rounded-lg block"
+                                            className="relative text-neutral-300 hover:bg-neutral-800 hover:text-white w-full px-4 py-3 rounded-lg block font-medium transition-all duration-200"
                                         >
                                             <motion.span>{navItem.name}</motion.span>
                                         </Link>
 
                                         {navItem.submenu && (
-                                            <div className="pl-6 mt-1 space-y-1">
+                                            <div className="pl-4 mt-1 space-y-1 border-l border-neutral-800 ml-4">
                                                 {navItem.submenu.map((subItem: any, subIdx: number) => (
                                                     <Link
                                                         key={`sublink-${subIdx}`}
                                                         href={subItem.link}
                                                         onClick={() => setOpen(false)}
-                                                        className="text-sm text-neutral-400 hover:text-neutral-200 hover:bg-neutral-800 w-full px-4 py-1.5 rounded-lg block"
+                                                        className="text-sm text-neutral-400 hover:text-white hover:bg-neutral-800 w-full px-4 py-2 rounded-lg block transition-all duration-200 flex items-center gap-2"
                                                     >
-                                                        {subItem.name}
+                                                        {navItem.name === "Features" ?
+                                                            (subIdx === 0 ? <BrainCircuit className="h-3.5 w-3.5 text-[#00cbdd]" /> :
+                                                             subIdx === 1 ? <Settings className="h-3.5 w-3.5 text-[#00cbdd]" /> :
+                                                             subIdx === 2 ? <Rocket className="h-3.5 w-3.5 text-[#00cbdd]" /> :
+                                                             <LineChart className="h-3.5 w-3.5 text-[#00cbdd]" />) :
+                                                            (subIdx === 0 ? <Cpu className="h-3.5 w-3.5 text-[#00cbdd]" /> :
+                                                             subIdx === 1 ? <Cpu className="h-3.5 w-3.5 text-[#00cbdd]" /> :
+                                                             subIdx === 2 ? <Cpu className="h-3.5 w-3.5 text-[#00cbdd]" /> :
+                                                             <LineChart className="h-3.5 w-3.5 text-[#00cbdd]" />)
+                                                        }
+                                                        <span>{subItem.name}</span>
                                                     </Link>
                                                 ))}
                                             </div>
@@ -271,23 +285,23 @@ const Navbar = () => {
                                     </div>
                                 </AnimationContainer>
                             ))}
-                            <AnimationContainer animation="fadeUp" delay={0.5} className="w-full">
+                            <AnimationContainer animation="fadeUp" delay={0.5} className="w-full pt-2 mt-2 border-t border-neutral-800/40">
                                 {user ? (
                                     <Link href="/dashboard" className="w-full">
                                         <Button
                                             onClick={() => setOpen(false)}
                                             variant="default"
-                                            className="block md:hidden w-full"
+                                            className="w-full bg-gradient-to-r from-[#00cbdd] to-[#00cbdd]/70 hover:from-[#00cbdd]/90 hover:to-[#00cbdd]/60 text-white border-none"
                                         >
                                             Dashboard
                                         </Button>
                                     </Link>
                                 ) : (
-                                    <>
+                                    <div className="grid grid-cols-2 gap-2 w-full">
                                         <Link href="/waiting-list" className="w-full">
                                             <Button
                                                 onClick={() => setOpen(false)}
-                                                className="block md:hidden w-full mb-2 bg-gradient-to-r from-[#00cbdd] to-[#00cbdd]/70 hover:from-[#00cbdd]/90 hover:to-[#00cbdd]/60 text-white border-none"
+                                                className="w-full bg-gradient-to-r from-[#00cbdd] to-[#00cbdd]/70 hover:from-[#00cbdd]/90 hover:to-[#00cbdd]/60 text-white border-none"
                                             >
                                                 Join Waiting List
                                             </Button>
@@ -295,13 +309,13 @@ const Navbar = () => {
                                         <Link href="/signin" className="w-full">
                                             <Button
                                                 onClick={() => setOpen(false)}
-                                                variant="secondary"
-                                                className="block md:hidden w-full"
+                                                variant="outline"
+                                                className="w-full"
                                             >
                                                 Login
                                             </Button>
                                         </Link>
-                                    </>
+                                    </div>
                                 )}
                             </AnimationContainer>
                         </motion.div>

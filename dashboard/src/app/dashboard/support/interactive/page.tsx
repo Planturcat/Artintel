@@ -211,7 +211,7 @@ export default function InteractiveTutorialsPage() {
         transition={{ duration: 0.3 }}
         className={`p-5 rounded-xl ${
           isDark 
-            ? 'bg-[#00031b]/90 border border-[#00cbdd]/20'
+            ? 'bg-[#00091b]/90 border border-[#00cbdd]/20'
             : 'bg-white border border-gray-200'
         }`}
       >
@@ -314,7 +314,7 @@ export default function InteractiveTutorialsPage() {
               <Link href={`/dashboard/support/interactive/${tutorial.id}`}>
                 <div className={`p-5 rounded-xl h-full ${
                   isDark 
-                    ? 'bg-[#00031b]/90 border border-[#00cbdd]/20 hover:border-[#00cbdd]/40'
+                    ? 'bg-[#00091b]/90 border border-[#00cbdd]/20 hover:border-[#00cbdd]/40'
                     : 'bg-white border border-gray-200 hover:border-blue-300'
                 } transition-all duration-200 hover:shadow-lg`}>
                   {/* Tutorial Image Placeholder */}
@@ -438,7 +438,7 @@ export default function InteractiveTutorialsPage() {
           transition={{ duration: 0.3 }}
           className={`p-8 rounded-xl text-center ${
             isDark 
-              ? 'bg-[#00031b]/90 border border-[#00cbdd]/20'
+              ? 'bg-[#00091b]/90 border border-[#00cbdd]/20'
               : 'bg-white border border-gray-200'
           }`}
         >

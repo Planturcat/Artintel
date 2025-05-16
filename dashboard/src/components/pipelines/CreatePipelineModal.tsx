@@ -135,7 +135,7 @@ export default function CreatePipelineModal({
             >
               <Dialog.Panel className={`w-full max-w-md transform rounded-xl overflow-hidden p-6 text-left align-middle shadow-xl transition-all ${
                 isDark 
-                  ? 'bg-[#00031b]/90 backdrop-blur-sm border border-[#00cbdd]/20 text-white' 
+                  ? 'bg-[#00091b]/90 backdrop-blur-sm border border-[#00cbdd]/20 text-white' 
                   : 'bg-white text-gray-900'
               }`}>
                 <div className="flex justify-between items-center mb-4">

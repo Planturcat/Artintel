@@ -559,7 +559,7 @@ Feel free to rephrase your question or provide more context about what you're tr
       {/* Chat Container */}
       <div className={`flex-1 overflow-hidden flex flex-col rounded-xl ${
         isDark 
-          ? 'bg-[#00031b]/90 border border-[#00cbdd]/20'
+          ? 'bg-[#00091b]/90 border border-[#00cbdd]/20'
           : 'bg-white border border-gray-200'
       }`}>
         {/* Messages Area */}

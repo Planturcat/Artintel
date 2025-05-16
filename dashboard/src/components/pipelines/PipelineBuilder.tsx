@@ -477,7 +477,7 @@ export default function PipelineBuilder({
         {/* Canvas */}
         <div 
           className={`flex-1 relative overflow-hidden canvas ${
-            isDark ? 'bg-[#00031b]/80' : 'bg-gray-50'
+            isDark ? 'bg-[#00091b]/80' : 'bg-gray-50'
           }`}
           onMouseDown={handleCanvasMouseDown}
           onMouseMove={handleCanvasMouseMove}

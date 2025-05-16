@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { getDeploymentMetrics, getDeployments, createDeployment, updateDeploymentStatus } from '@/dashboard-api/deployment-api';
 import { getFineTuningJobs } from '@/dashboard-api/fine-tuning-api';
 import { getModels, Model, ModelTaskType, ModelTier } from '@/dashboard-api/model-api';
@@ -19,6 +20,7 @@ import { toast } from 'react-hot-toast';
 
 export default function DeploymentPage() {
   const { theme } = useTheme();
+  const { t } = useLanguage();
   const isDark = theme === 'dark';
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -53,8 +55,8 @@ export default function DeploymentPage() {
       setAlerts(alertsData);
     } catch (err) {
       console.error('Error fetching data:', err);
-      setError(err instanceof Error ? err.message : 'Failed to fetch data');
-      toast.error('Failed to fetch deployment data');
+      setError(err instanceof Error ? err.message : t('failed_to_fetch_data'));
+      toast.error(t('failed_to_fetch_deployment_data'));
     } finally {
       setIsLoading(false);
     }
@@ -68,7 +70,7 @@ export default function DeploymentPage() {
     setIsRefreshing(true);
     await fetchData();
     setIsRefreshing(false);
-    toast.success('Data refreshed successfully');
+    toast.success(t('data_refreshed_successfully'));
   };
 
   const handleDeploy = async (config: DeploymentConfig) => {
@@ -76,13 +78,13 @@ export default function DeploymentPage() {
       const newDeployment = await createDeployment(config);
       setDeployments(prev => [...prev, newDeployment]);
       setIsDeployModalOpen(false);
-      toast.success('Model deployed successfully');
+      toast.success(t('model_deployed_successfully'));
 
       // Refresh metrics
       const updatedMetrics = await getDeploymentMetrics();
       setMetrics(updatedMetrics);
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Failed to deploy model');
+      toast.error(err instanceof Error ? err.message : t('failed_to_deploy_model'));
       throw err;
     }
   };
@@ -98,17 +100,17 @@ export default function DeploymentPage() {
       const updatedMetrics = await getDeploymentMetrics();
       setMetrics(updatedMetrics);
 
-      toast.success(`Deployment status updated to ${newStatus}`);
+      toast.success(t('deployment_status_updated', { status: newStatus }));
     } catch (err) {
       console.error('Error updating status:', err);
-      toast.error('Failed to update deployment status');
+      toast.error(t('failed_to_update_deployment_status'));
     }
   };
 
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#00cbdd]"></div>
       </div>
     );
   }
@@ -116,14 +118,14 @@ export default function DeploymentPage() {
   if (error) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="text-red-500 text-center">
-          <h2 className="text-xl font-semibold mb-2">Error</h2>
+        <div className="text-error-500 text-center">
+          <h2 className="text-xl font-semibold mb-2">{t('error')}</h2>
           <p>{error}</p>
           <button
             onClick={fetchData}
-            className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+            className="mt-4 px-4 py-2 bg-gradient-to-r from-[#00cbdd] to-[#0066ff] text-white rounded-lg hover:opacity-90"
           >
-            Retry
+            {t('retry')}
           </button>
         </div>
       </div>
@@ -133,20 +135,20 @@ export default function DeploymentPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-8">
-        <h1 className={`text-2xl font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>Deployment Dashboard</h1>
+        <h1 className={`text-2xl font-semibold ${isDark ? 'text-white' : 'text-[#00091b]'}`}>Deployment Dashboard</h1>
         <div className="flex gap-4">
           <button
             onClick={handleRefresh}
             disabled={isRefreshing}
             className={`p-2 rounded-lg ${
-              isDark ? 'bg-gray-800 hover:bg-gray-700' : 'bg-gray-100 hover:bg-gray-200'
+              isDark ? 'bg-cosmic-800 hover:bg-[#001824] text-white' : 'bg-white hover:bg-[#E6FCFF] text-[#00cbdd] border border-[#00cbdd]/20'
             } transition-colors`}
           >
             <RefreshCw className={`h-5 w-5 ${isRefreshing ? 'animate-spin' : ''}`} />
           </button>
           <button
             onClick={() => setIsDeployModalOpen(true)}
-            className="px-4 py-2 rounded-lg bg-gradient-to-r from-[#00cbdd] to-blue-500 text-white hover:from-[#00b0c0] hover:to-blue-600 flex items-center gap-2"
+            className="px-4 py-2 rounded-lg bg-gradient-to-r from-[#00cbdd] to-[#0066ff] text-white hover:opacity-90 flex items-center gap-2"
           >
             <PlusCircle className="h-5 w-5" />
             Deploy New Model
@@ -237,26 +239,26 @@ export default function DeploymentPage() {
                     key={alert.id}
                     className={`p-4 rounded-lg ${
                       isDark
-                        ? 'bg-gray-800/50 hover:bg-gray-800/70'
-                        : 'bg-white hover:bg-gray-50'
+                        ? 'bg-cosmic-800 hover:bg-[#001824]'
+                        : 'bg-white hover:bg-[#E6FCFF]'
                     } border ${
-                      isDark ? 'border-gray-700' : 'border-gray-200'
+                      isDark ? 'border-[#00cbdd]/20' : 'border-[#00cbdd]/10'
                     } transition-all duration-200`}
                   >
                     <div className="flex items-start">
                       <div className={`p-2 rounded-lg flex-shrink-0 ${
                         alert.severity === 'critical' || alert.severity === 'error'
-                          ? isDark ? 'bg-red-900/20' : 'bg-red-100'
+                          ? isDark ? 'bg-error-500/20' : 'bg-error-100'
                           : alert.severity === 'warning'
-                            ? isDark ? 'bg-amber-900/20' : 'bg-amber-100'
-                            : isDark ? 'bg-blue-900/20' : 'bg-blue-100'
+                            ? isDark ? 'bg-warning-500/20' : 'bg-warning-100'
+                            : isDark ? 'bg-[#00cbdd]/20' : 'bg-[#00cbdd]/10'
                       }`}>
                         <div className={`h-5 w-5 ${
                           alert.severity === 'critical' || alert.severity === 'error'
-                            ? isDark ? 'text-red-500' : 'text-red-600'
+                            ? isDark ? 'text-error-500' : 'text-error-700'
                             : alert.severity === 'warning'
-                              ? isDark ? 'text-amber-500' : 'text-amber-600'
-                              : isDark ? 'text-blue-500' : 'text-blue-600'
+                              ? isDark ? 'text-warning-500' : 'text-warning-700'
+                              : isDark ? 'text-[#00cbdd]' : 'text-[#00cbdd]'
                         }`}>
                           {alert.severity === 'critical' || alert.severity === 'error'
                             ? <AlertTriangle />
@@ -269,14 +271,14 @@ export default function DeploymentPage() {
 
                       <div className="ml-4 flex-1">
                         <div className="flex justify-between">
-                          <h4 className={`text-sm font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                          <h4 className={`text-sm font-medium ${isDark ? 'text-white' : 'text-[#00091b]'}`}>
                             {alert.title}
                           </h4>
-                          <span className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                          <span className={`text-xs ${isDark ? 'text-[#7fe4eb]/70' : 'text-[#00cbdd]/70'}`}>
                             {new Date(alert.timestamp).toLocaleString()}
                           </span>
                         </div>
-                        <p className={`mt-1 text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                        <p className={`mt-1 text-sm ${isDark ? 'text-[#7fe4eb]' : 'text-[#00cbdd]'}`}>
                           {alert.message}
                         </p>
                       </div>
@@ -286,13 +288,13 @@ export default function DeploymentPage() {
             ) : (
               // Show empty state when no alerts
               <div className="text-center py-8">
-                <div className="mx-auto w-12 h-12 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center mb-4">
-                  <Bell className={`h-6 w-6 ${isDark ? 'text-gray-400' : 'text-gray-500'}`} />
+                <div className="mx-auto w-12 h-12 rounded-full bg-[#00cbdd]/10 dark:bg-[#00cbdd]/20 flex items-center justify-center mb-4">
+                  <Bell className={`h-6 w-6 ${isDark ? 'text-[#00cbdd]' : 'text-[#00cbdd]'}`} />
                 </div>
-                <h3 className={`text-sm font-medium ${isDark ? 'text-white' : 'text-gray-900'} mb-1`}>
+                <h3 className={`text-sm font-medium ${isDark ? 'text-white' : 'text-[#00091b]'} mb-1`}>
                   No active alerts
                 </h3>
-                <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'} max-w-md mx-auto`}>
+                <p className={`text-sm ${isDark ? 'text-[#7fe4eb]' : 'text-[#00cbdd]'} max-w-md mx-auto`}>
                   Your deployment is running smoothly with no issues to report
                 </p>
               </div>

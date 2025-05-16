@@ -132,7 +132,7 @@ export default function AppearanceSettingsPage() {
       </div>
 
       {/* Theme Settings Card */}
-      <div className={`rounded-xl shadow-sm ${isDark ? 'border border-[#00cbdd]/20 bg-[#00031b]/90 backdrop-blur-md' : 'border-0 bg-white shadow-md'}`}>
+      <div className={`rounded-xl shadow-sm ${isDark ? 'border border-[#00cbdd]/20 bg-[#00091b]/90 backdrop-blur-md' : 'border-0 bg-white shadow-md'}`}>
         <div className="p-6">
           <div className="flex items-center mb-4">
             <div className={`p-2 rounded-lg ${isDark ? 'bg-[#00cbdd]/10' : 'bg-slate-100'}`}>
@@ -269,7 +269,7 @@ export default function AppearanceSettingsPage() {
       </div>
 
       {/* Typography Settings Card */}
-      <div className={`rounded-xl shadow-sm ${isDark ? 'border border-[#00cbdd]/20 bg-[#00031b]/90 backdrop-blur-md' : 'border-0 bg-white shadow-md'}`}>
+      <div className={`rounded-xl shadow-sm ${isDark ? 'border border-[#00cbdd]/20 bg-[#00091b]/90 backdrop-blur-md' : 'border-0 bg-white shadow-md'}`}>
         <div className="p-6">
           <div className="flex items-center mb-4">
             <div className={`p-2 rounded-lg ${isDark ? 'bg-[#00cbdd]/10' : 'bg-slate-100'}`}>
@@ -337,7 +337,7 @@ export default function AppearanceSettingsPage() {
                     className={`flex-1 py-2 px-4 rounded-lg transition-colors ${
                       fontSize === size.value
                         ? isDark 
-                            ? 'bg-[#00cbdd] text-[#00031b]' 
+                            ? 'bg-[#00cbdd] text-[#00091b]' 
                             : 'bg-slate-800 text-white shadow-sm'
                         : isDark 
                             ? 'bg-gray-900/50 text-gray-300 border border-gray-800 hover:bg-gray-800' 
@@ -354,7 +354,7 @@ export default function AppearanceSettingsPage() {
       </div>
 
       {/* Layout Settings Card */}
-      <div className={`rounded-xl shadow-sm ${isDark ? 'border border-[#00cbdd]/20 bg-[#00031b]/90 backdrop-blur-md' : 'border-0 bg-white shadow-md'}`}>
+      <div className={`rounded-xl shadow-sm ${isDark ? 'border border-[#00cbdd]/20 bg-[#00091b]/90 backdrop-blur-md' : 'border-0 bg-white shadow-md'}`}>
         <div className="p-6">
           <div className="flex items-center mb-4">
             <div className={`p-2 rounded-lg ${isDark ? 'bg-[#00cbdd]/10' : 'bg-slate-100'}`}>
@@ -520,7 +520,7 @@ export default function AppearanceSettingsPage() {
           onClick={handleSaveSettings}
           className={`px-4 py-2 rounded-lg font-medium transition-colors ${
             isDark 
-              ? 'bg-[#00cbdd] text-[#00031b] hover:bg-[#00cbdd]/90' 
+              ? 'bg-[#00cbdd] text-[#00091b] hover:bg-[#00cbdd]/90' 
               : 'bg-slate-800 text-white hover:bg-slate-700'
           }`}
         >

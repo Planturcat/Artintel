@@ -19,7 +19,7 @@ const EmptyState: React.FC<EmptyStateProps> = ({
     <div
       className={`flex flex-col items-center justify-center py-12 px-4 text-center rounded-xl border ${
         isDark
-          ? 'bg-[#00031b]/90 border-[#00cbdd]/20 text-white'
+          ? 'bg-[#00091b]/90 border-[#00cbdd]/20 text-white'
           : 'bg-white border-gray-200 text-gray-800'
       }`}
     >

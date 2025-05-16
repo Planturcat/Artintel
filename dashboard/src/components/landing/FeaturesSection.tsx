@@ -231,7 +231,7 @@ export default function FeaturesSection() {
             Why Choose Us
           </motion.span>
           
-          <h2 className={`text-4xl md:text-5xl font-bold mb-4 ${isDark ? 'text-white' : 'text-[#00031b]'}`}>
+          <h2 className={`text-4xl md:text-5xl font-bold mb-4 ${isDark ? 'text-white' : 'text-[#00091b]'}`}>
             Key <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#00cbdd] to-blue-500">Features</span> & Benefits
           </h2>
           
@@ -268,7 +268,7 @@ export default function FeaturesSection() {
                   activeTab === tab.id
                     ? 'bg-gradient-to-r from-[#00cbdd] to-blue-500 text-white shadow-lg shadow-[#00cbdd]/20'
                     : isDark
-                    ? 'bg-[#00061b] text-gray-300 hover:bg-[#000C2A] border border-[#00cbdd]/20'
+                    ? 'bg-[#00091b] text-gray-300 hover:bg-[#000C2A] border border-[#00cbdd]/20'
                     : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200 shadow-sm'
                 }`}
                 style={{
@@ -319,7 +319,7 @@ export default function FeaturesSection() {
                   <motion.div
                     className={`h-full p-8 rounded-2xl transform-gpu backface-hidden ${
                       isDark 
-                        ? 'bg-gradient-to-b from-[#00061b] to-[#00052f] border border-[#00cbdd]/20' 
+                        ? 'bg-gradient-to-b from-[#00091b] to-[#00052f] border border-[#00cbdd]/20' 
                         : 'bg-white border border-gray-200'
                     } shadow-xl hover:shadow-2xl transition-all duration-300`}
                     style={{
@@ -352,7 +352,7 @@ export default function FeaturesSection() {
                     
                     {/* Title with 3D effect */}
                     <motion.h3 
-                      className={`text-xl font-bold mb-4 ${isDark ? 'text-white' : 'text-[#00031b]'}`}
+                      className={`text-xl font-bold mb-4 ${isDark ? 'text-white' : 'text-[#00091b]'}`}
                       style={{
                         transform: "translateZ(15px)",
                       }}
@@ -415,7 +415,7 @@ export default function FeaturesSection() {
           }}
           className="grid grid-cols-1 md:grid-cols-3 gap-6"
         >
-          <h3 className={`text-2xl font-bold col-span-1 md:col-span-3 mb-8 text-center ${isDark ? 'text-white' : 'text-[#00031b]'}`}>
+          <h3 className={`text-2xl font-bold col-span-1 md:col-span-3 mb-8 text-center ${isDark ? 'text-white' : 'text-[#00091b]'}`}>
             Our Impact <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#00cbdd] to-blue-500">By The Numbers</span>
           </h3>
           

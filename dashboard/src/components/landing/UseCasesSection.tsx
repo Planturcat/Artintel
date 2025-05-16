@@ -150,20 +150,20 @@ export default function UseCasesSection() {
   // For server-side rendering, provide a simpler version
   if (!isClient) {
     return (
-      <section id="use-cases" className="w-full py-20 bg-gradient-to-b from-transparent to-[#00031b]/10">
+      <section id="use-cases" className="w-full py-20 bg-gradient-to-b from-transparent to-[#00091b]/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-16">
-            <h2 className={`text-3xl md:text-4xl font-bold mb-4 ${isDark ? 'text-white' : 'text-[#00031b]'}`}>
+            <h2 className={`text-3xl md:text-4xl font-bold mb-4 ${isDark ? 'text-white' : 'text-[#00091b]'}`}>
               Use Cases & <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#00cbdd] to-blue-500">Industry Applications</span>
             </h2>
-            <p className={`text-xl max-w-3xl mx-auto ${isDark ? 'text-gray-300' : 'text-[#00031b]'}`}>
+            <p className={`text-xl max-w-3xl mx-auto ${isDark ? 'text-gray-300' : 'text-[#00091b]'}`}>
               How enterprises across industries are leveraging our platform
             </p>
           </div>
           
           {/* Simple Use Case Selector */}
           <div className="mb-16">
-            <h3 className={`text-xl font-bold text-center mb-6 ${isDark ? 'text-white' : 'text-[#00031b]'}`}>
+            <h3 className={`text-xl font-bold text-center mb-6 ${isDark ? 'text-white' : 'text-[#00091b]'}`}>
               Select a Use Case
             </h3>
             <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
@@ -175,7 +175,7 @@ export default function UseCasesSection() {
                     activeUseCase === useCase.id
                       ? 'bg-gradient-to-r from-[#00cbdd] to-blue-500 text-white shadow-lg'
                       : isDark 
-                      ? 'bg-[#00061b]/50 border border-gray-700 text-gray-300 hover:border-[#00cbdd]/50'
+                      ? 'bg-[#00091b]/50 border border-gray-700 text-gray-300 hover:border-[#00cbdd]/50'
                       : 'bg-white border border-gray-200 text-gray-700 hover:border-[#00cbdd]/50'
                   }`}
                 >
@@ -193,7 +193,7 @@ export default function UseCasesSection() {
                 <p className={`mb-4 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
                   {activeUseCaseData.description}
                 </p>
-                <h4 className={`font-semibold mb-2 ${isDark ? 'text-white' : 'text-[#00031b]'}`}>Key Benefits:</h4>
+                <h4 className={`font-semibold mb-2 ${isDark ? 'text-white' : 'text-[#00091b]'}`}>Key Benefits:</h4>
                 <ul className="list-disc pl-5">
                   {activeUseCaseData.benefits.map((benefit, index) => (
                     <li key={index} className={`mb-1 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
@@ -207,7 +207,7 @@ export default function UseCasesSection() {
 
           {/* Simple Industries Grid */}
           <div>
-            <h3 className={`text-xl font-bold text-center mb-6 ${isDark ? 'text-white' : 'text-[#00031b]'}`}>
+            <h3 className={`text-xl font-bold text-center mb-6 ${isDark ? 'text-white' : 'text-[#00091b]'}`}>
               {filteredIndustries.length === industries.length 
                 ? 'Across Industries' 
                 : `Industries Using ${activeUseCaseData.title}`}
@@ -218,13 +218,13 @@ export default function UseCasesSection() {
                   key={industry.id}
                   className={`p-6 rounded-xl border ${
                     isDark 
-                      ? 'bg-[#00061b]/50 border-gray-700' 
+                      ? 'bg-[#00091b]/50 border-gray-700' 
                       : 'bg-white border-gray-200'
                   } shadow-md hover:shadow-lg transition-all duration-300`}
                 >
                   <div className="flex flex-col items-center text-center">
                     <div className="mb-4">{industry.icon}</div>
-                    <h4 className={`text-xl font-bold mb-2 ${isDark ? 'text-white' : 'text-[#00031b]'}`}>
+                    <h4 className={`text-xl font-bold mb-2 ${isDark ? 'text-white' : 'text-[#00091b]'}`}>
                       {industry.title}
                     </h4>
                     <p className={`mb-4 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
@@ -261,7 +261,7 @@ export default function UseCasesSection() {
   }
 
   return (
-    <section id="use-cases" className="w-full py-20 bg-gradient-to-b from-transparent to-[#00031b]/10">
+    <section id="use-cases" className="w-full py-20 bg-gradient-to-b from-transparent to-[#00091b]/10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -269,17 +269,17 @@ export default function UseCasesSection() {
           transition={{ duration: 0.5 }}
           className="text-center mb-16"
         >
-          <h2 className={`text-3xl md:text-4xl font-bold mb-4 ${isDark ? 'text-white' : 'text-[#00031b]'}`}>
+          <h2 className={`text-3xl md:text-4xl font-bold mb-4 ${isDark ? 'text-white' : 'text-[#00091b]'}`}>
             Use Cases & <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#00cbdd] to-blue-500">Industry Applications</span>
           </h2>
-          <p className={`text-xl max-w-3xl mx-auto ${isDark ? 'text-gray-300' : 'text-[#00031b]'}`}>
+          <p className={`text-xl max-w-3xl mx-auto ${isDark ? 'text-gray-300' : 'text-[#00091b]'}`}>
             How enterprises across industries are leveraging our platform
           </p>
         </motion.div>
 
         {/* Use Case Selector */}
         <div className="mb-16">
-          <h3 className={`text-xl font-bold text-center mb-6 ${isDark ? 'text-white' : 'text-[#00031b]'}`}>
+          <h3 className={`text-xl font-bold text-center mb-6 ${isDark ? 'text-white' : 'text-[#00091b]'}`}>
             Select a Use Case
           </h3>
           <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
@@ -293,7 +293,7 @@ export default function UseCasesSection() {
                   activeUseCase === useCase.id
                     ? 'bg-gradient-to-r from-[#00cbdd] to-blue-500 text-white shadow-lg'
                     : isDark 
-                    ? 'bg-[#00061b]/50 border border-gray-700 text-gray-300 hover:border-[#00cbdd]/50'
+                    ? 'bg-[#00091b]/50 border border-gray-700 text-gray-300 hover:border-[#00cbdd]/50'
                     : 'bg-white border border-gray-200 text-gray-700 hover:border-[#00cbdd]/50'
                 }`}
               >
@@ -317,7 +317,7 @@ export default function UseCasesSection() {
               <p className={`mb-4 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
                 {activeUseCaseData.description}
               </p>
-              <h4 className={`font-semibold mb-2 ${isDark ? 'text-white' : 'text-[#00031b]'}`}>Key Benefits:</h4>
+              <h4 className={`font-semibold mb-2 ${isDark ? 'text-white' : 'text-[#00091b]'}`}>Key Benefits:</h4>
               <ul className="list-disc pl-5">
                 {activeUseCaseData.benefits.map((benefit, index) => (
                   <li key={index} className={`mb-1 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
@@ -331,7 +331,7 @@ export default function UseCasesSection() {
 
         {/* Industries Section */}
         <div>
-          <h3 className={`text-xl font-bold text-center mb-6 ${isDark ? 'text-white' : 'text-[#00031b]'}`}>
+          <h3 className={`text-xl font-bold text-center mb-6 ${isDark ? 'text-white' : 'text-[#00091b]'}`}>
             {filteredIndustries.length === industries.length 
               ? 'Across Industries' 
               : `Industries Using ${activeUseCaseData.title}`}
@@ -345,13 +345,13 @@ export default function UseCasesSection() {
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 className={`p-6 rounded-xl border ${
                   isDark 
-                    ? 'bg-[#00061b]/50 border-gray-700' 
+                    ? 'bg-[#00091b]/50 border-gray-700' 
                     : 'bg-white border-gray-200'
                 } shadow-md hover:shadow-lg transition-all duration-300`}
               >
                 <div className="flex flex-col items-center text-center">
                   <div className="mb-4">{industry.icon}</div>
-                  <h4 className={`text-xl font-bold mb-2 ${isDark ? 'text-white' : 'text-[#00031b]'}`}>
+                  <h4 className={`text-xl font-bold mb-2 ${isDark ? 'text-white' : 'text-[#00091b]'}`}>
                     {industry.title}
                   </h4>
                   <p className={`mb-4 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>

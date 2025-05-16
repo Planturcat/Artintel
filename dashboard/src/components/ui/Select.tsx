@@ -43,7 +43,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
             'flex h-10 w-full rounded-md px-3 py-2 text-sm ring-offset-white transition-colors',
             'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00cbdd] focus-visible:ring-offset-2',
             isDark
-              ? 'bg-[#00031b]/50 border border-[#00cbdd]/20 text-white'
+              ? 'bg-[#00091b]/50 border border-[#00cbdd]/20 text-white'
               : 'bg-white border border-[#00cbdd]/10 text-gray-900',
             'disabled:cursor-not-allowed disabled:opacity-50',
             className
@@ -65,7 +65,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
             flex items-center justify-between
             transition-all duration-200
             ${isDark 
-              ? 'bg-[#00031b]/50 border border-[#00cbdd]/20 text-white' 
+              ? 'bg-[#00091b]/50 border border-[#00cbdd]/20 text-white' 
               : 'bg-white border border-gray-200 text-gray-900'
             }
             ${error ? 'border-red-500' : ''}
@@ -89,7 +89,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
               className={`
                 absolute z-50 w-full mt-1 rounded-lg shadow-lg
                 ${isDark 
-                  ? 'bg-[#00031b]/90 border border-[#00cbdd]/20' 
+                  ? 'bg-[#00091b]/90 border border-[#00cbdd]/20' 
                   : 'bg-white border border-gray-200'
                 }
               `}

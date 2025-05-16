@@ -28,7 +28,7 @@ export default function MashModal({ isOpen, onClose, pipeline, isDark }: MashMod
       <div className="fixed inset-0 flex items-center justify-center p-4">
         <Dialog.Panel className={`w-full max-w-4xl h-3/4 rounded-xl overflow-hidden ${
           isDark 
-            ? 'bg-[#00031b]/90 backdrop-blur-sm border border-[#00cbdd]/20' 
+            ? 'bg-[#00091b]/90 backdrop-blur-sm border border-[#00cbdd]/20' 
             : 'bg-white shadow-lg border border-gray-200'
         }`}>
           {/* Header */}

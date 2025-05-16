@@ -25,12 +25,12 @@ export default function HeroSection() {
           transition={{ duration: 0.6 }}
         >
           <h1 className={`text-4xl md:text-6xl font-bold mb-6 leading-tight text-center ${
-            isDark ? 'text-white' : 'text-[#00031b]'
+            isDark ? 'text-white' : 'text-[#00091b]'
           }`}>
             Democratizing Language Models for <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#00cbdd] to-blue-500">Every Enterprise</span>
           </h1>
           <p className={`text-xl mb-10 max-w-4xl mx-auto leading-relaxed text-center ${
-            isDark ? 'text-gray-300' : 'text-[#00031b]'
+            isDark ? 'text-gray-300' : 'text-[#00091b]'
           }`}>
             Empower your business with our no-code platform that simplifies fine-tuning, deployment, and management of open‑source AI models. 
             Experience accessible, scalable, and secure language model solutions—designed to break down barriers and drive innovation across industries.
@@ -48,7 +48,7 @@ export default function HeroSection() {
               className={`px-8 py-4 rounded-lg font-medium transition-all duration-300 border w-full sm:w-auto text-center backdrop-blur-sm ${
                 isDark 
                 ? 'bg-white/10 hover:bg-white/15 text-white border-cyan-950' 
-                : 'bg-[#00031b]/10 hover:bg-[#00031b]/15 text-[#00031b] border-[#00cbdd]/30'
+                : 'bg-[#00091b]/10 hover:bg-[#00091b]/15 text-[#00091b] border-[#00cbdd]/30'
               }`}
             >
               Explore Features

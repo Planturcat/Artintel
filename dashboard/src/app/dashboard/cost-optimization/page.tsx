@@ -1,4 +1,4 @@
-'use client';
+-'use client';
 
 import { useState, useEffect } from 'react';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -11,12 +11,8 @@ import {
   HardDrive,
   Zap,
   Search,
-  Calendar,
-  BarChart3,
-  PieChart,
   Download,
   Activity,
-  Filter,
   ChevronDown
 } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -103,11 +99,11 @@ export default function CostOptimizationPage() {
   const getImplementationStyle = (difficulty: string) => {
     switch(difficulty) {
       case 'easy':
-        return isDark ? 'text-green-400' : 'text-green-600';
+        return isDark ? 'text-success-500' : 'text-success-700';
       case 'medium':
-        return isDark ? 'text-yellow-400' : 'text-yellow-600';
+        return isDark ? 'text-warning-500' : 'text-warning-700';
       case 'complex':
-        return isDark ? 'text-red-400' : 'text-red-600';
+        return isDark ? 'text-error-500' : 'text-error-700';
       default:
         return '';
     }
@@ -191,21 +187,21 @@ export default function CostOptimizationPage() {
         <motion.div
           className={`relative w-full max-w-md p-6 rounded-xl shadow-lg ${
             isDark
-              ? 'bg-[#00031b]/95 border border-[#00cbdd]/20'
-              : 'bg-white border border-gray-200'
+              ? 'bg-cosmic-900/95 border border-[#00cbdd]/25'
+              : 'bg-white border border-[#00cbdd]/15'
           }`}
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.9, opacity: 0 }}
         >
           <div className="flex justify-between items-center mb-4">
-            <h3 className={`text-xl font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+            <h3 className={`text-xl font-semibold ${isDark ? 'text-white' : 'text-[#00091b]'}`}>
               {t('implementSavings')}
             </h3>
             <button
               onClick={() => setShowImplementationModal(null)}
               className={`p-1 rounded-full ${
-                isDark ? 'hover:bg-[#00cbdd]/10 text-gray-400' : 'hover:bg-gray-100 text-gray-500'
+                isDark ? 'hover:bg-[#00cbdd]/15 text-[#7fe4eb]' : 'hover:bg-[#00cbdd]/10 text-[#00cbdd]'
               }`}
             >
               <ChevronDown className="h-5 w-5" />
@@ -213,24 +209,24 @@ export default function CostOptimizationPage() {
           </div>
 
           <div className="mb-6">
-            <div className={`flex items-center mb-2 text-lg font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
+            <div className={`flex items-center mb-2 text-lg font-medium ${isDark ? 'text-white' : 'text-[#00091b]'}`}>
               {getCategoryIcon(recommendation.category)}
               <span className="ml-2">{recommendation.title}</span>
             </div>
-            <p className={`mb-4 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+            <p className={`mb-4 ${isDark ? 'text-[#7fe4eb]' : 'text-[#00cbdd]'}`}>
               {recommendation.description}
             </p>
             <div className="flex items-center justify-between">
               <div>
-                <span className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                <span className={`text-sm ${isDark ? 'text-[#7fe4eb]' : 'text-[#00cbdd]'}`}>
                   {t('savingsEstimate')}:
                 </span>
-                <span className={`ml-2 font-medium ${isDark ? 'text-green-400' : 'text-green-600'}`}>
+                <span className={`ml-2 font-medium ${isDark ? 'text-success-500' : 'text-success-700'}`}>
                   {formatCurrency(recommendation.savingAmount)}
                 </span>
               </div>
               <div>
-                <span className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                <span className={`text-sm ${isDark ? 'text-[#7fe4eb]' : 'text-[#00cbdd]'}`}>
                   {t('difficulty')}:
                 </span>
                 <span className={`ml-2 font-medium ${getImplementationStyle(recommendation.implementationDifficulty)}`}>
@@ -240,15 +236,15 @@ export default function CostOptimizationPage() {
             </div>
             {recommendation.impact && (
               <div className="mt-3">
-                <span className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                <span className={`text-sm ${isDark ? 'text-[#7fe4eb]' : 'text-[#00cbdd]'}`}>
                   {t('impact')}:
                 </span>
                 <span className={`ml-2 font-medium ${
                   recommendation.impact === 'high'
-                    ? isDark ? 'text-green-400' : 'text-green-600'
+                    ? isDark ? 'text-success-500' : 'text-success-700'
                     : recommendation.impact === 'medium'
-                      ? isDark ? 'text-yellow-400' : 'text-yellow-600'
-                      : isDark ? 'text-blue-400' : 'text-blue-600'
+                      ? isDark ? 'text-warning-500' : 'text-warning-700'
+                      : isDark ? 'text-[#00cbdd]' : 'text-[#007a85]'
                 }`}>
                   {recommendation.impact.charAt(0).toUpperCase() + recommendation.impact.slice(1)}
                 </span>
@@ -261,15 +257,15 @@ export default function CostOptimizationPage() {
               onClick={() => setShowImplementationModal(null)}
               className={`px-4 py-2 rounded-lg ${
                 isDark
-                  ? 'bg-gray-800 text-gray-200 hover:bg-gray-700'
-                  : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
+                  ? 'bg-cosmic-800 text-white hover:bg-[#001824]'
+                  : 'bg-[#E6FCFF] text-[#00cbdd] hover:bg-[#A5F3FA]'
               }`}
             >
               {t('cancel')}
             </button>
             <button
               onClick={() => confirmImplementation(id)}
-              className="flex items-center px-4 py-2 bg-gradient-to-r from-[#00cbdd] to-blue-500 text-white rounded-lg hover:opacity-90 transition-all duration-200"
+              className="flex items-center px-4 py-2 bg-gradient-to-r from-[#00cbdd] to-[#0066ff] text-white rounded-lg hover:opacity-90 transition-all duration-200"
             >
               <TrendingDown className="h-4 w-4 mr-2" />
               {t('implementSavings')}
@@ -285,10 +281,10 @@ export default function CostOptimizationPage() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className={`text-2xl font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+          <h1 className={`text-2xl font-semibold ${isDark ? 'text-white' : 'text-[#00091b]'}`}>
             {t('costOptimization')}
           </h1>
-          <p className={`mt-1 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+          <p className={`mt-1 ${isDark ? 'text-[#7fe4eb]' : 'text-[#00cbdd]'}`}>
             {t('optimizeResourceUsage')}
           </p>
         </div>
@@ -297,8 +293,8 @@ export default function CostOptimizationPage() {
           <motion.button
             className={`flex items-center px-4 py-2 rounded-lg border ${
               isDark
-                ? 'border-[#00cbdd]/30 text-white hover:bg-[#00cbdd]/10'
-                : 'border-blue-300 text-blue-700 hover:bg-blue-50'
+                ? 'border-[#00cbdd]/30 text-white hover:bg-[#00cbdd]/15'
+                : 'border-[#00cbdd]/30 text-[#00cbdd] hover:bg-[#00cbdd]/10'
             } transition-all duration-200`}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
@@ -308,7 +304,7 @@ export default function CostOptimizationPage() {
           </motion.button>
 
           <motion.button
-            className="flex items-center px-4 py-2 bg-gradient-to-r from-[#00cbdd] to-blue-500 text-white rounded-lg hover:opacity-90 transition-all duration-200"
+            className="flex items-center px-4 py-2 bg-gradient-to-r from-[#00cbdd] to-[#0066ff] text-white rounded-lg hover:opacity-90 transition-all duration-200"
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
@@ -327,16 +323,16 @@ export default function CostOptimizationPage() {
           transition={{ duration: 0.3 }}
           className={`p-5 rounded-xl ${
             isDark
-              ? 'bg-[#00031b]/90 border border-[#00cbdd]/20'
-              : 'bg-white border border-gray-200'
+              ? 'bg-cosmic-900/95 border border-[#00cbdd]/20'
+              : 'bg-white border border-[#00cbdd]/10'
           }`}
         >
           <div className="flex items-start justify-between">
             <div>
-              <p className={`text-sm font-medium ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+              <p className={`text-sm font-medium ${isDark ? 'text-[#7fe4eb]' : 'text-[#00cbdd]'}`}>
                 {t('currentSpending')}
               </p>
-              <h3 className={`mt-2 text-2xl font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+              <h3 className={`mt-2 text-2xl font-semibold ${isDark ? 'text-white' : 'text-[#00091b]'}`}>
                 {isLoading
                   ? "..."
                   : costMetrics
@@ -344,7 +340,7 @@ export default function CostOptimizationPage() {
                     : formatCurrency(0)
                 }
               </h3>
-              <p className={`mt-1 text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+              <p className={`mt-1 text-sm ${isDark ? 'text-[#7fe4eb]' : 'text-[#00cbdd]'}`}>
                 {timeRange === 'last7Days'
                   ? t('lastSevenDays')
                   : timeRange === 'last30Days'
@@ -354,9 +350,9 @@ export default function CostOptimizationPage() {
               </p>
             </div>
             <div className={`p-3 rounded-full ${
-              isDark ? 'bg-blue-500/10' : 'bg-blue-100'
+              isDark ? 'bg-[#00cbdd]/10' : 'bg-[#00cbdd]/10'
             }`}>
-              <DollarSign className={`h-5 w-5 ${isDark ? 'text-blue-400' : 'text-blue-600'}`} />
+              <DollarSign className={`h-5 w-5 ${isDark ? 'text-[#00cbdd]' : 'text-[#00cbdd]'}`} />
             </div>
           </div>
         </motion.div>
@@ -368,16 +364,16 @@ export default function CostOptimizationPage() {
           transition={{ duration: 0.3, delay: 0.1 }}
           className={`p-5 rounded-xl ${
             isDark
-              ? 'bg-[#00031b]/90 border border-[#00cbdd]/20'
-              : 'bg-white border border-gray-200'
+              ? 'bg-cosmic-900/95 border border-[#00cbdd]/20'
+              : 'bg-white border border-[#00cbdd]/10'
           }`}
         >
           <div className="flex items-start justify-between">
             <div>
-              <p className={`text-sm font-medium ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+              <p className={`text-sm font-medium ${isDark ? 'text-[#7fe4eb]' : 'text-[#00cbdd]'}`}>
                 {t('projectedSavings')}
               </p>
-              <h3 className={`mt-2 text-2xl font-semibold ${isDark ? 'text-green-400' : 'text-green-600'}`}>
+              <h3 className={`mt-2 text-2xl font-semibold ${isDark ? 'text-success-500' : 'text-success-700'}`}>
                 {isLoading
                   ? "..."
                   : recommendations.length > 0
@@ -386,7 +382,7 @@ export default function CostOptimizationPage() {
                     : formatCurrency(0)
                 }
               </h3>
-              <p className={`mt-1 text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+              <p className={`mt-1 text-sm ${isDark ? 'text-[#7fe4eb]' : 'text-[#00cbdd]'}`}>
                 {isLoading || !costMetrics || costMetrics.currentSpending === 0
                   ? "0%"
                   : `${Math.round((recommendations.reduce((sum, rec) =>
@@ -396,9 +392,9 @@ export default function CostOptimizationPage() {
               </p>
             </div>
             <div className={`p-3 rounded-full ${
-              isDark ? 'bg-green-500/10' : 'bg-green-100'
+              isDark ? 'bg-success-500/10' : 'bg-success-500/10'
             }`}>
-              <TrendingDown className={`h-5 w-5 ${isDark ? 'text-green-400' : 'text-green-600'}`} />
+              <TrendingDown className={`h-5 w-5 ${isDark ? 'text-success-500' : 'text-success-700'}`} />
             </div>
           </div>
         </motion.div>
@@ -410,19 +406,19 @@ export default function CostOptimizationPage() {
           transition={{ duration: 0.3, delay: 0.2 }}
           className={`p-5 rounded-xl ${
             isDark
-              ? 'bg-[#00031b]/90 border border-[#00cbdd]/20'
-              : 'bg-white border border-gray-200'
+              ? 'bg-cosmic-900/95 border border-[#00cbdd]/20'
+              : 'bg-white border border-[#00cbdd]/10'
           }`}
         >
           <div className="flex items-start justify-between">
             <div>
-              <p className={`text-sm font-medium ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+              <p className={`text-sm font-medium ${isDark ? 'text-[#7fe4eb]' : 'text-[#00cbdd]'}`}>
                 {implementedSavings > 0 ? t('implementedSavings') : t('budgetTracking')}
               </p>
               <h3 className={`mt-2 text-2xl font-semibold ${
                 implementedSavings > 0
-                  ? (isDark ? 'text-blue-400' : 'text-blue-600')
-                  : (isDark ? 'text-amber-400' : 'text-amber-600')
+                  ? (isDark ? 'text-[#00cbdd]' : 'text-[#007a85]')
+                  : (isDark ? 'text-warning-500' : 'text-warning-700')
               }`}>
                 {isLoading
                   ? "..."
@@ -433,7 +429,7 @@ export default function CostOptimizationPage() {
                       : '0%'
                 }
               </h3>
-              <p className={`mt-1 text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+              <p className={`mt-1 text-sm ${isDark ? 'text-[#7fe4eb]' : 'text-[#00cbdd]'}`}>
                 {isLoading
                   ? "..."
                   : implementedSavings > 0
@@ -447,12 +443,12 @@ export default function CostOptimizationPage() {
             </div>
             <div className={`p-3 rounded-full ${
               implementedSavings > 0
-                ? (isDark ? 'bg-blue-500/10' : 'bg-blue-100')
-                : (isDark ? 'bg-amber-500/10' : 'bg-amber-100')
+                ? (isDark ? 'bg-[#00cbdd]/10' : 'bg-[#00cbdd]/10')
+                : (isDark ? 'bg-warning-500/10' : 'bg-warning-500/10')
             }`}>
               {implementedSavings > 0
-                ? <Activity className={`h-5 w-5 ${isDark ? 'text-blue-400' : 'text-blue-600'}`} />
-                : <AlertCircle className={`h-5 w-5 ${isDark ? 'text-amber-400' : 'text-amber-600'}`} />
+                ? <Activity className={`h-5 w-5 ${isDark ? 'text-[#00cbdd]' : 'text-[#007a85]'}`} />
+                : <AlertCircle className={`h-5 w-5 ${isDark ? 'text-warning-500' : 'text-warning-700'}`} />
               }
             </div>
           </div>
@@ -466,26 +462,26 @@ export default function CostOptimizationPage() {
           {/* Savings Recommendations */}
           <div className={`p-6 rounded-xl ${
             isDark
-              ? 'bg-[#00031b]/90 border border-[#00cbdd]/20'
-              : 'bg-white border border-gray-200'
+              ? 'bg-cosmic-900/95 border border-[#00cbdd]/20'
+              : 'bg-white border border-[#00cbdd]/10'
           }`}>
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
-              <h2 className={`text-xl font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                {user ? `${user.firstName}'s ${t('savingsRecommendations')}` : t('savingsRecommendations')}
+              <h2 className={`text-xl font-semibold ${isDark ? 'text-white' : 'text-[#00091b]'}`}>
+                {user ? `${user.fullName}'s ${t('savingsRecommendations')}` : t('savingsRecommendations')}
               </h2>
 
               <div className="mt-3 sm:mt-0 relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Search className="h-4 w-4 text-gray-400" />
+                  <Search className={`h-4 w-4 ${isDark ? 'text-[#7fe4eb]' : 'text-[#00cbdd]'}`} />
                 </div>
                 <input
                   type="text"
                   placeholder={t('search')}
                   className={`pl-10 pr-4 py-2 rounded-lg ${
                     isDark
-                      ? 'bg-[#000426] border border-[#00cbdd]/20 text-white placeholder-gray-500'
-                      : 'bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-500'
-                  } focus:outline-none focus:ring-2 focus:ring-[#00cbdd] w-full sm:w-auto`}
+                      ? 'bg-cosmic-800 border border-[#00cbdd]/25 text-white placeholder-[#7fe4eb]/50'
+                      : 'bg-white border border-[#00cbdd]/20 text-[#00cbdd] placeholder-[#00cbdd]/50'
+                  } focus:outline-none focus:ring-2 focus:ring-[#00cbdd]/30 w-full sm:w-auto`}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
@@ -503,39 +499,39 @@ export default function CostOptimizationPage() {
                     className={`p-4 rounded-lg ${
                       recommendation.status === 'implemented'
                         ? isDark
-                          ? 'bg-[#000426]/80 border border-blue-500/30'
-                          : 'bg-blue-50 border border-blue-200'
+                          ? 'bg-cosmic-800 border border-[#00cbdd]/30'
+                          : 'bg-[#E6FCFF] border border-[#00cbdd]/20'
                         : recommendation.status === 'in_progress'
                           ? isDark
-                            ? 'bg-[#000426]/80 border border-[#00cbdd]/30'
-                            : 'bg-cyan-50 border border-cyan-200'
+                            ? 'bg-cosmic-800 border border-[#00cbdd]/30'
+                            : 'bg-[#E6FCFF] border border-[#00cbdd]/20'
                           : isDark
-                            ? 'bg-[#000426] border border-[#00cbdd]/10'
-                            : 'bg-gray-50 border border-gray-200'
+                            ? 'bg-cosmic-800 border border-[#00cbdd]/15'
+                            : 'bg-white border border-[#00cbdd]/10'
                     } hover:border-[#00cbdd]/30 transition-all duration-200`}
                   >
                     <div className="flex items-start justify-between">
                       <div className="flex-grow">
                         <div className="flex items-center mb-2">
                           <div className={`p-1.5 rounded-md mr-3 ${
-                            isDark ? 'bg-[#00031b]' : 'bg-white'
+                            isDark ? 'bg-cosmic-900' : 'bg-white'
                           }`}>
                             {getCategoryIcon(recommendation.category)}
                           </div>
-                          <h3 className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                          <h3 className={`font-medium ${isDark ? 'text-white' : 'text-[#00091b]'}`}>
                             {recommendation.title}
                           </h3>
                         </div>
 
-                        <p className={`text-sm mb-3 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                        <p className={`text-sm mb-3 ${isDark ? 'text-[#7fe4eb]' : 'text-[#00cbdd]'}`}>
                           {recommendation.description}
                         </p>
 
                         <div className="flex items-center">
-                          <span className={`text-sm font-medium ${isDark ? 'text-green-400' : 'text-green-600'}`}>
+                          <span className={`text-sm font-medium ${isDark ? 'text-success-500' : 'text-success-700'}`}>
                             {formatCurrency(recommendation.savingAmount)}
                           </span>
-                          <span className={`mx-2 text-xs ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>•</span>
+                          <span className={`mx-2 text-xs ${isDark ? 'text-[#00cbdd]/50' : 'text-[#00cbdd]/50'}`}>•</span>
                           <span className={`text-xs ${getImplementationStyle(recommendation.implementationDifficulty)}`}>
                             {recommendation.implementationDifficulty.charAt(0).toUpperCase() + recommendation.implementationDifficulty.slice(1)} {t('implementation')}
                           </span>
@@ -545,7 +541,7 @@ export default function CostOptimizationPage() {
                       <div>
                         {recommendation.status === 'implemented' ? (
                           <div className={`px-3 py-1.5 rounded-lg text-xs font-medium ${
-                            isDark ? 'bg-blue-500/20 text-blue-400' : 'bg-blue-100 text-blue-700'
+                            isDark ? 'bg-[#00cbdd]/20 text-[#00cbdd]' : 'bg-[#00cbdd]/10 text-[#007a85]'
                           }`}>
                             {t('implemented')}
                           </div>
@@ -556,7 +552,7 @@ export default function CostOptimizationPage() {
                           </div>
                         ) : recommendation.status === 'declined' ? (
                           <div className={`px-3 py-1.5 rounded-lg text-xs font-medium ${
-                            isDark ? 'bg-red-500/20 text-red-400' : 'bg-red-100 text-red-700'
+                            isDark ? 'bg-error-500/20 text-error-500' : 'bg-error-100 text-error-700'
                           }`}>
                             {t('declined')}
                           </div>
@@ -566,7 +562,7 @@ export default function CostOptimizationPage() {
                             className={`px-3 py-1.5 rounded-lg text-xs font-medium ${
                               isDark
                                 ? 'bg-[#00cbdd]/20 text-[#00cbdd] hover:bg-[#00cbdd]/30'
-                                : 'bg-blue-100 text-blue-700 hover:bg-blue-200'
+                                : 'bg-[#00cbdd]/10 text-[#007a85] hover:bg-[#00cbdd]/20'
                             } transition-colors duration-200`}
                           >
                             {t('implement')}
@@ -579,10 +575,10 @@ export default function CostOptimizationPage() {
               ) : (
                 <div className={`p-6 text-center rounded-lg ${
                   isDark
-                    ? 'bg-[#000426] border border-[#00cbdd]/10'
-                    : 'bg-gray-50 border border-gray-200'
+                    ? 'bg-cosmic-800 border border-[#00cbdd]/15'
+                    : 'bg-white border border-[#00cbdd]/10'
                 }`}>
-                  <p className={`${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                  <p className={`${isDark ? 'text-[#7fe4eb]' : 'text-[#00cbdd]'}`}>
                     {t('noRecommendationsFound')}
                   </p>
                 </div>
@@ -601,23 +597,23 @@ export default function CostOptimizationPage() {
           {/* Cost Breakdown */}
           <div className={`p-6 rounded-xl ${
             isDark
-              ? 'bg-[#00031b]/90 border border-[#00cbdd]/20'
-              : 'bg-white border border-gray-200'
+              ? 'bg-cosmic-900/95 border border-[#00cbdd]/20'
+              : 'bg-white border border-[#00cbdd]/10'
           }`}>
-            <h2 className={`text-xl font-semibold mb-6 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+            <h2 className={`text-xl font-semibold mb-6 ${isDark ? 'text-white' : 'text-[#00091b]'}`}>
               {t('costBreakdown')}
             </h2>
 
             <div className="space-y-4">
-              <div className={`p-4 rounded-lg ${isDark ? 'bg-[#000426]' : 'bg-gray-50'}`}>
+              <div className={`p-4 rounded-lg ${isDark ? 'bg-cosmic-800' : 'bg-white'}`}>
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center">
-                    <Zap className={`h-4 w-4 mr-2 ${isDark ? 'text-[#00cbdd]' : 'text-blue-600'}`} />
-                    <span className={`${isDark ? 'text-white' : 'text-gray-900'}`}>
+                    <Zap className={`h-4 w-4 mr-2 ${isDark ? 'text-[#00cbdd]' : 'text-[#00cbdd]'}`} />
+                    <span className={`${isDark ? 'text-white' : 'text-[#00091b]'}`}>
                       {t('computeCosts')}
                     </span>
                   </div>
-                  <span className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                  <span className={`font-medium ${isDark ? 'text-white' : 'text-[#00091b]'}`}>
                     {isLoading
                       ? "..."
                       : costMetrics && costMetrics.breakdown
@@ -626,9 +622,9 @@ export default function CostOptimizationPage() {
                     }
                   </span>
                 </div>
-                <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                <div className="w-full bg-[#000a12] rounded-full h-2.5 dark:bg-[#000a12]">
                   <div
-                    className="bg-gradient-to-r from-[#00cbdd] to-blue-500 h-2.5 rounded-full"
+                    className="bg-gradient-to-r from-[#00cbdd] to-[#0066ff] h-2.5 rounded-full"
                     style={{ width: `${isLoading || !costMetrics || !costMetrics.breakdown
                       ? 0
                       : costMetrics.breakdown.total > 0
@@ -639,15 +635,15 @@ export default function CostOptimizationPage() {
                 </div>
               </div>
 
-              <div className={`p-4 rounded-lg ${isDark ? 'bg-[#000426]' : 'bg-gray-50'}`}>
+              <div className={`p-4 rounded-lg ${isDark ? 'bg-cosmic-800' : 'bg-white'}`}>
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center">
-                    <HardDrive className={`h-4 w-4 mr-2 ${isDark ? 'text-[#00cbdd]' : 'text-blue-600'}`} />
-                    <span className={`${isDark ? 'text-white' : 'text-gray-900'}`}>
+                    <HardDrive className={`h-4 w-4 mr-2 ${isDark ? 'text-[#00cbdd]' : 'text-[#00cbdd]'}`} />
+                    <span className={`${isDark ? 'text-white' : 'text-[#00091b]'}`}>
                       {t('storageCosts')}
                     </span>
                   </div>
-                  <span className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                  <span className={`font-medium ${isDark ? 'text-white' : 'text-[#00091b]'}`}>
                     {isLoading
                       ? "..."
                       : costMetrics && costMetrics.breakdown
@@ -656,9 +652,9 @@ export default function CostOptimizationPage() {
                     }
                   </span>
                 </div>
-                <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                <div className="w-full bg-[#000a12] rounded-full h-2.5 dark:bg-[#000a12]">
                   <div
-                    className="bg-gradient-to-r from-[#00cbdd] to-blue-500 h-2.5 rounded-full"
+                    className="bg-gradient-to-r from-[#00cbdd] to-[#0066ff] h-2.5 rounded-full"
                     style={{ width: `${isLoading || !costMetrics || !costMetrics.breakdown
                       ? 0
                       : costMetrics.breakdown.total > 0
@@ -669,15 +665,15 @@ export default function CostOptimizationPage() {
                 </div>
               </div>
 
-              <div className={`p-4 rounded-lg ${isDark ? 'bg-[#000426]' : 'bg-gray-50'}`}>
+              <div className={`p-4 rounded-lg ${isDark ? 'bg-cosmic-800' : 'bg-white'}`}>
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center">
-                    <Server className={`h-4 w-4 mr-2 ${isDark ? 'text-[#00cbdd]' : 'text-blue-600'}`} />
-                    <span className={`${isDark ? 'text-white' : 'text-gray-900'}`}>
+                    <Server className={`h-4 w-4 mr-2 ${isDark ? 'text-[#00cbdd]' : 'text-[#00cbdd]'}`} />
+                    <span className={`${isDark ? 'text-white' : 'text-[#00091b]'}`}>
                       {t('modelCosts')}
                     </span>
                   </div>
-                  <span className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                  <span className={`font-medium ${isDark ? 'text-white' : 'text-[#00091b]'}`}>
                     {isLoading
                       ? "..."
                       : costMetrics && costMetrics.breakdown
@@ -686,9 +682,9 @@ export default function CostOptimizationPage() {
                     }
                   </span>
                 </div>
-                <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                <div className="w-full bg-[#000a12] rounded-full h-2.5 dark:bg-[#000a12]">
                   <div
-                    className="bg-gradient-to-r from-[#00cbdd] to-blue-500 h-2.5 rounded-full"
+                    className="bg-gradient-to-r from-[#00cbdd] to-[#0066ff] h-2.5 rounded-full"
                     style={{ width: `${isLoading || !costMetrics || !costMetrics.breakdown
                       ? 0
                       : costMetrics.breakdown.total > 0
@@ -699,15 +695,15 @@ export default function CostOptimizationPage() {
                 </div>
               </div>
 
-              <div className={`p-4 rounded-lg ${isDark ? 'bg-[#000426]' : 'bg-gray-50'}`}>
+              <div className={`p-4 rounded-lg ${isDark ? 'bg-cosmic-800' : 'bg-white'}`}>
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center">
-                    <DollarSign className={`h-4 w-4 mr-2 ${isDark ? 'text-[#00cbdd]' : 'text-blue-600'}`} />
-                    <span className={`${isDark ? 'text-white' : 'text-gray-900'}`}>
+                    <DollarSign className={`h-4 w-4 mr-2 ${isDark ? 'text-[#00cbdd]' : 'text-[#00cbdd]'}`} />
+                    <span className={`${isDark ? 'text-white' : 'text-[#00091b]'}`}>
                       {t('dataTransferCosts')}
                     </span>
                   </div>
-                  <span className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                  <span className={`font-medium ${isDark ? 'text-white' : 'text-[#00091b]'}`}>
                     {isLoading
                       ? "..."
                       : costMetrics && costMetrics.breakdown
@@ -716,9 +712,9 @@ export default function CostOptimizationPage() {
                     }
                   </span>
                 </div>
-                <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                <div className="w-full bg-[#000a12] rounded-full h-2.5 dark:bg-[#000a12]">
                   <div
-                    className="bg-gradient-to-r from-[#00cbdd] to-blue-500 h-2.5 rounded-full"
+                    className="bg-gradient-to-r from-[#00cbdd] to-[#0066ff] h-2.5 rounded-full"
                     style={{ width: `${isLoading || !costMetrics || !costMetrics.breakdown
                       ? 0
                       : costMetrics.breakdown.total > 0

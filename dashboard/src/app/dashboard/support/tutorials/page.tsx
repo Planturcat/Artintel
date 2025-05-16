@@ -155,7 +155,7 @@ export default function TutorialsPage() {
             type="text"
             className={`block w-full pl-10 pr-3 py-2 rounded-lg ${
               isDark 
-                ? 'bg-[#00031b]/90 border border-[#00cbdd]/20 text-white placeholder-gray-400'
+                ? 'bg-[#00091b]/90 border border-[#00cbdd]/20 text-white placeholder-gray-400'
                 : 'bg-white border border-gray-200 text-gray-900 placeholder-gray-500'
             } focus:outline-none focus:ring-2 focus:ring-[#00cbdd]`}
             placeholder="Search for tutorials..."
@@ -173,7 +173,7 @@ export default function TutorialsPage() {
             selectedCategory === null
               ? 'bg-[#00cbdd] text-white'
               : isDark
-                ? 'bg-[#00031b]/90 border border-[#00cbdd]/20 text-white hover:bg-[#00cbdd]/20'
+                ? 'bg-[#00091b]/90 border border-[#00cbdd]/20 text-white hover:bg-[#00cbdd]/20'
                 : 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-50'
           }`}
         >
@@ -188,7 +188,7 @@ export default function TutorialsPage() {
               selectedCategory === category
                 ? 'bg-[#00cbdd] text-white'
                 : isDark
-                  ? 'bg-[#00031b]/90 border border-[#00cbdd]/20 text-white hover:bg-[#00cbdd]/20'
+                  ? 'bg-[#00091b]/90 border border-[#00cbdd]/20 text-white hover:bg-[#00cbdd]/20'
                   : 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-50'
             }`}
           >
@@ -209,7 +209,7 @@ export default function TutorialsPage() {
             <Link href={`/dashboard/support/tutorials/${tutorial.id}`}>
               <div className={`h-full rounded-xl overflow-hidden ${
                 isDark 
-                  ? 'bg-[#00031b]/90 border border-[#00cbdd]/20 hover:border-[#00cbdd]/50'
+                  ? 'bg-[#00091b]/90 border border-[#00cbdd]/20 hover:border-[#00cbdd]/50'
                   : 'bg-white border border-gray-200 hover:border-[#00cbdd]/50'
               } transition-all duration-200 hover:shadow-lg`}>
                 {/* Thumbnail with play button overlay */}
@@ -217,7 +217,7 @@ export default function TutorialsPage() {
                   {/* Placeholder video element */}
                   <video 
                     className="absolute inset-0 w-full h-full object-cover"
-                    poster="https://placehold.co/600x400/00031b/00cbdd?text=ArtIntel+Tutorial"
+                    poster="https://placehold.co/600x400/00091b/00cbdd?text=ArtIntel+Tutorial"
                     controls={false}
                     preload="none"
                   >
@@ -269,7 +269,7 @@ export default function TutorialsPage() {
       {filteredTutorials.length === 0 && (
         <div className={`p-8 text-center rounded-xl ${
           isDark 
-            ? 'bg-[#00031b]/90 border border-[#00cbdd]/20'
+            ? 'bg-[#00091b]/90 border border-[#00cbdd]/20'
             : 'bg-white border border-gray-200'
         }`}>
           <Play className={`h-12 w-12 mx-auto mb-4 ${isDark ? 'text-gray-400' : 'text-gray-500'}`} />

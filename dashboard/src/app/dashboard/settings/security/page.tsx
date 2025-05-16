@@ -163,7 +163,7 @@ export default function SecuritySettingsPage() {
       </div>
 
       {/* Password Section */}
-      <div id="password" className={`rounded-xl shadow-sm ${isDark ? 'border border-[#00cbdd]/20 bg-[#00031b]/90 backdrop-blur-md' : 'border-0 bg-white shadow-md'}`}>
+      <div id="password" className={`rounded-xl shadow-sm ${isDark ? 'border border-[#00cbdd]/20 bg-[#00091b]/90 backdrop-blur-md' : 'border-0 bg-white shadow-md'}`}>
         <div className="p-6">
           <div className="flex items-center mb-4">
             <div className={`p-2 rounded-lg ${isDark ? 'bg-[#00cbdd]/10' : 'bg-slate-100'}`}>
@@ -239,7 +239,7 @@ export default function SecuritySettingsPage() {
                 disabled={loading}
                 className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                   isDark 
-                    ? 'bg-[#00cbdd] text-[#00031b] hover:bg-[#00cbdd]/90' 
+                    ? 'bg-[#00cbdd] text-[#00091b] hover:bg-[#00cbdd]/90' 
                     : 'bg-slate-800 text-white hover:bg-slate-700'
                 } ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
               >
@@ -251,7 +251,7 @@ export default function SecuritySettingsPage() {
       </div>
 
       {/* Two-Factor Authentication Section */}
-      <div id="2fa" className={`rounded-xl shadow-sm ${isDark ? 'border border-[#00cbdd]/20 bg-[#00031b]/90 backdrop-blur-md' : 'border-0 bg-white shadow-md'}`}>
+      <div id="2fa" className={`rounded-xl shadow-sm ${isDark ? 'border border-[#00cbdd]/20 bg-[#00091b]/90 backdrop-blur-md' : 'border-0 bg-white shadow-md'}`}>
         <div className="p-6">
           <div className="flex items-center mb-4">
             <div className={`p-2 rounded-lg ${isDark ? 'bg-[#00cbdd]/10' : 'bg-slate-100'}`}>
@@ -360,7 +360,7 @@ export default function SecuritySettingsPage() {
       </div>
 
       {/* Session Management Section */}
-      <div className={`rounded-xl shadow-sm ${isDark ? 'border border-[#00cbdd]/20 bg-[#00031b]/90 backdrop-blur-md' : 'border-0 bg-white shadow-md'}`}>
+      <div className={`rounded-xl shadow-sm ${isDark ? 'border border-[#00cbdd]/20 bg-[#00091b]/90 backdrop-blur-md' : 'border-0 bg-white shadow-md'}`}>
         <div className="p-6">
           <div className="flex items-center mb-4">
             <div className={`p-2 rounded-lg ${isDark ? 'bg-[#00cbdd]/10' : 'bg-slate-100'}`}>
@@ -439,7 +439,7 @@ export default function SecuritySettingsPage() {
       </div>
 
       {/* Login History Section */}
-      <div className={`rounded-xl shadow-sm ${isDark ? 'border border-[#00cbdd]/20 bg-[#00031b]/90 backdrop-blur-md' : 'border-0 bg-white shadow-md'}`}>
+      <div className={`rounded-xl shadow-sm ${isDark ? 'border border-[#00cbdd]/20 bg-[#00091b]/90 backdrop-blur-md' : 'border-0 bg-white shadow-md'}`}>
         <div className="p-6">
           <div className="flex items-center mb-4">
             <div className={`p-2 rounded-lg ${isDark ? 'bg-[#00cbdd]/10' : 'bg-slate-100'}`}>

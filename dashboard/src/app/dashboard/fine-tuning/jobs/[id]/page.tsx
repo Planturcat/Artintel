@@ -178,7 +178,7 @@ export default function JobDetailPage() {
     <div className="min-h-screen">
       {/* Sticky Header */}
       <div className={`sticky top-0 z-10 border-b ${
-        isDark ? 'bg-[#00031b]/90 border-[#00cbdd]/20' : 'bg-white/90 border-[#00cbdd]/10'
+        isDark ? 'bg-[#00091b]/90 border-[#00cbdd]/20' : 'bg-white/90 border-[#00cbdd]/10'
       } backdrop-blur-md`}>
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
@@ -243,7 +243,7 @@ export default function JobDetailPage() {
         {/* Status and Progress Card */}
         <div className={`p-6 rounded-lg border ${
           isDark 
-            ? 'bg-[#00031b]/90 border-[#00cbdd]/20' 
+            ? 'bg-[#00091b]/90 border-[#00cbdd]/20' 
             : 'bg-white border-[#00cbdd]/10'
         }`}>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -304,7 +304,7 @@ export default function JobDetailPage() {
         {job?.metrics && (
           <div className={`p-6 rounded-lg border ${
             isDark 
-              ? 'bg-[#00031b]/90 border-[#00cbdd]/20' 
+              ? 'bg-[#00091b]/90 border-[#00cbdd]/20' 
               : 'bg-white border-[#00cbdd]/10'
           }`}>
             <h2 className={`text-lg font-semibold mb-6 ${isDark ? 'text-white' : 'text-gray-900'}`}>
@@ -408,7 +408,7 @@ export default function JobDetailPage() {
         {/* Configuration */}
         <div className={`p-6 rounded-lg border ${
           isDark 
-            ? 'bg-[#00031b]/90 border-[#00cbdd]/20' 
+            ? 'bg-[#00091b]/90 border-[#00cbdd]/20' 
             : 'bg-white border-[#00cbdd]/10'
         }`}>
           <button
